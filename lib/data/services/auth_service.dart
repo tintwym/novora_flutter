@@ -1,0 +1,86 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+
+import '../../core/constants/app_endpoints.dart';
+import '../../core/network/api_client.dart';
+import '../../core/network/api_errors.dart';
+import '../../core/storage/local_storage.dart';
+import '../../core/error/exceptions.dart';
+import '../models/user_model.dart';
+
+/// Spring Security session login/register (`JSESSIONID` + CSRF cookies via Dio).
+class AuthService {
+  Future<void> _ensureCsrf() => ApiClient.ensureCsrfToken();
+
+  Future<UserModel> signIn(String email, String password) async {
+    await _ensureCsrf();
+    try {
+      final res = await ApiClient.dio.post<Map<String, dynamic>>(
+        AppEndpoints.authLogin,
+        data: {
+          'email': email.trim(),
+          'password': password,
+        },
+      );
+      if (res.statusCode != 200 || res.data == null) {
+        throw ApiException('Login failed', res.statusCode);
+      }
+      final user = UserModel.fromAuthJson(res.data!);
+      await _persist(user);
+      return user;
+    } on DioException catch (e) {
+      throw apiExceptionFromDio(e);
+    }
+  }
+
+  Future<UserModel> register({
+    required String email,
+    required String password,
+  }) async {
+    await _ensureCsrf();
+    try {
+      final res = await ApiClient.dio.post<Map<String, dynamic>>(
+        AppEndpoints.authRegister,
+        data: {
+          'email': email.trim(),
+          'password': password,
+        },
+      );
+      if ((res.statusCode != 201 && res.statusCode != 200) || res.data == null) {
+        throw ApiException('Registration failed', res.statusCode);
+      }
+      final user = UserModel.fromAuthJson(res.data!);
+      await _persist(user);
+      return user;
+    } on DioException catch (e) {
+      throw apiExceptionFromDio(e);
+    }
+  }
+
+  Future<UserModel?> me() async {
+    try {
+      final res = await ApiClient.dio.get<Map<String, dynamic>>(AppEndpoints.me);
+      if (res.statusCode != 200 || res.data == null) return null;
+      final user = UserModel.fromAuthJson(res.data!);
+      await _persist(user);
+      return user;
+    } on DioException {
+      return null;
+    }
+  }
+
+  /// Backend does not expose password reset yet — reserved for future endpoint.
+  Future<void> requestPasswordReset(String email) async {
+    throw const ApiException(
+      'Password reset is not available yet. Contact your administrator.',
+      501,
+    );
+  }
+
+  Future<void> _persist(UserModel user) async {
+    final token = user.accessToken;
+    LocalStorage.instance.authToken = token;
+    LocalStorage.instance.userJson = jsonEncode(user.toJson());
+  }
+}

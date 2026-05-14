@@ -1,0 +1,3 @@
+class TrainingController {
+  TrainingController();
+}

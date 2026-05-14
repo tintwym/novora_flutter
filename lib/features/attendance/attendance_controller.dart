@@ -1,0 +1,3 @@
+class AttendanceController {
+  AttendanceController();
+}

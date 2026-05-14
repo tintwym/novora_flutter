@@ -1,0 +1,294 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_routes.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../core/storage/local_storage.dart';
+import '../../../data/models/user_model.dart';
+import '../../../shared/layouts/main_layout.dart';
+import '../../../shared/layouts/responsive_layout.dart';
+import '../../../shared/widgets/app_sidebar.dart';
+import '../../../shared/widgets/app_topbar.dart';
+import '../dashboard_controller.dart';
+import '../widgets/attendance_donut_chart.dart';
+import '../widgets/dept_pie_chart.dart';
+import '../widgets/growth_chart.dart';
+import '../widgets/leave_requests_card.dart';
+import '../widgets/payroll_summary_card.dart';
+import '../widgets/recent_hires_card.dart';
+import '../widgets/stat_card.dart';
+
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  late final DashboardController _controller = DashboardController();
+
+  void _onSidebarTap(BuildContext context, String label) {
+    _controller.setActiveNav(label);
+
+    switch (label) {
+      case 'Dashboard':
+        break;
+      case 'Employees':
+        Navigator.pushNamed(context, AppRoutes.employees);
+        break;
+      case 'Recruitment':
+        Navigator.pushNamed(context, AppRoutes.recruitment);
+        break;
+      case 'Attendance':
+        Navigator.pushNamed(context, AppRoutes.attendance);
+        break;
+      case 'Leave Management':
+        Navigator.pushNamed(context, AppRoutes.leave);
+        break;
+      case 'Payroll':
+        Navigator.pushNamed(context, AppRoutes.payroll);
+        break;
+      case 'Performance':
+        Navigator.pushNamed(context, AppRoutes.performance);
+        break;
+      case 'Training':
+        Navigator.pushNamed(context, AppRoutes.training);
+        break;
+      case 'Reports':
+        Navigator.pushNamed(context, AppRoutes.reports);
+        break;
+      case 'Settings':
+        Navigator.pushNamed(context, AppRoutes.settings);
+        break;
+      case 'Assets':
+      case 'Documents':
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$label — coming soon')),
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(_controller.refreshFromApi());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: ListenableBuilder(
+        listenable: _controller,
+        builder: (context, _) {
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              if (ResponsiveLayout.isWide(context)) {
+                return MainLayout(
+                  sidebar: AppSidebar(
+                    items: DashboardController.navItems,
+                    activeLabel: _controller.activeNavLabel,
+                    onSelect: (l) => _onSidebarTap(context, l),
+                  ),
+                  topBar: AppTopBar(
+                    title: 'Dashboard',
+                    subtitle: _dashboardWelcomeLine(),
+                    trailingDateLabel:
+                        DateFormat.yMMMd().format(DateTime.now()),
+                  ),
+                  body: _buildScrollBody(),
+                );
+              }
+              return Scaffold(
+                backgroundColor: AppColors.bg,
+                drawer: Drawer(
+                  child: AppSidebar(
+                    items: DashboardController.navItems,
+                    activeLabel: _controller.activeNavLabel,
+                    onSelect: (l) {
+                      Navigator.pop(context);
+                      _onSidebarTap(context, l);
+                    },
+                  ),
+                ),
+                appBar: AppBar(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  title: Text(
+                    'Dashboard',
+                    style: GoogleFonts.sora(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.navy,
+                      fontSize: 18,
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.notifications_outlined,
+                        color: AppColors.navy,
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
+                body: _buildScrollBody(),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  String _dashboardWelcomeLine() {
+    final raw = LocalStorage.instance.userJson;
+    if (raw == null || raw.isEmpty) {
+      return "Here's what's happening in your organization.";
+    }
+    try {
+      final u = UserModel.fromAuthJson(jsonDecode(raw) as Map<String, dynamic>);
+      return "Welcome back, ${u.displayName}! Here's what's happening in your organization.";
+    } catch (_) {
+      return "Here's what's happening in your organization.";
+    }
+  }
+
+  Widget _buildScrollBody() {
+    final repo = _controller.repository;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildStatGrid(
+            repo.statItems.map((i) => StatCard(item: i)).toList(),
+          ),
+          const SizedBox(height: 20),
+          _buildChartsRow(),
+          const SizedBox(height: 16),
+          _buildBottomRow(),
+          const SizedBox(height: 20),
+          _buildFooter(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatGrid(List<Widget> cards) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final crossCount = constraints.maxWidth > 1000
+            ? 6
+            : (constraints.maxWidth > 600 ? 3 : 2);
+        return GridView.count(
+          crossAxisCount: crossCount,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          childAspectRatio: 1.3,
+          children: cards,
+        );
+      },
+    );
+  }
+
+  Widget _buildChartsRow() {
+    final repo = _controller.repository;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 900) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(flex: 9, child: GrowthChart(repository: repo)),
+              const SizedBox(width: 16),
+              Expanded(flex: 5, child: DeptPieChart(repository: repo)),
+              const SizedBox(width: 16),
+              Expanded(
+                flex: 5,
+                child: AttendanceDonutChart(repository: repo),
+              ),
+            ],
+          );
+        }
+        return Column(
+          children: [
+            GrowthChart(repository: repo),
+            const SizedBox(height: 16),
+            DeptPieChart(repository: repo),
+            const SizedBox(height: 16),
+            AttendanceDonutChart(repository: repo),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildBottomRow() {
+    final repo = _controller.repository;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 900) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: RecentHiresCard(hires: repo.recentHires)),
+              const SizedBox(width: 16),
+              Expanded(child: LeaveRequestsCard(requests: repo.leaveRequests)),
+              const SizedBox(width: 16),
+              Expanded(child: PayrollSummaryCard(payroll: repo.payroll)),
+            ],
+          );
+        }
+        return Column(
+          children: [
+            RecentHiresCard(hires: repo.recentHires),
+            const SizedBox(height: 16),
+            LeaveRequestsCard(requests: repo.leaveRequests),
+            const SizedBox(height: 16),
+            PayrollSummaryCard(payroll: repo.payroll),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildFooter() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            AppStrings.copyrightFooter,
+            style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.muted),
+          ),
+        ),
+        Text(
+          'Version 2.1.0',
+          style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.muted),
+        ),
+      ],
+    );
+  }
+}
