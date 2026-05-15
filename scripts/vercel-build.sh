@@ -11,9 +11,15 @@ if ! command -v flutter >/dev/null 2>&1; then
   flutter precache --web
 fi
 
+# Production web must call the API same-origin (Vercel rewrites → Render) so session/CSRF cookies work.
+# Direct cross-origin calls (Vercel app → Render host) are blocked by browser cookie rules → 403.
 if [[ -z "${API_BASE_URL:-}" ]]; then
-  echo "ERROR: Set API_BASE_URL in Vercel (e.g. https://novora-api-wf1w.onrender.com)."
-  exit 1
+  if [[ "${VERCEL:-}" == "1" ]]; then
+    API_BASE_URL="same-origin"
+  else
+    echo "ERROR: Set API_BASE_URL in Vercel to same-origin (proxied) or your Render URL for local builds."
+    exit 1
+  fi
 fi
 
 echo "API_BASE_URL=$API_BASE_URL" > .env

@@ -1,7 +1,22 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWasm, kIsWeb;
 
 import '../error/exceptions.dart';
 import 'api_client.dart';
+
+const bool _compileTimeClassicWeb = bool.fromEnvironment('dart.library.html');
+
+bool _isBrowserTarget() => kIsWeb || kIsWasm || _compileTimeClassicWeb;
+
+bool _webApiHostDiffersFromPage() {
+  final base = ApiClient.baseUrl;
+  if (base.isEmpty || base == '/' || base == 'same-origin') return false;
+  final api = Uri.tryParse(base);
+  if (api == null || !api.hasScheme || api.host.isEmpty) return false;
+  final pageHost = Uri.base.host;
+  if (pageHost.isEmpty) return false;
+  return api.host != pageHost;
+}
 
 bool _looksLikeConnectionFailure(DioException e) {
   if (e.type == DioExceptionType.connectionError ||
@@ -41,10 +56,13 @@ ApiException apiExceptionFromDio(DioException e) {
   final response = e.response;
   final status = response?.statusCode;
   if (status == 403) {
+    final crossOrigin = _isBrowserTarget() && _webApiHostDiffersFromPage();
     return ApiException(
-      'Request blocked (403). Usually missing or invalid CSRF/session cookies. '
-      'Use the same host in the browser and in API_BASE_URL (e.g. both localhost). '
-      'Hard-refresh or clear site cookies, then sign in again.',
+      crossOrigin
+          ? 'Request blocked (403). The app and API are on different sites, so login cookies '
+              'cannot be sent. Production must use API_BASE_URL=same-origin with Vercel API rewrites.'
+          : 'Request blocked (403). Missing or invalid CSRF/session cookies. '
+              'Hard-refresh, clear cookies for this site, then sign in again.',
       status,
     );
   }
