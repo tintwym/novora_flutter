@@ -362,60 +362,50 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
           ),
           const SizedBox(height: 16),
           _whiteCard(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                const checkW = 44.0;
-                final dataColumns = HrFullWidthDataTable.buildColumns(
-                  tableWidth: constraints.maxWidth - checkW - 8,
-                  specs: const [
-                    ('Employee', 1.6),
-                    ('Department', 1.1),
-                    ('Leave type', 1.5),
-                    ('Entitlement', 0.9),
-                    ('Attached?', 0.8),
-                    ('Activation', 0.9),
-                    ('', 0.8),
-                  ],
-                  columnSpacing: 8,
-                  horizontalMargin: 12,
-                );
-                return HrFullWidthDataTable(
-                  headingRowColor: const Color(0xFFF5F0E8),
-                  dataRowMinHeight: 52,
-                  dataRowMaxHeight: 72,
-                  columnSpacing: 8,
-                  horizontalMargin: 12,
-                  columns: [
-                    DataColumn(
-                      label: SizedBox(
-                        width: checkW,
-                        child: Checkbox(
-                          value: _attachSelectAll,
-                          tristate: true,
-                          onChanged: (v) {
-                            setState(() {
-                              _attachmentSelected.clear();
-                              if (v == true) {
-                                for (var i = 0; i < _attachmentRowCount; i++) {
-                                  _attachmentSelected.add(i);
-                                }
-                              }
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    ...dataColumns,
-                  ],
-                  rows: [
-                    _attachRow(0, 'SL', 'Sarah Lim', 'Engineering', 'Maternity leave', const Color(0xFFEC4899), '60 days', false, true),
-                    _attachRow(1, 'RK', 'Raj Kumar', 'Engineering', 'Annual leave', const Color(0xFF2563EB), '16 days', true, false),
-                    _attachRow(2, 'MT', 'Maya Tan', 'HR', 'Replacement leave', const Color(0xFF7C3AED), '2 days', false, true),
-                    _attachRow(3, 'AL', 'Ahmad L', 'Operations', 'Medical leave', const Color(0xFF0D9488), '14 days', true, false),
-                    _attachRow(4, 'NC', 'Nadia Chen', 'Marketing', 'Maternity leave', const Color(0xFFEC4899), '60 days', false, true),
-                  ],
-                );
-              },
+            child: HrFullWidthDataTable(
+              headingRowColor: const Color(0xFFF5F0E8),
+              dataRowMinHeight: 52,
+              dataRowMaxHeight: 72,
+              columnSpecs: const [
+                ('', 0.35),
+                ('Employee', 1.6),
+                ('Department', 1.1),
+                ('Leave type', 1.5),
+                ('Entitlement', 0.9),
+                ('Attached?', 0.8),
+                ('Activation', 0.9),
+                ('', 0.8),
+              ],
+              headerCells: [
+                Checkbox(
+                  value: _attachSelectAll,
+                  tristate: true,
+                  onChanged: (v) {
+                    setState(() {
+                      _attachmentSelected.clear();
+                      if (v == true) {
+                        for (var i = 0; i < _attachmentRowCount; i++) {
+                          _attachmentSelected.add(i);
+                        }
+                      }
+                    });
+                  },
+                ),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+              ],
+              rows: [
+                _attachRow(0, 'SL', 'Sarah Lim', 'Engineering', 'Maternity leave', const Color(0xFFEC4899), '60 days', false, true),
+                _attachRow(1, 'RK', 'Raj Kumar', 'Engineering', 'Annual leave', const Color(0xFF2563EB), '16 days', true, false),
+                _attachRow(2, 'MT', 'Maya Tan', 'HR', 'Replacement leave', const Color(0xFF7C3AED), '2 days', false, true),
+                _attachRow(3, 'AL', 'Ahmad L', 'Operations', 'Medical leave', const Color(0xFF0D9488), '14 days', true, false),
+                _attachRow(4, 'NC', 'Nadia Chen', 'Marketing', 'Maternity leave', const Color(0xFFEC4899), '60 days', false, true),
+              ],
             ),
           ),
         ],
@@ -701,8 +691,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
           const SizedBox(height: 16),
           _whiteCard(
             child: HrFullWidthDataTable(
-              columnSpacing: 6,
-              horizontalMargin: 8,
+              cellHorizontalPadding: 8,
               columnSpecs: const [
                 ('Employee', 1.5),
                 ('Leave type', 0.9),

@@ -324,8 +324,7 @@ class _AllowanceBodyState extends State<_AllowanceBody> {
           const SizedBox(height: 16),
           _whiteCard(
             child: HrFullWidthDataTable(
-              columnSpacing: 6,
-              horizontalMargin: 8,
+              cellHorizontalPadding: 8,
               columnSpecs: const [
                 ('Allowance name', 2.0),
                 ('Policy type', 1.0),
@@ -698,8 +697,7 @@ class _DepositBodyState extends State<_DepositBody> {
           const SizedBox(height: 12),
           _whiteCard(
             child: HrFullWidthDataTable(
-              columnSpacing: 6,
-              horizontalMargin: 8,
+              cellHorizontalPadding: 8,
               columnSpecs: const [
                 ('Deposit type', 1.6),
                 ('Code', 0.6),
