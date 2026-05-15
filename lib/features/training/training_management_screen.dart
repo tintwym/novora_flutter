@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../shared/widgets/hr_full_width_data_table.dart';
 import '../../shared/widgets/hr_module_header.dart';
 
 /// Training Management — mock-aligned tabs and tables.
@@ -161,26 +162,23 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
           ),
           const SizedBox(height: 16),
           _tableCard(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(const Color(0xFFF5F0E8)),
-                columns: const [
-                  DataColumn(label: Text('No.')),
-                  DataColumn(label: Text('Training type name')),
-                  DataColumn(label: Text('Description')),
-                  DataColumn(label: Text('Courses')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Actions')),
-                ],
-                rows: [
-                  _typeRow(1, 'Management', 'Leadership, strategy & people ma...', '8', 'Active', true),
-                  _typeRow(2, 'Technical', 'IT, engineering & systems training', '12', 'Active', true),
-                  _typeRow(3, 'Compliance', 'Regulatory, safety & legal require...', '5', 'Active', true),
-                  _typeRow(4, 'Soft skills', 'Communication, teamwork & pre...', '6', 'Active', true),
-                  _typeRow(5, 'Onboarding', 'New employee orientation progra...', '3', 'Draft', false),
-                ],
-              ),
+            child: HrFullWidthDataTable(
+              headingRowColor: const Color(0xFFF5F0E8),
+              columnSpecs: const [
+                ('No.', 0.5),
+                ('Training type name', 1.5),
+                ('Description', 3.0),
+                ('Courses', 0.7),
+                ('Status', 0.9),
+                ('Actions', 0.7),
+              ],
+              rows: [
+                _typeRow(1, 'Management', 'Leadership, strategy & people ma...', '8', 'Active', true),
+                _typeRow(2, 'Technical', 'IT, engineering & systems training', '12', 'Active', true),
+                _typeRow(3, 'Compliance', 'Regulatory, safety & legal require...', '5', 'Active', true),
+                _typeRow(4, 'Soft skills', 'Communication, teamwork & pre...', '6', 'Active', true),
+                _typeRow(5, 'Onboarding', 'New employee orientation progra...', '3', 'Draft', false),
+              ],
             ),
           ),
         ],
@@ -193,7 +191,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
       cells: [
         DataCell(Text('$no')),
         DataCell(Text(name, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700))),
-        DataCell(SizedBox(width: 260, child: Text(desc, maxLines: 1, overflow: TextOverflow.ellipsis))),
+        DataCell(Text(desc, maxLines: 1, overflow: TextOverflow.ellipsis)),
         DataCell(Text(courses)),
         DataCell(_pill(status, active ? const Color(0xFFD1FAE5) : const Color(0xFFFEF3C7), active ? const Color(0xFF065F46) : const Color(0xFF92400E))),
         DataCell(TextButton(onPressed: () => _toast('Edit $name'), child: const Text('Edit'))),

@@ -78,40 +78,49 @@ class AppTopBar extends StatelessWidget {
           ),
           const Spacer(),
           if (showSearch)
-            Container(
-              width: 240,
-              height: 38,
-              decoration: BoxDecoration(
-                color: AppColors.bg,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.border, width: 1.5),
-              ),
-              child: Row(
-                children: [
-                  const SizedBox(width: 12),
-                  const Icon(
+            SizedBox(
+              width: 280,
+              height: 40,
+              child: TextField(
+                style: GoogleFonts.dmSans(
+                  fontSize: 13,
+                  color: AppColors.navy,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Search employees, modules...',
+                  hintStyle: GoogleFonts.dmSans(
+                    fontSize: 13,
+                    color: AppColors.muted,
+                  ),
+                  prefixIcon: const Icon(
                     Icons.search_rounded,
                     color: AppColors.muted,
-                    size: 18,
+                    size: 20,
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      style: GoogleFonts.dmSans(
-                        fontSize: 13,
-                        color: AppColors.navy,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'Search employees, modules...',
-                        hintStyle: GoogleFonts.dmSans(
-                          fontSize: 13,
-                          color: AppColors.muted,
-                        ),
-                        border: InputBorder.none,
-                      ),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 40,
+                    minHeight: 40,
+                  ),
+                  filled: true,
+                  fillColor: AppColors.bg,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(
+                      color: AppColors.primary,
+                      width: 1.5,
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           const SizedBox(width: 12),

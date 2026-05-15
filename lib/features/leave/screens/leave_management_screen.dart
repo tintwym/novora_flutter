@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 
 /// Leave Management — mock-aligned tabs (Leave type … Employee leave profile).
@@ -188,31 +189,25 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
           ),
           const SizedBox(height: 16),
           _whiteCard(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(AppColors.bg),
-                dataRowMinHeight: 52,
-                dataRowMaxHeight: 72,
-                columns: const [
-                  DataColumn(label: Text('Leave type name')),
-                  DataColumn(label: Text('Paid?')),
-                  DataColumn(label: Text('Deduction rate')),
-                  DataColumn(label: Text('Hour based')),
-                  DataColumn(label: Text('Attachment req.')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Actions')),
-                ],
-                rows: [
-                  _typeRow('Annual leave', const Color(0xFF2563EB), true, 'No deduct...', false, false),
-                  _typeRow('Medical leave', const Color(0xFF059669), true, 'No deduct...', false, true),
-                  _typeRow('Emergency leave', const Color(0xFFEA580C), true, 'No deduct...', false, false),
-                  _typeRow('Unpaid leave', const Color(0xFFEF4444), false, 'Normal rate', false, false),
-                  _typeRow('Replacement leave', const Color(0xFF7C3AED), true, 'No deduct...', false, false),
-                  _typeRow('Maternity leave', const Color(0xFFEC4899), true, 'No deduct...', false, true),
-                  _typeRow('Hour leave', const Color(0xFF0D9488), true, 'No deduct...', true, false),
-                ],
-              ),
+            child: HrFullWidthDataTable(
+              columnSpecs: const [
+                ('Leave type name', 2.4),
+                ('Paid?', 0.8),
+                ('Deduction rate', 1.2),
+                ('Hour based', 0.9),
+                ('Attachment req.', 1.1),
+                ('Status', 0.9),
+                ('Actions', 1.3),
+              ],
+              rows: [
+                _typeRow('Annual leave', const Color(0xFF2563EB), true, 'No deduct...', false, false),
+                _typeRow('Medical leave', const Color(0xFF059669), true, 'No deduct...', false, true),
+                _typeRow('Emergency leave', const Color(0xFFEA580C), true, 'No deduct...', false, false),
+                _typeRow('Unpaid leave', const Color(0xFFEF4444), false, 'Normal rate', false, false),
+                _typeRow('Replacement leave', const Color(0xFF7C3AED), true, 'No deduct...', false, false),
+                _typeRow('Maternity leave', const Color(0xFFEC4899), true, 'No deduct...', false, true),
+                _typeRow('Hour leave', const Color(0xFF0D9488), true, 'No deduct...', true, false),
+              ],
             ),
           ),
         ],

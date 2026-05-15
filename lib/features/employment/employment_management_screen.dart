@@ -185,7 +185,7 @@ class _EmploymentManagementScreenState extends State<EmploymentManagementScreen>
       padding: const EdgeInsets.all(20),
       child: HrDataTableCard(
         searchHint: 'Search employee...',
-        actionLabel: '+ Add employee',
+        actionLabel: 'Add employee',
         onAction: () => Navigator.of(context, rootNavigator: true).pushNamed(AppRoutes.employeeWizard),
         columns: const [
           DataColumn(label: Text('Employee No.')),

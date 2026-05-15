@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 
 /// Payroll Management — mock-aligned primary tabs + pill sub-navigation.
@@ -322,27 +323,25 @@ class _AllowanceBodyState extends State<_AllowanceBody> {
           ),
           const SizedBox(height: 16),
           _whiteCard(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(AppColors.bg),
-                columns: const [
-                  DataColumn(label: Text('Allowance name')),
-                  DataColumn(label: Text('Policy type')),
-                  DataColumn(label: Text('Amount (MYR)')),
-                  DataColumn(label: Text('Deduction amt')),
-                  DataColumn(label: Text('Taxable')),
-                  DataColumn(label: Text('On payslip')),
-                  DataColumn(label: Text('Attach emp.')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Action')),
-                ],
-                rows: [
-                  _allowRow('Transport allowance', 'Transport', const Color(0xFFDBEAFE), const Color(0xFF1E40AF), '300.00', '—', false, true, false),
-                  _allowRow('Meal allowance', 'Meal', const Color(0xFFFFEDD5), const Color(0xFFC2410C), '200.00', '10.00/day', false, true, false),
-                  _allowRow('Phone allowance', 'Normal', const Color(0xFFEDE9FE), const Color(0xFF5B21B6), '150.00', '—', true, true, true),
-                ],
-              ),
+            child: HrFullWidthDataTable(
+              columnSpacing: 6,
+              horizontalMargin: 8,
+              columnSpecs: const [
+                ('Allowance name', 2.0),
+                ('Policy type', 1.0),
+                ('Amount (MYR)', 1.0),
+                ('Deduction amt', 1.0),
+                ('Taxable', 0.75),
+                ('On payslip', 0.85),
+                ('Attach emp.', 0.85),
+                ('Status', 0.75),
+                ('Action', 0.7),
+              ],
+              rows: [
+                _allowRow(context, 'Transport allowance', 'Transport', const Color(0xFFDBEAFE), const Color(0xFF1E40AF), '300.00', '—', false, true, false),
+                _allowRow(context, 'Meal allowance', 'Meal', const Color(0xFFFFEDD5), const Color(0xFFC2410C), '200.00', '10.00/day', false, true, false),
+                _allowRow(context, 'Phone allowance', 'Normal', const Color(0xFFEDE9FE), const Color(0xFF5B21B6), '150.00', '—', true, true, true),
+              ],
             ),
           ),
         ],
@@ -351,6 +350,7 @@ class _AllowanceBodyState extends State<_AllowanceBody> {
   }
 
   DataRow _allowRow(
+    BuildContext context,
     String name,
     String pol,
     Color polBg,
@@ -363,7 +363,14 @@ class _AllowanceBodyState extends State<_AllowanceBody> {
   ) {
     return DataRow(
       cells: [
-        DataCell(Text(name, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600))),
+        DataCell(
+          Text(
+            name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600),
+          ),
+        ),
         DataCell(_pill(pol, polBg, polFg)),
         DataCell(Text(amt)),
         DataCell(Text(ded)),
