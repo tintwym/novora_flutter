@@ -7,7 +7,8 @@ import '../../core/constants/app_colors.dart';
 class HrFullWidthDataTable extends StatelessWidget {
   const HrFullWidthDataTable({
     super.key,
-    required this.columnSpecs,
+    this.columnSpecs,
+    this.columns,
     required this.rows,
     this.dataRowMinHeight = 48,
     this.dataRowMaxHeight = 64,
@@ -16,7 +17,9 @@ class HrFullWidthDataTable extends StatelessWidget {
     this.headingRowColor,
   });
 
-  final List<(String label, double flex)> columnSpecs;
+  /// Provide [columnSpecs] or pre-built [columns] (e.g. checkbox column).
+  final List<(String label, double flex)>? columnSpecs;
+  final List<DataColumn>? columns;
   final List<DataRow> rows;
   final double dataRowMinHeight;
   final double dataRowMaxHeight;
@@ -29,26 +32,30 @@ class HrFullWidthDataTable extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final tableWidth = constraints.maxWidth;
-        final columns = _columnsForWidth(
-          tableWidth: tableWidth,
-          specs: columnSpecs,
-          columnSpacing: columnSpacing,
-          horizontalMargin: horizontalMargin,
-        );
+        final specs = columnSpecs;
+        final resolvedColumns = columns ??
+            (specs == null
+                ? const <DataColumn>[]
+                : buildColumns(
+                    tableWidth: tableWidth,
+                    specs: specs,
+                    columnSpacing: columnSpacing,
+                    horizontalMargin: horizontalMargin,
+                  ));
         return DataTable(
           headingRowColor: WidgetStateProperty.all(headingRowColor ?? AppColors.bg),
           dataRowMinHeight: dataRowMinHeight,
           dataRowMaxHeight: dataRowMaxHeight,
           columnSpacing: columnSpacing,
           horizontalMargin: horizontalMargin,
-          columns: columns,
+          columns: resolvedColumns,
           rows: rows,
         );
       },
     );
   }
 
-  static List<DataColumn> _columnsForWidth({
+  static List<DataColumn> buildColumns({
     required double tableWidth,
     required List<(String label, double flex)> specs,
     required double columnSpacing,
