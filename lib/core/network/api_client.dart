@@ -89,9 +89,10 @@ abstract final class ApiClient {
 
   static String get baseUrl {
     const fromDefine = String.fromEnvironment('API_BASE_URL');
-    final fromEnv = fromDefine.isNotEmpty
+    final rawEnv = fromDefine.isNotEmpty
         ? fromDefine.trim()
         : dotenv.env['API_BASE_URL']?.trim();
+    final fromEnv = (rawEnv == null || rawEnv.isEmpty) ? null : rawEnv;
     final String resolved;
     // Same-origin API: Vercel rewrites `/api` + `/auth` → Render. Web needs an absolute origin (not "").
     if (fromEnv == '/' || fromEnv == 'same-origin') {

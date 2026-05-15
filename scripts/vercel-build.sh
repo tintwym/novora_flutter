@@ -17,12 +17,15 @@ if [[ -z "${API_BASE_URL:-}" ]]; then
   if [[ "${VERCEL:-}" == "1" ]]; then
     API_BASE_URL="same-origin"
   else
-    echo "ERROR: Set API_BASE_URL in Vercel to same-origin (proxied) or your Render URL for local builds."
-    exit 1
+    API_BASE_URL="${API_BASE_URL:-http://localhost:8080}"
+    echo "Local build: using API_BASE_URL=$API_BASE_URL (pass API_BASE_URL=same-origin to mimic Vercel)"
   fi
 fi
 
-echo "API_BASE_URL=$API_BASE_URL" > .env
+# Only write .env on Vercel — never clobber a developer's local .env.
+if [[ "${VERCEL:-}" == "1" ]]; then
+  echo "API_BASE_URL=$API_BASE_URL" > .env
+fi
 flutter pub get
 # dart-define survives web release even if the .env asset fails to load in the browser.
 flutter build web --release --dart-define=API_BASE_URL="$API_BASE_URL"

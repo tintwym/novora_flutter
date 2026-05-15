@@ -78,15 +78,7 @@ class HrFullWidthDataTable extends StatelessWidget {
               ),
               ...rows.map(
                 (row) => TableRow(
-                  children: row.cells
-                      .map(
-                        (c) => _tableCell(
-                          c.child,
-                          minHeight: dataRowMinHeight,
-                          maxHeight: dataRowMaxHeight,
-                        ),
-                      )
-                      .toList(),
+                  children: _cellsForRow(row, flexes.length),
                 ),
               ),
             ],
@@ -94,6 +86,26 @@ class HrFullWidthDataTable extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<Widget> _cellsForRow(DataRow row, int columnCount) {
+    final widgets = row.cells.map((c) => c.child).toList();
+    if (widgets.length < columnCount) {
+      widgets.addAll(
+        List.filled(columnCount - widgets.length, const SizedBox.shrink()),
+      );
+    } else if (widgets.length > columnCount) {
+      widgets.removeRange(columnCount, widgets.length);
+    }
+    return widgets
+        .map(
+          (w) => _tableCell(
+            w,
+            minHeight: dataRowMinHeight,
+            maxHeight: dataRowMaxHeight,
+          ),
+        )
+        .toList();
   }
 
   List<double> _resolveFlexes() {
