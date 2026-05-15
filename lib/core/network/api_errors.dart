@@ -53,9 +53,8 @@ String _cannotReachApiMessage() {
   return 'Cannot reach the API ($target). '
     'Start a backend on that host/port, then retry. '
     'Quick options from repo root: '
-    './scripts/run-backend-local.sh (H2, no Docker) '
-    'or ./scripts/run-api-docker.sh (Postgres + API in Docker). '
-    'Neon: cd novora_backend && ./mvnw spring-boot:run with DB_* in novora_backend/.env. '
+    './scripts/run-backend-local.sh (H2, local) '
+    'or cd novora_backend && ./mvnw spring-boot:run with DB_* in .env (Neon). '
     'Override URL in novora_flutter/.env as API_BASE_URL=… '
     '(use http://localhost:PORT for Flutter web on localhost).';
 }
