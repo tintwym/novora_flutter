@@ -16,6 +16,8 @@ class HrFullWidthDataTable extends StatelessWidget {
     this.dataRowMaxHeight = 64,
     this.cellHorizontalPadding = 12,
     this.headingRowColor,
+    this.intrinsicColumnIndexes,
+    this.edgeToEdge = false,
   });
 
   /// Column labels and flex weights (e.g. `('Name', 2.0)`).
@@ -36,6 +38,12 @@ class HrFullWidthDataTable extends StatelessWidget {
   final double cellHorizontalPadding;
   final Color? headingRowColor;
 
+  /// Columns sized to content; remaining width goes to flex columns.
+  final Set<int>? intrinsicColumnIndexes;
+
+  /// No outer horizontal inset (use inside a card with zero horizontal padding).
+  final bool edgeToEdge;
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -49,9 +57,15 @@ class HrFullWidthDataTable extends StatelessWidget {
         final headers = _resolveHeaders(flexes.length);
         if (flexes.isEmpty) return const SizedBox.shrink();
 
-        final colWidths = {
-          for (var i = 0; i < flexes.length; i++) i: FlexColumnWidth(flexes[i]),
+        final intrinsic = intrinsicColumnIndexes ?? const {};
+        final colWidths = <int, TableColumnWidth>{
+          for (var i = 0; i < flexes.length; i++)
+            i: intrinsic.contains(i)
+                ? const IntrinsicColumnWidth()
+                : FlexColumnWidth(flexes[i]),
         };
+
+        final hPad = edgeToEdge ? 0.0 : cellHorizontalPadding;
 
         return SizedBox(
           width: tableWidth,
@@ -72,13 +86,14 @@ class HrFullWidthDataTable extends StatelessWidget {
                         h,
                         minHeight: dataRowMinHeight,
                         isHeader: true,
+                        horizontalPadding: hPad,
                       ),
                     )
                     .toList(),
               ),
               ...rows.map(
                 (row) => TableRow(
-                  children: _cellsForRow(row, flexes.length),
+                  children: _cellsForRow(row, flexes.length, hPad),
                 ),
               ),
             ],
@@ -88,7 +103,7 @@ class HrFullWidthDataTable extends StatelessWidget {
     );
   }
 
-  List<Widget> _cellsForRow(DataRow row, int columnCount) {
+  List<Widget> _cellsForRow(DataRow row, int columnCount, double horizontalPadding) {
     final widgets = row.cells.map((c) => c.child).toList();
     if (widgets.length < columnCount) {
       widgets.addAll(
@@ -103,6 +118,7 @@ class HrFullWidthDataTable extends StatelessWidget {
             w,
             minHeight: dataRowMinHeight,
             maxHeight: dataRowMaxHeight,
+            horizontalPadding: horizontalPadding,
           ),
         )
         .toList();
@@ -166,20 +182,27 @@ class HrFullWidthDataTable extends StatelessWidget {
     required double minHeight,
     double? maxHeight,
     bool isHeader = false,
+    required double horizontalPadding,
   }) {
+    final edgePad = edgeToEdge ? 16.0 : horizontalPadding;
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: cellHorizontalPadding,
-        vertical: isHeader ? 12 : 10,
+      padding: EdgeInsets.fromLTRB(
+        edgePad,
+        isHeader ? 12 : 10,
+        edgePad,
+        isHeader ? 12 : 10,
       ),
       child: ConstrainedBox(
         constraints: BoxConstraints(
           minHeight: minHeight,
           maxHeight: maxHeight ?? double.infinity,
         ),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: child,
+        child: SizedBox(
+          width: double.infinity,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: child,
+          ),
         ),
       ),
     );

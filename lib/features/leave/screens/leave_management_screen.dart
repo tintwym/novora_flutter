@@ -189,24 +189,27 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
           ),
           const SizedBox(height: 16),
           _whiteCard(
+            padding: EdgeInsets.zero,
             child: HrFullWidthDataTable(
+              edgeToEdge: true,
+              intrinsicColumnIndexes: const {1, 3, 4, 5},
               columnSpecs: const [
-                ('Leave type name', 2.4),
-                ('Paid?', 0.8),
-                ('Deduction rate', 1.2),
-                ('Hour based', 0.9),
-                ('Attachment req.', 1.1),
-                ('Status', 0.9),
-                ('Actions', 1.3),
+                ('Leave type name', 3.0),
+                ('Paid?', 0.5),
+                ('Deduction rate', 2.0),
+                ('Hour based', 0.5),
+                ('Attachment req.', 1.0),
+                ('Status', 0.5),
+                ('Actions', 1.2),
               ],
               rows: [
-                _typeRow('Annual leave', const Color(0xFF2563EB), true, 'No deduct...', false, false),
-                _typeRow('Medical leave', const Color(0xFF059669), true, 'No deduct...', false, true),
-                _typeRow('Emergency leave', const Color(0xFFEA580C), true, 'No deduct...', false, false),
+                _typeRow('Annual leave', const Color(0xFF2563EB), true, 'No deduction', false, false),
+                _typeRow('Medical leave', const Color(0xFF059669), true, 'No deduction', false, true),
+                _typeRow('Emergency leave', const Color(0xFFEA580C), true, 'No deduction', false, false),
                 _typeRow('Unpaid leave', const Color(0xFFEF4444), false, 'Normal rate', false, false),
-                _typeRow('Replacement leave', const Color(0xFF7C3AED), true, 'No deduct...', false, false),
-                _typeRow('Maternity leave', const Color(0xFFEC4899), true, 'No deduct...', false, true),
-                _typeRow('Hour leave', const Color(0xFF0D9488), true, 'No deduct...', true, false),
+                _typeRow('Replacement leave', const Color(0xFF7C3AED), true, 'No deduction', false, false),
+                _typeRow('Maternity leave', const Color(0xFFEC4899), true, 'No deduction', false, true),
+                _typeRow('Hour leave', const Color(0xFF0D9488), true, 'No deduction', true, false),
               ],
             ),
           ),
@@ -223,7 +226,13 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
             children: [
               Container(width: 10, height: 10, decoration: BoxDecoration(color: dot, shape: BoxShape.circle)),
               const SizedBox(width: 10),
-              Text(name, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
+              Expanded(
+                child: Text(
+                  name,
+                  style: GoogleFonts.dmSans(fontWeight: FontWeight.w600),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
         ),
@@ -990,9 +999,9 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
     );
   }
 
-  Widget _whiteCard({required Widget child}) {
+  Widget _whiteCard({required Widget child, EdgeInsetsGeometry? padding}) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: padding ?? const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
