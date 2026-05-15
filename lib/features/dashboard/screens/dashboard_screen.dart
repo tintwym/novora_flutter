@@ -335,6 +335,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildBottomRow() {
     final repo = _controller.repository;
+    final isEmployee = _currentUser()?.isEmployee ?? repo.isEmployeeView;
+
+    if (isEmployee) {
+      return LeaveRequestsCard(
+        title: 'My leave requests',
+        emptyMessage: 'You have not submitted any leave requests yet.',
+        requests: repo.leaveRequests,
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 900) {

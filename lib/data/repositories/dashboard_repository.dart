@@ -12,6 +12,8 @@ class DashboardRepository {
     : _service = service ?? DashboardService();
   final DashboardService _service;
 
+  bool get isEmployeeView => _service.isEmployeeView;
+
   List<DashboardStatItem> get statItems => _service.fetchStatItems();
   List<RecentHireModel> get recentHires => _service.fetchRecentHires();
   List<LeaveRequestModel> get leaveRequests => _service.fetchLeaveRequests();

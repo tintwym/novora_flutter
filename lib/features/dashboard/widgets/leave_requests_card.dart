@@ -6,9 +6,16 @@ import '../../../data/models/leave_model.dart';
 import '../../../shared/widgets/status_badge.dart';
 
 class LeaveRequestsCard extends StatelessWidget {
-  const LeaveRequestsCard({super.key, required this.requests});
+  const LeaveRequestsCard({
+    super.key,
+    required this.requests,
+    this.title = 'Leave Requests',
+    this.emptyMessage = 'No leave requests yet.',
+  });
 
   final List<LeaveRequestModel> requests;
+  final String title;
+  final String emptyMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,7 @@ class LeaveRequestsCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Leave Requests',
+                title,
                 style: GoogleFonts.dmSans(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
@@ -51,6 +58,15 @@ class LeaveRequestsCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
+          if (requests.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Text(
+                emptyMessage,
+                style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.muted),
+              ),
+            )
+          else
           ...requests.asMap().entries.map((e) {
             final r = e.value;
             final isLast = e.key == requests.length - 1;

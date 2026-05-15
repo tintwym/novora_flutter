@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,8 @@ import 'package:intl/intl.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_endpoints.dart';
 import '../../core/network/api_client.dart';
+import '../../core/storage/local_storage.dart';
+import '../models/user_model.dart';
 import '../models/attendance_model.dart';
 import '../models/department_slice_model.dart';
 import '../models/employee_model.dart';
@@ -42,8 +46,10 @@ class _Live {
     required this.growthSpots,
     required this.monthLabels,
     required this.departments,
+    this.employeeView = false,
   });
 
+  final bool employeeView;
   final List<DashboardStatItem> statItems;
   final List<RecentHireModel> recentHires;
   final List<LeaveRequestModel> leaveRequests;
@@ -67,38 +73,100 @@ class DashboardService {
     _live = null;
   }
 
+  static UserModel? _storedUser() {
+    final raw = LocalStorage.instance.userJson;
+    if (raw == null || raw.isEmpty) return null;
+    try {
+      return UserModel.fromAuthJson(jsonDecode(raw) as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
+
   static Future<void> refreshFromApi() async {
     try {
       final dio = ApiClient.dio;
-      final summary = await _getJson(dio, AppEndpoints.dashboardSummary);
-      final growth = await _getJson(dio, AppEndpoints.dashboardGrowth);
-      final hires = await _getJson(dio, AppEndpoints.dashboardRecentHires);
-      final leaves = await _getJson(dio, AppEndpoints.dashboardLeaveRequests);
-      final payroll = await _getJson(dio, AppEndpoints.dashboardPayrollSummary);
-      final depts = await _getJson(dio, AppEndpoints.dashboardDepartments);
-      final att = await _getJson(dio, AppEndpoints.dashboardAttendanceOverview);
-      final attParsed = _parseAttendanceSlicesAndRate(att);
-      final attSlices = attParsed?.slices ?? _mockAttendance();
-      final attRate = attParsed?.rate ?? _mockAttendanceCenterRate();
-
-      _live = _Live(
-        statItems: _parseKpis(summary) ?? _mockStatItems(),
-        recentHires: _parseHires(hires) ?? _mockHires(),
-        leaveRequests: _parseLeaves(leaves) ?? _mockLeaves(),
-        payroll: _parsePayroll(payroll) ?? _mockPayroll(),
-        attendanceSlices: attSlices,
-        attendanceRatePercent: attRate,
-        growthSpots: _parseGrowth(growth) ?? _defaultGrowthSpots,
-        monthLabels: _parseGrowthLabels(growth) ?? _defaultGrowthLabels,
-        departments: () {
-          final d = _parseDepartments(depts);
-          return d.isEmpty ? _mockDepartments() : d;
-        }(),
-      );
+      final user = _storedUser();
+      if (user?.isEmployee == true) {
+        await _refreshEmployeeDashboard(dio);
+      } else {
+        await _refreshAdminDashboard(dio);
+      }
     } catch (_) {
       _live = null;
     }
   }
+
+  static Future<void> _refreshAdminDashboard(Dio dio) async {
+    final summary = await _getJson(dio, AppEndpoints.dashboardSummary);
+    final growth = await _getJson(dio, AppEndpoints.dashboardGrowth);
+    final hires = await _getJson(dio, AppEndpoints.dashboardRecentHires);
+    final leaves = await _getJson(dio, AppEndpoints.dashboardLeaveRequests);
+    final payroll = await _getJson(dio, AppEndpoints.dashboardPayrollSummary);
+    final depts = await _getJson(dio, AppEndpoints.dashboardDepartments);
+    final att = await _getJson(dio, AppEndpoints.dashboardAttendanceOverview);
+    final attParsed = _parseAttendanceSlicesAndRate(att);
+    final attSlices = attParsed?.slices ?? _mockAttendance();
+    final attRate = attParsed?.rate ?? _mockAttendanceCenterRate();
+
+    _live = _Live(
+      statItems: _parseKpis(summary) ?? _mockStatItems(),
+      recentHires: _parseHires(hires) ?? _mockHires(),
+      leaveRequests: _parseLeaves(leaves) ?? _mockLeaves(),
+      payroll: _parsePayroll(payroll) ?? _mockPayroll(),
+      attendanceSlices: attSlices,
+      attendanceRatePercent: attRate,
+      growthSpots: _parseGrowth(growth) ?? _defaultGrowthSpots,
+      monthLabels: _parseGrowthLabels(growth) ?? _defaultGrowthLabels,
+      departments: () {
+        final d = _parseDepartments(depts);
+        return d.isEmpty ? _mockDepartments() : d;
+      }(),
+    );
+  }
+
+  /// EMPLOYEE role cannot call `/api/v1/admin/dashboard/*` (403). Use bundled my-dashboard.
+  static Future<void> _refreshEmployeeDashboard(Dio dio) async {
+    final data = await _getJson(dio, AppEndpoints.myDashboard);
+    if (data is! Map<String, dynamic>) {
+      _live = _employeeFallbackLive();
+      return;
+    }
+
+    final att = data['attendanceOverview'];
+    final attParsed = _parseAttendanceSlicesAndRate(att);
+    final attSlices = attParsed?.slices ?? _mockAttendance();
+    final attRate = attParsed?.rate ?? _mockAttendanceCenterRate();
+
+    _live = _Live(
+      employeeView: true,
+      statItems: _parseKpis({'kpis': data['kpis']}) ?? _mockEmployeeStatItems(),
+      recentHires: const [],
+      leaveRequests: _parseLeaves(data['leaveRequests']) ?? const [],
+      payroll: _parsePayroll(data['payrollSummary']) ?? _mockEmployeePayroll(),
+      attendanceSlices: attSlices,
+      attendanceRatePercent: attRate,
+      growthSpots: _parseGrowth(data['growth']) ?? _defaultGrowthSpots,
+      monthLabels: _parseGrowthLabels(data['growth']) ?? _defaultGrowthLabels,
+      departments: () {
+        final d = _parseDepartments(data['departments']);
+        return d.isEmpty ? _mockDepartments() : d;
+      }(),
+    );
+  }
+
+  static _Live _employeeFallbackLive() => _Live(
+        employeeView: true,
+        statItems: _mockEmployeeStatItems(),
+        recentHires: const [],
+        leaveRequests: const [],
+        payroll: _mockEmployeePayroll(),
+        attendanceSlices: _mockAttendance(),
+        attendanceRatePercent: _mockAttendanceCenterRate(),
+        growthSpots: _defaultGrowthSpots,
+        monthLabels: _defaultGrowthLabels,
+        departments: _mockDepartments(),
+      );
 
   static Future<dynamic> _getJson(Dio dio, String path) async {
     try {
@@ -108,16 +176,27 @@ class DashboardService {
     return null;
   }
 
-  List<DashboardStatItem> fetchStatItems() =>
-      _live?.statItems ?? _mockStatItems();
+  bool get isEmployeeView => _live?.employeeView ?? _storedUser()?.isEmployee ?? false;
 
-  List<RecentHireModel> fetchRecentHires() =>
-      _live?.recentHires ?? _mockHires();
+  List<DashboardStatItem> fetchStatItems() {
+    if (_live != null) return _live!.statItems;
+    return isEmployeeView ? _mockEmployeeStatItems() : _mockStatItems();
+  }
 
-  List<LeaveRequestModel> fetchLeaveRequests() =>
-      _live?.leaveRequests ?? _mockLeaves();
+  List<RecentHireModel> fetchRecentHires() {
+    if (_live != null) return _live!.recentHires;
+    return isEmployeeView ? const [] : _mockHires();
+  }
 
-  PayrollTotalsModel fetchPayrollSummary() => _live?.payroll ?? _mockPayroll();
+  List<LeaveRequestModel> fetchLeaveRequests() {
+    if (_live != null) return _live!.leaveRequests;
+    return isEmployeeView ? const [] : _mockLeaves();
+  }
+
+  PayrollTotalsModel fetchPayrollSummary() {
+    if (_live != null) return _live!.payroll;
+    return isEmployeeView ? _mockEmployeePayroll() : _mockPayroll();
+  }
 
   List<AttendanceSliceModel> fetchAttendanceSlices() =>
       _live?.attendanceSlices ?? _mockAttendance();
@@ -407,6 +486,41 @@ class DashboardService {
     }
     return ('${parts.first[0]}${parts.last[0]}').toUpperCase();
   }
+
+  static List<DashboardStatItem> _mockEmployeeStatItems() => const [
+    DashboardStatItem(
+      label: 'Attendance Rate',
+      value: '—',
+      change: 'This month',
+      isPositive: true,
+      icon: Icons.check_circle_outlined,
+      color: AppColors.success,
+    ),
+    DashboardStatItem(
+      label: 'Leave Requests',
+      value: '0',
+      change: '0 pending',
+      isPositive: true,
+      icon: Icons.beach_access_outlined,
+      color: AppColors.accent,
+    ),
+    DashboardStatItem(
+      label: 'Onboarding Tasks',
+      value: '0',
+      change: 'remaining',
+      isPositive: true,
+      icon: Icons.assignment_outlined,
+      color: AppColors.primary,
+    ),
+  ];
+
+  static PayrollTotalsModel _mockEmployeePayroll() => const PayrollTotalsModel(
+        totalPayroll: '—',
+        netPay: '—',
+        deductions: '—',
+        taxes: '—',
+        periodLabel: 'Not available',
+      );
 
   static List<DashboardStatItem> _mockStatItems() => const [
     DashboardStatItem(

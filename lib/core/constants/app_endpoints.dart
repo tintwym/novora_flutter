@@ -6,6 +6,9 @@ abstract final class AppEndpoints {
   static const authLogout = '/auth/logout';
   static const me = '/api/v1/me';
 
+  /// Personal dashboard for any signed-in user (including EMPLOYEE).
+  static const myDashboard = '/api/v1/my/dashboard';
+
   static const dashboardSummary = '/api/v1/admin/dashboard/summary';
   static const dashboardGrowth = '/api/v1/admin/dashboard/growth';
   static const dashboardRecentHires = '/api/v1/admin/dashboard/recent-hires';
