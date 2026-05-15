@@ -29,9 +29,14 @@ class HrFullWidthDataTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final tableWidth = constraints.maxWidth;
+    return SizedBox(
+      width: double.infinity,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final raw = constraints.maxWidth;
+          final tableWidth = raw.isFinite && raw > 0
+              ? raw
+              : MediaQuery.sizeOf(context).width;
         final specs = columnSpecs;
         final resolvedColumns = columns ??
             (specs == null
@@ -51,7 +56,8 @@ class HrFullWidthDataTable extends StatelessWidget {
           columns: resolvedColumns,
           rows: rows,
         );
-      },
+        },
+      ),
     );
   }
 
