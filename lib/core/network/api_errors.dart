@@ -8,6 +8,16 @@ const bool _compileTimeClassicWeb = bool.fromEnvironment('dart.library.html');
 
 bool _isBrowserTarget() => kIsWeb || kIsWasm || _compileTimeClassicWeb;
 
+String? _springErrorMessage(Object? data) {
+  if (data is! Map) return null;
+  final map = Map<String, dynamic>.from(data);
+  final err = map['error'];
+  if (err is String && err.isNotEmpty) return err;
+  final msg = map['message'];
+  if (msg is String && msg.isNotEmpty) return msg;
+  return null;
+}
+
 bool _webApiHostDiffersFromPage() {
   final base = ApiClient.baseUrl;
   if (base.isEmpty || base == '/' || base == 'same-origin') return false;
@@ -55,18 +65,25 @@ ApiException apiExceptionFromDio(DioException e) {
 
   final response = e.response;
   final status = response?.statusCode;
+  final data = response?.data;
   if (status == 403) {
+    final bodyMsg = _springErrorMessage(data);
+    if (bodyMsg != null &&
+        (bodyMsg.toLowerCase().contains('bad credentials') ||
+            bodyMsg.toLowerCase().contains('user not found'))) {
+      return ApiException('Invalid email or password.', status);
+    }
     final crossOrigin = _isBrowserTarget() && _webApiHostDiffersFromPage();
     return ApiException(
       crossOrigin
           ? 'Request blocked (403). The app and API are on different sites, so login cookies '
               'cannot be sent. Production must use API_BASE_URL=same-origin with Vercel API rewrites.'
-          : 'Request blocked (403). Missing or invalid CSRF/session cookies. '
-              'Hard-refresh, clear cookies for this site, then sign in again.',
+          : bodyMsg ??
+              'Request blocked (403). Missing or invalid CSRF/session cookies. '
+                  'Hard-refresh, clear cookies for this site, then sign in again.',
       status,
     );
   }
-  final data = response?.data;
   if (data is Map) {
     final map = Map<String, dynamic>.from(data);
     final msg = map['message'];
