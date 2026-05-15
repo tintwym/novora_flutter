@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 
 /// Leave Management — mock-aligned tabs (Leave type … Employee leave profile).
@@ -188,31 +189,25 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
           ),
           const SizedBox(height: 16),
           _whiteCard(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(AppColors.bg),
-                dataRowMinHeight: 52,
-                dataRowMaxHeight: 72,
-                columns: const [
-                  DataColumn(label: Text('Leave type name')),
-                  DataColumn(label: Text('Paid?')),
-                  DataColumn(label: Text('Deduction rate')),
-                  DataColumn(label: Text('Hour based')),
-                  DataColumn(label: Text('Attachment req.')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Actions')),
-                ],
-                rows: [
-                  _typeRow('Annual leave', const Color(0xFF2563EB), true, 'No deduct...', false, false),
-                  _typeRow('Medical leave', const Color(0xFF059669), true, 'No deduct...', false, true),
-                  _typeRow('Emergency leave', const Color(0xFFEA580C), true, 'No deduct...', false, false),
-                  _typeRow('Unpaid leave', const Color(0xFFEF4444), false, 'Normal rate', false, false),
-                  _typeRow('Replacement leave', const Color(0xFF7C3AED), true, 'No deduct...', false, false),
-                  _typeRow('Maternity leave', const Color(0xFFEC4899), true, 'No deduct...', false, true),
-                  _typeRow('Hour leave', const Color(0xFF0D9488), true, 'No deduct...', true, false),
-                ],
-              ),
+            child: HrFullWidthDataTable(
+              columnSpecs: const [
+                ('Leave type name', 2.4),
+                ('Paid?', 0.8),
+                ('Deduction rate', 1.2),
+                ('Hour based', 0.9),
+                ('Attachment req.', 1.1),
+                ('Status', 0.9),
+                ('Actions', 1.3),
+              ],
+              rows: [
+                _typeRow('Annual leave', const Color(0xFF2563EB), true, 'No deduct...', false, false),
+                _typeRow('Medical leave', const Color(0xFF059669), true, 'No deduct...', false, true),
+                _typeRow('Emergency leave', const Color(0xFFEA580C), true, 'No deduct...', false, false),
+                _typeRow('Unpaid leave', const Color(0xFFEF4444), false, 'Normal rate', false, false),
+                _typeRow('Replacement leave', const Color(0xFF7C3AED), true, 'No deduct...', false, false),
+                _typeRow('Maternity leave', const Color(0xFFEC4899), true, 'No deduct...', false, true),
+                _typeRow('Hour leave', const Color(0xFF0D9488), true, 'No deduct...', true, false),
+              ],
             ),
           ),
         ],
@@ -367,45 +362,60 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
           ),
           const SizedBox(height: 16),
           _whiteCard(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(const Color(0xFFF5F0E8)),
-                dataRowMinHeight: 52,
-                dataRowMaxHeight: 72,
-                columns: [
-                  DataColumn(
-                    label: Checkbox(
-                      value: _attachSelectAll,
-                      tristate: true,
-                      onChanged: (v) {
-                        setState(() {
-                          _attachmentSelected.clear();
-                          if (v == true) {
-                            for (var i = 0; i < _attachmentRowCount; i++) {
-                              _attachmentSelected.add(i);
-                            }
-                          }
-                        });
-                      },
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                const checkW = 44.0;
+                final dataColumns = HrFullWidthDataTable.buildColumns(
+                  tableWidth: constraints.maxWidth - checkW - 8,
+                  specs: const [
+                    ('Employee', 1.6),
+                    ('Department', 1.1),
+                    ('Leave type', 1.5),
+                    ('Entitlement', 0.9),
+                    ('Attached?', 0.8),
+                    ('Activation', 0.9),
+                    ('', 0.8),
+                  ],
+                  columnSpacing: 8,
+                  horizontalMargin: 12,
+                );
+                return HrFullWidthDataTable(
+                  headingRowColor: const Color(0xFFF5F0E8),
+                  dataRowMinHeight: 52,
+                  dataRowMaxHeight: 72,
+                  columnSpacing: 8,
+                  horizontalMargin: 12,
+                  columns: [
+                    DataColumn(
+                      label: SizedBox(
+                        width: checkW,
+                        child: Checkbox(
+                          value: _attachSelectAll,
+                          tristate: true,
+                          onChanged: (v) {
+                            setState(() {
+                              _attachmentSelected.clear();
+                              if (v == true) {
+                                for (var i = 0; i < _attachmentRowCount; i++) {
+                                  _attachmentSelected.add(i);
+                                }
+                              }
+                            });
+                          },
+                        ),
+                      ),
                     ),
-                  ),
-                  const DataColumn(label: Text('Employee')),
-                  const DataColumn(label: Text('Department')),
-                  const DataColumn(label: Text('Leave type')),
-                  const DataColumn(label: Text('Entitlement')),
-                  const DataColumn(label: Text('Attached?')),
-                  const DataColumn(label: Text('Activation')),
-                  const DataColumn(label: Text('')),
-                ],
-                rows: [
-                  _attachRow(0, 'SL', 'Sarah Lim', 'Engineering', 'Maternity leave', const Color(0xFFEC4899), '60 days', false, true),
-                  _attachRow(1, 'RK', 'Raj Kumar', 'Engineering', 'Annual leave', const Color(0xFF2563EB), '16 days', true, false),
-                  _attachRow(2, 'MT', 'Maya Tan', 'HR', 'Replacement leave', const Color(0xFF7C3AED), '2 days', false, true),
-                  _attachRow(3, 'AL', 'Ahmad L', 'Operations', 'Medical leave', const Color(0xFF0D9488), '14 days', true, false),
-                  _attachRow(4, 'NC', 'Nadia Chen', 'Marketing', 'Maternity leave', const Color(0xFFEC4899), '60 days', false, true),
-                ],
-              ),
+                    ...dataColumns,
+                  ],
+                  rows: [
+                    _attachRow(0, 'SL', 'Sarah Lim', 'Engineering', 'Maternity leave', const Color(0xFFEC4899), '60 days', false, true),
+                    _attachRow(1, 'RK', 'Raj Kumar', 'Engineering', 'Annual leave', const Color(0xFF2563EB), '16 days', true, false),
+                    _attachRow(2, 'MT', 'Maya Tan', 'HR', 'Replacement leave', const Color(0xFF7C3AED), '2 days', false, true),
+                    _attachRow(3, 'AL', 'Ahmad L', 'Operations', 'Medical leave', const Color(0xFF0D9488), '14 days', true, false),
+                    _attachRow(4, 'NC', 'Nadia Chen', 'Marketing', 'Maternity leave', const Color(0xFFEC4899), '60 days', false, true),
+                  ],
+                );
+              },
             ),
           ),
         ],
@@ -516,66 +526,62 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
           ),
           const SizedBox(height: 16),
           _whiteCard(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(AppColors.bg),
-                columns: const [
-                  DataColumn(label: Text('Employee')),
-                  DataColumn(label: Text('Leave type')),
-                  DataColumn(label: Text('From / To')),
-                  DataColumn(label: Text('Days')),
-                  DataColumn(label: Text('Reason')),
-                  DataColumn(label: Text('Approved by')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Actions')),
-                ],
-                rows: [
-                  _approvalRow(
-                    'SL',
-                    'Sarah Lim',
-                    'Annual',
-                    const Color(0xFFDBEAFE),
-                    '12 May',
-                    '14 May',
-                    '3',
-                    'Family trip',
-                    pending: true,
-                    statusLabel: 'Pending',
-                    statusBg: const Color(0xFFFFEDD5),
-                    statusFg: const Color(0xFFC2410C),
-                  ),
-                  _approvalRow(
-                    'RK',
-                    'Raj Kumar',
-                    'Medical',
-                    const Color(0xFFD1FAE5),
-                    '2 May',
-                    '2 May',
-                    '1',
-                    'Fever',
-                    accepted: true,
-                    statusLabel: 'Accepted',
-                    statusBg: const Color(0xFFD1FAE5),
-                    statusFg: const Color(0xFF065F46),
-                  ),
-                  _approvalRow(
-                    'NC',
-                    'Nadia Chen',
-                    'Annual',
-                    const Color(0xFFDBEAFE),
-                    '5 May',
-                    '6 May',
-                    '2',
-                    'Personal',
-                    denied: true,
-                    statusLabel: 'Denied',
-                    statusBg: AppColors.errorSurface,
-                    statusFg: AppColors.danger,
-                    actionNote: 'Peak period',
-                  ),
-                ],
-              ),
+            child: HrFullWidthDataTable(
+              columnSpecs: const [
+                ('Employee', 1.5),
+                ('Leave type', 0.9),
+                ('From / To', 1.1),
+                ('Days', 0.5),
+                ('Reason', 1.2),
+                ('Approved by', 1.0),
+                ('Status', 0.9),
+                ('Actions', 1.2),
+              ],
+              rows: [
+                _approvalRow(
+                  'SL',
+                  'Sarah Lim',
+                  'Annual',
+                  const Color(0xFFDBEAFE),
+                  '12 May',
+                  '14 May',
+                  '3',
+                  'Family trip',
+                  pending: true,
+                  statusLabel: 'Pending',
+                  statusBg: const Color(0xFFFFEDD5),
+                  statusFg: const Color(0xFFC2410C),
+                ),
+                _approvalRow(
+                  'RK',
+                  'Raj Kumar',
+                  'Medical',
+                  const Color(0xFFD1FAE5),
+                  '2 May',
+                  '2 May',
+                  '1',
+                  'Fever',
+                  accepted: true,
+                  statusLabel: 'Accepted',
+                  statusBg: const Color(0xFFD1FAE5),
+                  statusFg: const Color(0xFF065F46),
+                ),
+                _approvalRow(
+                  'NC',
+                  'Nadia Chen',
+                  'Annual',
+                  const Color(0xFFDBEAFE),
+                  '5 May',
+                  '6 May',
+                  '2',
+                  'Personal',
+                  denied: true,
+                  statusLabel: 'Denied',
+                  statusBg: AppColors.errorSurface,
+                  statusFg: AppColors.danger,
+                  actionNote: 'Peak period',
+                ),
+              ],
             ),
           ),
         ],
@@ -694,29 +700,27 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
           ),
           const SizedBox(height: 16),
           _whiteCard(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(AppColors.bg),
-                columns: const [
-                  DataColumn(label: Text('Employee')),
-                  DataColumn(label: Text('Leave type')),
-                  DataColumn(label: Text('From / To')),
-                  DataColumn(label: Text('Days')),
-                  DataColumn(label: Text('Requested by')),
-                  DataColumn(label: Text('Approved by')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Action')),
-                ],
-                rows: [
-                  _historyRow('SL', 'Sarah Lim', 'Annual', const Color(0xFFDBEAFE), '12 May', '14 May', '3', 'Self', 'David Ng', false, false, 'Pending', const Color(0xFFFFEDD5), const Color(0xFFC2410C)),
-                  _historyRow('RK', 'Raj Kumar', 'Medical', const Color(0xFFD1FAE5), '2 May', '2 May', '1', 'Self', 'David Ng', true, false, 'Accepted', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
-                  _historyRow('MT', 'Maya Tan', 'Medical', const Color(0xFFD1FAE5), '1 May', '1 May', '1', 'HR (behalf)', 'Nina Reza', false, false, 'Waiting file', const Color(0xFFDBEAFE), AppColors.primary),
-                  _historyRow('NC', 'Nadia Chen', 'Annual', const Color(0xFFDBEAFE), '5 May', '6 May', '2', 'Self', 'Kevin Lim', false, true, 'Denied', AppColors.errorSurface, AppColors.danger),
-                  _historyRow('AL', 'Ahmad L.', 'Unpaid', AppColors.bg, '9 May', '9 May', '1', 'Self', 'Malik Said', false, false, 'Pending', const Color(0xFFFFEDD5), const Color(0xFFC2410C)),
-                  _historyRow('ZN', 'Zara Nor', 'Annual', const Color(0xFFDBEAFE), '21 Apr', '22 Apr', '2', 'Self', 'Malik Said', true, false, 'Cancelled', AppColors.bg, AppColors.textMuted),
-                ],
-              ),
+            child: HrFullWidthDataTable(
+              columnSpacing: 6,
+              horizontalMargin: 8,
+              columnSpecs: const [
+                ('Employee', 1.5),
+                ('Leave type', 0.9),
+                ('From / To', 1.0),
+                ('Days', 0.5),
+                ('Requested by', 1.0),
+                ('Approved by', 1.0),
+                ('Status', 0.9),
+                ('Action', 0.7),
+              ],
+              rows: [
+                _historyRow('SL', 'Sarah Lim', 'Annual', const Color(0xFFDBEAFE), '12 May', '14 May', '3', 'Self', 'David Ng', false, false, 'Pending', const Color(0xFFFFEDD5), const Color(0xFFC2410C)),
+                _historyRow('RK', 'Raj Kumar', 'Medical', const Color(0xFFD1FAE5), '2 May', '2 May', '1', 'Self', 'David Ng', true, false, 'Accepted', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
+                _historyRow('MT', 'Maya Tan', 'Medical', const Color(0xFFD1FAE5), '1 May', '1 May', '1', 'HR (behalf)', 'Nina Reza', false, false, 'Waiting file', const Color(0xFFDBEAFE), AppColors.primary),
+                _historyRow('NC', 'Nadia Chen', 'Annual', const Color(0xFFDBEAFE), '5 May', '6 May', '2', 'Self', 'Kevin Lim', false, true, 'Denied', AppColors.errorSurface, AppColors.danger),
+                _historyRow('AL', 'Ahmad L.', 'Unpaid', AppColors.bg, '9 May', '9 May', '1', 'Self', 'Malik Said', false, false, 'Pending', const Color(0xFFFFEDD5), const Color(0xFFC2410C)),
+                _historyRow('ZN', 'Zara Nor', 'Annual', const Color(0xFFDBEAFE), '21 Apr', '22 Apr', '2', 'Self', 'Malik Said', true, false, 'Cancelled', AppColors.bg, AppColors.textMuted),
+              ],
             ),
           ),
         ],
@@ -818,25 +822,22 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
                       children: [
                         Text('Leave entitlement & balance', style: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w700)),
                         const SizedBox(height: 12),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            headingRowColor: WidgetStateProperty.all(const Color(0xFFF5F0E8)),
-                            columns: const [
-                              DataColumn(label: Text('Leave type')),
-                              DataColumn(label: Text('Entitled')),
-                              DataColumn(label: Text('Used')),
-                              DataColumn(label: Text('Balance')),
-                              DataColumn(label: Text('Carried forward')),
-                            ],
-                            rows: [
-                              _entRow('Annual', const Color(0xFF2563EB), '18', '6', '12', '2'),
-                              _entRow('Medical', const Color(0xFF059669), '14', '4', '10', '0'),
-                              _entRow('Emergency', const Color(0xFFEA580C), '3', '1', '2', '0'),
-                              _entRow('Replacement', const Color(0xFF7C3AED), '1', '0', '1', '0'),
-                              _entRow('Hour leave', const Color(0xFF0D9488), '16h', '4h', '12h', '0'),
-                            ],
-                          ),
+                        HrFullWidthDataTable(
+                          headingRowColor: const Color(0xFFF5F0E8),
+                          columnSpecs: const [
+                            ('Leave type', 2.0),
+                            ('Entitled', 1.0),
+                            ('Used', 1.0),
+                            ('Balance', 1.0),
+                            ('Carried forward', 1.2),
+                          ],
+                          rows: [
+                            _entRow('Annual', const Color(0xFF2563EB), '18', '6', '12', '2'),
+                            _entRow('Medical', const Color(0xFF059669), '14', '4', '10', '0'),
+                            _entRow('Emergency', const Color(0xFFEA580C), '3', '1', '2', '0'),
+                            _entRow('Replacement', const Color(0xFF7C3AED), '1', '0', '1', '0'),
+                            _entRow('Hour leave', const Color(0xFF0D9488), '16h', '4h', '12h', '0'),
+                          ],
                         ),
                       ],
                     ),
@@ -1330,28 +1331,26 @@ class _LeaveRequestTabState extends State<_LeaveRequestTab> {
                   children: [
                     Text('My time offs', style: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w700)),
                     const SizedBox(height: 8),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: const [
-                          DataColumn(label: Text('Leave type')),
-                          DataColumn(label: Text('Date')),
-                          DataColumn(label: Text('Days')),
-                          DataColumn(label: Text('Status')),
-                        ],
-                        rows: [
-                          DataRow(cells: [
-                            const DataCell(Text('Annual')),
-                            const DataCell(Text('12–14 May')),
-                            const DataCell(Text('3')),
-                            DataCell(Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(color: const Color(0xFFFFEDD5), borderRadius: BorderRadius.circular(8)),
-                              child: Text('Pending', style: GoogleFonts.dmSans(fontSize: 11, fontWeight: FontWeight.w700, color: const Color(0xFFC2410C))),
-                            )),
-                          ]),
-                          DataRow(cells: [
-                            const DataCell(Text('Medical')),
+                    HrFullWidthDataTable(
+                      columnSpecs: const [
+                        ('Leave type', 1.5),
+                        ('Date', 2.0),
+                        ('Days', 0.8),
+                        ('Status', 1.2),
+                      ],
+                      rows: [
+                        DataRow(cells: [
+                          const DataCell(Text('Annual')),
+                          const DataCell(Text('12–14 May')),
+                          const DataCell(Text('3')),
+                          DataCell(Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(color: const Color(0xFFFFEDD5), borderRadius: BorderRadius.circular(8)),
+                            child: Text('Pending', style: GoogleFonts.dmSans(fontSize: 11, fontWeight: FontWeight.w700, color: const Color(0xFFC2410C))),
+                          )),
+                        ]),
+                        DataRow(cells: [
+                          const DataCell(Text('Medical')),
                             const DataCell(Text('2 May')),
                             const DataCell(Text('1')),
                             DataCell(Container(
@@ -1380,8 +1379,7 @@ class _LeaveRequestTabState extends State<_LeaveRequestTab> {
                               child: Text('Denied', style: GoogleFonts.dmSans(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.danger)),
                             )),
                           ]),
-                        ],
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -1674,47 +1672,44 @@ class _RequestForOthersTabState extends State<_RequestForOthersTab> {
                   children: [
                     Text('Requested time offs (on behalf)', style: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w700)),
                     const SizedBox(height: 12),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: const [
-                          DataColumn(label: Text('Employee')),
-                          DataColumn(label: Text('Leave type')),
-                          DataColumn(label: Text('Date')),
-                          DataColumn(label: Text('Days')),
-                          DataColumn(label: Text('Status')),
-                        ],
-                        rows: [
-                          DataRow(cells: [
-                            DataCell(_RequestForOthersTab._roEmp('SL', 'Sarah L', Colors.blue)),
-                            const DataCell(Text('Annual')),
-                            const DataCell(Text('3–5 May')),
-                            const DataCell(Text('3')),
-                            DataCell(_RequestForOthersTab._pillSmall('Pending')),
-                          ]),
-                          DataRow(cells: [
-                            DataCell(_RequestForOthersTab._roEmp('MT', 'Maya T', Colors.purple)),
-                            const DataCell(Text('Medical')),
-                            const DataCell(Text('1 May')),
-                            const DataCell(Text('1')),
-                            DataCell(_RequestForOthersTab._pillSmall('Accepted')),
-                          ]),
-                          DataRow(cells: [
-                            DataCell(_RequestForOthersTab._roEmp('AL', 'Ahmad L', Colors.orange)),
-                            const DataCell(Text('Emergency')),
-                            const DataCell(Text('28 Apr')),
-                            const DataCell(Text('1')),
-                            DataCell(_RequestForOthersTab._pillSmall('Pending')),
-                          ]),
-                          DataRow(cells: [
-                            DataCell(_RequestForOthersTab._roEmp('NC', 'Nadia C', Colors.teal)),
-                            const DataCell(Text('Annual')),
-                            const DataCell(Text('21–22 Apr')),
-                            const DataCell(Text('2')),
-                            DataCell(_RequestForOthersTab._pillSmall('Accepted')),
-                          ]),
-                        ],
-                      ),
+                    HrFullWidthDataTable(
+                      columnSpecs: const [
+                        ('Employee', 2.0),
+                        ('Leave type', 1.2),
+                        ('Date', 1.5),
+                        ('Days', 0.7),
+                        ('Status', 1.0),
+                      ],
+                      rows: [
+                        DataRow(cells: [
+                          DataCell(_RequestForOthersTab._roEmp('SL', 'Sarah L', Colors.blue)),
+                          const DataCell(Text('Annual')),
+                          const DataCell(Text('3–5 May')),
+                          const DataCell(Text('3')),
+                          DataCell(_RequestForOthersTab._pillSmall('Pending')),
+                        ]),
+                        DataRow(cells: [
+                          DataCell(_RequestForOthersTab._roEmp('MT', 'Maya T', Colors.purple)),
+                          const DataCell(Text('Medical')),
+                          const DataCell(Text('1 May')),
+                          const DataCell(Text('1')),
+                          DataCell(_RequestForOthersTab._pillSmall('Accepted')),
+                        ]),
+                        DataRow(cells: [
+                          DataCell(_RequestForOthersTab._roEmp('AL', 'Ahmad L', Colors.orange)),
+                          const DataCell(Text('Emergency')),
+                          const DataCell(Text('28 Apr')),
+                          const DataCell(Text('1')),
+                          DataCell(_RequestForOthersTab._pillSmall('Pending')),
+                        ]),
+                        DataRow(cells: [
+                          DataCell(_RequestForOthersTab._roEmp('NC', 'Nadia C', Colors.teal)),
+                          const DataCell(Text('Annual')),
+                          const DataCell(Text('21–22 Apr')),
+                          const DataCell(Text('2')),
+                          DataCell(_RequestForOthersTab._pillSmall('Accepted')),
+                        ]),
+                      ],
                     ),
                   ],
                 ),
