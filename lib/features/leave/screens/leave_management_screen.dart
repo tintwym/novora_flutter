@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/storage/local_storage.dart';
+import '../../../data/models/user_model.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 
@@ -17,7 +21,8 @@ class LeaveManagementScreen extends StatefulWidget {
 
 class _LeaveManagementScreenState extends State<LeaveManagementScreen>
     with SingleTickerProviderStateMixin {
-  late final TabController _tab = TabController(length: 8, vsync: this);
+  late final TabController _tab;
+  late final bool _employeeView;
   final Set<int> _attachmentSelected = {1, 3};
   /// Toolbar / filter dropdown selections (mock filters).
   final Map<String, String> _leaveFilterDd = {};
@@ -29,6 +34,23 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
     if (_attachmentSelected.isEmpty) return false;
     if (_attachmentSelected.length == _attachmentRowCount) return true;
     return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _employeeView = _readUser()?.isEmployee ?? true;
+    _tab = TabController(length: _employeeView ? 3 : 8, vsync: this);
+  }
+
+  UserModel? _readUser() {
+    final raw = LocalStorage.instance.userJson;
+    if (raw == null || raw.isEmpty) return null;
+    try {
+      return UserModel.fromAuthJson(jsonDecode(raw) as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
   }
 
   @override
@@ -47,10 +69,10 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         HrModuleHeader(
-          moduleSubtitle: 'LEAVE MANAGEMENT',
-          showYearFilter: true,
+          moduleSubtitle: _employeeView ? 'MY LEAVE' : 'LEAVE MANAGEMENT',
+          showYearFilter: !_employeeView,
           navyPrimaryButton: true,
-          showMoreMenu: true,
+          showMoreMenu: !_employeeView,
           primaryActionLabel: '+ New leave request',
           onPrimaryAction: () => _toast('New leave request'),
         ),
@@ -62,32 +84,44 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
             labelColor: AppColors.primary,
             unselectedLabelColor: AppColors.textMuted,
             indicatorColor: AppColors.primary,
-            tabs: [
-              _tabIcon(Icons.grid_view_outlined, 'Leave type'),
-              _tabIcon(Icons.article_outlined, 'Leave policy'),
-              _tabIcon(Icons.attachment_outlined, 'Leave attachment'),
-              _tabIcon(Icons.edit_calendar_outlined, 'Leave request'),
-              _tabIcon(Icons.people_outline, 'Request for others'),
-              _tabApproval(),
-              _tabIcon(Icons.history, 'Leave history'),
-              _tabIcon(Icons.person_outline, 'Employee leave profile'),
-            ],
+            tabs: _employeeView
+                ? [
+                    _tabIcon(Icons.edit_calendar_outlined, 'My requests'),
+                    _tabIcon(Icons.history, 'History'),
+                    _tabIcon(Icons.person_outline, 'My balance'),
+                  ]
+                : [
+                    _tabIcon(Icons.grid_view_outlined, 'Leave type'),
+                    _tabIcon(Icons.article_outlined, 'Leave policy'),
+                    _tabIcon(Icons.attachment_outlined, 'Leave attachment'),
+                    _tabIcon(Icons.edit_calendar_outlined, 'Leave request'),
+                    _tabIcon(Icons.people_outline, 'Request for others'),
+                    _tabApproval(),
+                    _tabIcon(Icons.history, 'Leave history'),
+                    _tabIcon(Icons.person_outline, 'Employee leave profile'),
+                  ],
           ),
         ),
         Expanded(
           child: TabBarView(
             controller: _tab,
             physics: const NeverScrollableScrollPhysics(),
-            children: [
-              _leaveTypeTab(),
-              _leavePolicyTab(),
-              _leaveAttachmentTab(),
-              const _LeaveRequestTab(),
-              const _RequestForOthersTab(),
-              _leaveApprovalTab(),
-              _leaveHistoryTab(),
-              _employeeLeaveProfileTab(),
-            ],
+            children: _employeeView
+                ? [
+                    const _LeaveRequestTab(),
+                    _leaveHistoryTab(),
+                    _employeeLeaveProfileTab(),
+                  ]
+                : [
+                    _leaveTypeTab(),
+                    _leavePolicyTab(),
+                    _leaveAttachmentTab(),
+                    const _LeaveRequestTab(),
+                    const _RequestForOthersTab(),
+                    _leaveApprovalTab(),
+                    _leaveHistoryTab(),
+                    _employeeLeaveProfileTab(),
+                  ],
           ),
         ),
       ],

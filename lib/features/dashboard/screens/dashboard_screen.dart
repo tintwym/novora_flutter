@@ -181,7 +181,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               if (ResponsiveLayout.isWide(context)) {
                 return MainLayout(
                   sidebar: AppSidebar(
-                    items: DashboardController.navItems,
+                    items: _navItems(),
                     activeLabel: _controller.activeNavLabel,
                     onSelect: (l) => _onSidebarTap(context, l),
                   ),
@@ -199,7 +199,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 backgroundColor: AppColors.bg,
                 drawer: Drawer(
                   child: AppSidebar(
-                    items: DashboardController.navItems,
+                    items: _navItems(),
                     activeLabel: _controller.activeNavLabel,
                     onSelect: (l) {
                       Navigator.pop(context);
@@ -238,17 +238,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  String _dashboardWelcomeLine() {
+  UserModel? _currentUser() {
     final raw = LocalStorage.instance.userJson;
-    if (raw == null || raw.isEmpty) {
-      return "Here's what's happening in your organization.";
-    }
+    if (raw == null || raw.isEmpty) return null;
     try {
-      final u = UserModel.fromAuthJson(jsonDecode(raw) as Map<String, dynamic>);
-      return "Welcome back, ${u.displayName}! Here's what's happening in your organization.";
+      return UserModel.fromAuthJson(jsonDecode(raw) as Map<String, dynamic>);
     } catch (_) {
+      return null;
+    }
+  }
+
+  List<NavMenuItem> _navItems() => DashboardController.navItemsFor(_currentUser());
+
+  String _dashboardWelcomeLine() {
+    final u = _currentUser();
+    if (u == null) {
       return "Here's what's happening in your organization.";
     }
+    if (u.isEmployee) {
+      return "Welcome back, ${u.displayName}! Here's your leave and attendance overview.";
+    }
+    return "Welcome back, ${u.displayName}! Here's what's happening in your organization.";
   }
 
   Widget _buildScrollBody() {

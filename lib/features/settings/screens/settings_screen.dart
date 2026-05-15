@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/auth/user_roles.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/storage/local_storage.dart';
@@ -100,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final user = _readUser();
     final email = user?.email ?? '';
-    final role = user?.primaryRole ?? '—';
+    final role = UserRoles.label(user?.primaryRole);
 
     final body = SingleChildScrollView(
       padding: const EdgeInsets.all(24),

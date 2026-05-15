@@ -18,6 +18,11 @@ class UserModel {
 
   String? get primaryRole => roles.isEmpty ? null : roles.first;
 
+  bool get isEmployee => primaryRole == 'EMPLOYEE';
+
+  bool get canAccessHrAdmin =>
+      const {'SUPER_ADMIN', 'HR_ADMIN', 'HR_MANAGER', 'MANAGER'}.contains(primaryRole);
+
   factory UserModel.fromAuthJson(Map<String, dynamic> json) {
     final rawId = json['userId'];
     final id = rawId == null ? '' : rawId.toString();
