@@ -24,10 +24,13 @@ bool _looksLikeConnectionFailure(DioException e) {
 
 String _cannotReachApiMessage() =>
     'Cannot reach the API (${ApiClient.baseUrl}). '
-    'In another terminal, from the repo root, run: ./scripts/run-backend-local.sh '
-    '(H2, no Postgres). For Neon, run ./mvnw spring-boot:run in novora_backend/ with DB_* in .env. '
-    'Set API_BASE_URL in novora_flutter/.env if the backend uses another host or port. '
-    'Flutter web from a LAN IP needs that origin in backend app.cors.additional-origin-patterns.';
+    'Start a backend on that host/port, then retry. '
+    'Quick options from repo root: '
+    './scripts/run-backend-local.sh (H2, no Docker) '
+    'or ./scripts/run-api-docker.sh (Postgres + API in Docker). '
+    'Neon: cd novora_backend && ./mvnw spring-boot:run with DB_* in novora_backend/.env. '
+    'Override URL in novora_flutter/.env as API_BASE_URL=… '
+    '(use http://localhost:PORT for Flutter web on localhost).';
 
 /// Maps Spring / Dio failures to [ApiException] with a readable message.
 ApiException apiExceptionFromDio(DioException e) {

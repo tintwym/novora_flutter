@@ -1,3 +1,6 @@
+# Local env (copy from .env.example)
+.env
+
 # Miscellaneous
 *.class
 *.log

@@ -157,6 +157,15 @@ abstract final class ApiClient {
   /// Prime CSRF cookie + header token before the first mutating request.
   static Future<void> ensureCsrfToken() async {
     await dio.get(AppEndpoints.authCsrf);
+    if (!_csrf.hasToken) {
+      throw DioException(
+        requestOptions: RequestOptions(path: AppEndpoints.authCsrf, baseUrl: baseUrl),
+        message:
+            'CSRF token was not captured after GET ${AppEndpoints.authCsrf}. '
+            'Check API URL, CORS/cookies (same host as the app tab on web), and backend /api/v1/auth/csrf.',
+        type: DioExceptionType.unknown,
+      );
+    }
   }
 
   static Uri authLogin() => uri(AppEndpoints.authLogin);

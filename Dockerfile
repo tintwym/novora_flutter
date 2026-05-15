@@ -5,6 +5,8 @@ WORKDIR /app
 COPY pubspec.yaml ./
 RUN flutter pub get
 COPY . .
+# pubspec bundles `.env` as an asset; host `.env` is dockerignored — use committed defaults.
+RUN cp .env.docker .env
 RUN flutter build web --release
 
 FROM nginx:alpine
