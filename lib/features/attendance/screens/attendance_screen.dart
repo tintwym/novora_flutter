@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 import '../../../shared/widgets/hr_pill_segmented_control.dart';
 
@@ -1080,65 +1081,60 @@ class _AttendanceScreenState extends State<AttendanceScreen>
           ),
           const SizedBox(height: 16),
           _whiteCard(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor: WidgetStateProperty.all(AppColors.bg),
-                dataRowMinHeight: 48,
-                dataRowMaxHeight: 64,
-                columns: const [
-                  DataColumn(label: Text('Employee')),
-                  DataColumn(label: Text('Date')),
-                  DataColumn(label: Text('Shift')),
-                  DataColumn(label: Text('Clock in')),
-                  DataColumn(label: Text('Clock out')),
-                  DataColumn(label: Text('Work hrs')),
-                  DataColumn(label: Text('Late')),
-                  DataColumn(label: Text('OT hrs')),
-                  DataColumn(label: Text('Status')),
-                ],
-                rows: [
-                  DataRow(
-                    cells: [
-                      DataCell(_avatarName('SL', 'Sarah L')),
-                      const DataCell(Text('5 May')),
-                      const DataCell(Text('Standard')),
-                      const DataCell(Text('08:58')),
-                      const DataCell(Text('18:05')),
-                      const DataCell(Text('9h 7m')),
-                      const DataCell(Text('—')),
-                      DataCell(Text('1h 5m', style: GoogleFonts.dmSans(color: AppColors.primary, fontWeight: FontWeight.w600))),
-                      DataCell(_statusPill('Complete', const Color(0xFFD1FAE5), const Color(0xFF065F46))),
-                    ],
-                  ),
-                  DataRow(
-                    cells: [
-                      DataCell(_avatarName('AL', 'Ahmad L')),
-                      const DataCell(Text('5 May')),
-                      const DataCell(Text('Standard')),
-                      const DataCell(Text('09:28')),
-                      const DataCell(Text('18:30')),
-                      const DataCell(Text('9h 2m')),
-                      DataCell(Text('28m', style: GoogleFonts.dmSans(color: AppColors.danger, fontWeight: FontWeight.w600))),
-                      const DataCell(Text('—')),
-                      DataCell(_statusPill('Late', const Color(0xFFEDE9FE), const Color(0xFF5B21B6))),
-                    ],
-                  ),
-                  DataRow(
-                    cells: [
-                      DataCell(_avatarName('ZN', 'Zara N')),
-                      const DataCell(Text('5 May')),
-                      const DataCell(Text('Standard')),
-                      const DataCell(Text('—')),
-                      const DataCell(Text('—')),
-                      const DataCell(Text('—')),
-                      const DataCell(Text('—')),
-                      const DataCell(Text('—')),
-                      DataCell(_statusPill('Absent', AppColors.errorSurface, AppColors.danger)),
-                    ],
-                  ),
-                ],
-              ),
+            child: HrFullWidthDataTable(
+              headingRowColor: AppColors.bg,
+              columnSpecs: const [
+                ('Employee', 2.2),
+                ('Date', 1.0),
+                ('Shift', 1.1),
+                ('Clock in', 1.0),
+                ('Clock out', 1.0),
+                ('Work hrs', 1.0),
+                ('Late', 0.85),
+                ('OT hrs', 0.85),
+                ('Status', 1.1),
+              ],
+              rows: [
+                DataRow(
+                  cells: [
+                    DataCell(_avatarName('SL', 'Sarah L')),
+                    const DataCell(Text('5 May')),
+                    const DataCell(Text('Standard')),
+                    const DataCell(Text('08:58')),
+                    const DataCell(Text('18:05')),
+                    const DataCell(Text('9h 7m')),
+                    const DataCell(Text('—')),
+                    DataCell(Text('1h 5m', style: GoogleFonts.dmSans(color: AppColors.primary, fontWeight: FontWeight.w600))),
+                    DataCell(_statusPill('Complete', const Color(0xFFD1FAE5), const Color(0xFF065F46))),
+                  ],
+                ),
+                DataRow(
+                  cells: [
+                    DataCell(_avatarName('AL', 'Ahmad L')),
+                    const DataCell(Text('5 May')),
+                    const DataCell(Text('Standard')),
+                    const DataCell(Text('09:28')),
+                    const DataCell(Text('18:30')),
+                    const DataCell(Text('9h 2m')),
+                    DataCell(Text('28m', style: GoogleFonts.dmSans(color: AppColors.danger, fontWeight: FontWeight.w600))),
+                    const DataCell(Text('—')),
+                    DataCell(_statusPill('Late', const Color(0xFFEDE9FE), const Color(0xFF5B21B6))),
+                  ],
+                ),
+                DataRow(
+                  cells: [
+                    DataCell(_avatarName('ZN', 'Zara N')),
+                    const DataCell(Text('5 May')),
+                    const DataCell(Text('Standard')),
+                    const DataCell(Text('—')),
+                    const DataCell(Text('—')),
+                    const DataCell(Text('—')),
+                    const DataCell(Text('—')),
+                    const DataCell(Text('—')),
+                    DataCell(_statusPill('Absent', AppColors.errorSurface, AppColors.danger)),
+                  ],
+                ),
+              ],
             ),
           ),
         ],
