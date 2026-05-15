@@ -96,7 +96,9 @@ abstract final class ApiClient {
     final String resolved;
     // Same-origin API: Vercel rewrites `/api` + `/auth` → Render. Web needs an absolute origin (not "").
     if (fromEnv == '/' || fromEnv == 'same-origin') {
-      resolved = _isBrowserTarget() ? Uri.base.origin : 'http://127.0.0.1:8080';
+      resolved = _isBrowserTarget()
+          ? Uri.base.origin
+          : AppEndpoints.productionApiBase;
     } else if (fromEnv != null && fromEnv.isNotEmpty) {
       resolved =
           fromEnv.endsWith('/') ? fromEnv.substring(0, fromEnv.length - 1) : fromEnv;

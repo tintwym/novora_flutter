@@ -1,5 +1,8 @@
 /// REST paths (joined with [ApiClient.baseUrl]). Mirrors Spring `novora_backend` routes.
 abstract final class AppEndpoints {
+  /// Production API (Render). Mobile apps call this directly — no Vercel proxy.
+  static const productionApiBase = 'https://novora-api-wf1w.onrender.com';
+
   static const authCsrf = '/api/v1/auth/csrf';
   static const authLogin = '/api/v1/auth/login';
   static const authRegister = '/api/v1/auth/register';
