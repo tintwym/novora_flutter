@@ -88,18 +88,25 @@ abstract final class ApiClient {
   }
 
   static String get baseUrl {
-    final fromEnv = dotenv.env['API_BASE_URL']?.trim();
+    const fromDefine = String.fromEnvironment('API_BASE_URL');
+    final fromEnv = fromDefine.isNotEmpty
+        ? fromDefine.trim()
+        : dotenv.env['API_BASE_URL']?.trim();
     final String resolved;
-    // Same-origin API (relative `/api/...`), e.g. when a host proxies API and web together.
+    // Same-origin API: Vercel rewrites `/api` + `/auth` → Render. Web needs an absolute origin (not "").
     if (fromEnv == '/' || fromEnv == 'same-origin') {
-      resolved = _isBrowserTarget() ? '' : 'http://127.0.0.1:8080';
+      resolved = _isBrowserTarget() ? Uri.base.origin : 'http://127.0.0.1:8080';
     } else if (fromEnv != null && fromEnv.isNotEmpty) {
       resolved =
           fromEnv.endsWith('/') ? fromEnv.substring(0, fromEnv.length - 1) : fromEnv;
     } else if (_isBrowserTarget()) {
-      // Dev: Flutter web tab on one port, API on :8080 (align loopback host below).
+      // `.env` missing in web build: on Vercel use page origin (proxied API); else local :8080.
       final h = Uri.base.host;
-      resolved = h.isNotEmpty ? 'http://$h:8080' : 'http://127.0.0.1:8080';
+      if (h.endsWith('.vercel.app')) {
+        resolved = Uri.base.origin;
+      } else {
+        resolved = h.isNotEmpty ? 'http://$h:8080' : 'http://127.0.0.1:8080';
+      }
     } else {
       // Prefer loopback IP on native: avoids some macOS localhost → IPv6 (::1) mismatches with Java.
       resolved = 'http://127.0.0.1:8080';

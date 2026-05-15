@@ -47,8 +47,10 @@ bool _looksLikeConnectionFailure(DioException e) {
   return false;
 }
 
-String _cannotReachApiMessage() =>
-    'Cannot reach the API (${ApiClient.baseUrl}). '
+String _cannotReachApiMessage() {
+  final base = ApiClient.baseUrl;
+  final target = base.isEmpty ? 'same-origin (check Vercel API rewrites)' : base;
+  return 'Cannot reach the API ($target). '
     'Start a backend on that host/port, then retry. '
     'Quick options from repo root: '
     './scripts/run-backend-local.sh (H2, no Docker) '
@@ -56,6 +58,7 @@ String _cannotReachApiMessage() =>
     'Neon: cd novora_backend && ./mvnw spring-boot:run with DB_* in novora_backend/.env. '
     'Override URL in novora_flutter/.env as API_BASE_URL=… '
     '(use http://localhost:PORT for Flutter web on localhost).';
+}
 
 /// Maps Spring / Dio failures to [ApiException] with a readable message.
 ApiException apiExceptionFromDio(DioException e) {

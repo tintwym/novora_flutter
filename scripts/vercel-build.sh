@@ -24,5 +24,6 @@ fi
 
 echo "API_BASE_URL=$API_BASE_URL" > .env
 flutter pub get
-flutter build web --release
+# dart-define survives web release even if the .env asset fails to load in the browser.
+flutter build web --release --dart-define=API_BASE_URL="$API_BASE_URL"
 echo "Built $(pwd)/build/web"
