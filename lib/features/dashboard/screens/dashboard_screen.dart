@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,8 +7,9 @@ import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/storage/local_storage.dart';
+import '../../../core/session/session_notifier.dart';
 import '../../../data/models/user_model.dart';
+import '../../../data/repositories/auth_repository.dart';
 import '../../attendance/screens/attendance_screen.dart';
 import '../../disciplinary/screens/disciplinary_management_screen.dart';
 import '../../employees/screens/employee_profile_screen.dart';
@@ -136,7 +136,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'Attendance':
         return const AttendanceScreen(embeddedInShell: true);
       case 'Leave Management':
-        return const LeaveListScreen(embeddedInShell: true);
+        return LeaveListScreen(
+          key: ValueKey('leave-${_currentUser()?.primaryRole}'),
+          embeddedInShell: true,
+        );
       case 'Disciplinary Management':
         return const DisciplinaryManagementScreen(embeddedInShell: true);
       case 'Payroll':
@@ -156,6 +159,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void dispose() {
+    SessionNotifier.instance.removeListener(_onSessionChanged);
     _controller.dispose();
     super.dispose();
   }
@@ -163,10 +167,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    SessionNotifier.instance.addListener(_onSessionChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      unawaited(_controller.refreshFromApi());
+      unawaited(_refreshSessionAndDashboard());
     });
+  }
+
+  void _onSessionChanged() {
+    _syncNavWithRole();
+    if (!mounted) return;
+    unawaited(_controller.refreshFromApi());
+    setState(() {});
   }
 
   @override
@@ -174,7 +186,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: ListenableBuilder(
-        listenable: _controller,
+        listenable: Listenable.merge([_controller, SessionNotifier.instance]),
         builder: (context, _) {
           return LayoutBuilder(
             builder: (context, constraints) {
@@ -238,15 +250,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  UserModel? _currentUser() {
-    final raw = LocalStorage.instance.userJson;
-    if (raw == null || raw.isEmpty) return null;
-    try {
-      return UserModel.fromAuthJson(jsonDecode(raw) as Map<String, dynamic>);
-    } catch (_) {
-      return null;
+  Future<void> _refreshSessionAndDashboard() async {
+    await AuthRepository().refreshProfile();
+    if (!mounted) return;
+    _syncNavWithRole();
+    await _controller.refreshFromApi();
+    if (mounted) setState(() {});
+  }
+
+  void _syncNavWithRole() {
+    final labels = _navItems().map((i) => i.label).toSet();
+    if (!labels.contains(_controller.activeNavLabel)) {
+      _controller.setActiveNav('Dashboard', forceNotify: true);
+      _popShellToRoot();
     }
   }
+
+  UserModel? _currentUser() => SessionNotifier.instance.user;
 
   List<NavMenuItem> _navItems() => DashboardController.navItemsFor(_currentUser());
 

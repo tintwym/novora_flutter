@@ -16,7 +16,19 @@ class UserModel {
   final String? accessToken;
   final String? tokenType;
 
-  String? get primaryRole => roles.isEmpty ? null : roles.first;
+  /// Normalized app role from API (`ADMIN` in DB is invalid — treat as [HR_ADMIN]).
+  String? get primaryRole {
+    if (roles.isEmpty) return null;
+    return _normalizeRole(roles.first);
+  }
+
+  static String _normalizeRole(String raw) {
+    final r = raw.trim().toUpperCase();
+    return switch (r) {
+      'ADMIN' || 'ADMINISTRATOR' => 'HR_ADMIN',
+      _ => r,
+    };
+  }
 
   bool get isEmployee => primaryRole == 'EMPLOYEE';
 
@@ -28,7 +40,7 @@ class UserModel {
     final id = rawId == null ? '' : rawId.toString();
     final email = json['email'] as String? ?? '';
     final roles = (json['roles'] as List<dynamic>?)
-            ?.map((e) => e.toString())
+            ?.map((e) => _normalizeRole(e.toString()))
             .toList() ??
         const <String>[];
     final local = email.split('@').first;

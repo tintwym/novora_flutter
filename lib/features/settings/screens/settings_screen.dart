@@ -1,15 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/auth/user_roles.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
-import '../../../core/storage/local_storage.dart';
-import '../../../data/models/user_model.dart';
+import '../../../core/session/session_notifier.dart';
+import '../../../core/ui/app_snackbar.dart';
 import '../../../data/repositories/auth_repository.dart';
-
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key, this.embeddedInShell = false});
 
@@ -20,6 +17,8 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  bool _refreshing = false;
+
   Future<bool?> _showLogoutConfirmDialog() {
     return showDialog<bool>(
       context: context,
@@ -80,16 +79,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Navigator.pushReplacementNamed(context, AppRoutes.login);
   }
 
-  UserModel? _readUser() {
-    final raw = LocalStorage.instance.userJson;
-    if (raw == null || raw.isEmpty) return null;
-    try {
-      return UserModel.fromAuthJson(jsonDecode(raw) as Map<String, dynamic>);
-    } catch (_) {
-      return null;
-    }
-  }
-
   Future<void> _onLogoutPressed() async {
     final ok = await _showLogoutConfirmDialog();
     if (ok == true && mounted) {
@@ -97,12 +86,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Future<void> _refreshAccount() async {
+    if (_refreshing) return;
+    setState(() => _refreshing = true);
+    final user = await AuthRepository().refreshProfile();
+    if (!mounted) return;
+    setState(() => _refreshing = false);
+    if (user == null) {
+      AppSnackBar.showError(
+        context,
+        'Could not refresh account. Log out and sign in again.',
+      );
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Role updated: ${UserRoles.label(user.primaryRole)}. Go to Dashboard.',
+          style: GoogleFonts.dmSans(fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = _readUser();
-    final email = user?.email ?? '';
-    final role = UserRoles.label(user?.primaryRole);
+    return ListenableBuilder(
+      listenable: SessionNotifier.instance,
+      builder: (context, _) {
+        final user = SessionNotifier.instance.user;
+        final email = user?.email ?? '';
+        final role = UserRoles.label(user?.primaryRole);
+        return _buildBody(context, email, role);
+      },
+    );
+  }
 
+  Widget _buildBody(BuildContext context, String email, String role) {
     final body = SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Align(
@@ -137,7 +157,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 12),
+              Text(
+                'Changed your role in the database? Refresh here, or log out and sign in again.',
+                style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.textMuted, height: 1.4),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: _refreshing ? null : _refreshAccount,
+                icon: _refreshing
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.refresh_rounded, size: 20),
+                label: Text(
+                  'Refresh account',
+                  style: GoogleFonts.dmSans(fontWeight: FontWeight.w600),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+              const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: _onLogoutPressed,
                 icon: Icon(Icons.logout_rounded, color: AppColors.danger, size: 20),
