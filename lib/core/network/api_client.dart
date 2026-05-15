@@ -30,6 +30,7 @@ bool _isLoopbackHost(String host) {
 
 /// On web, rewrite API host to match [Uri.base.host] when both are loopback variants.
 String _alignLoopbackHostForWeb(String url) {
+  if (url.isEmpty) return url;
   if (!_isBrowserTarget()) return url;
   final pageHost = Uri.base.host;
   if (pageHost.isEmpty) return url;
@@ -89,11 +90,14 @@ abstract final class ApiClient {
   static String get baseUrl {
     final fromEnv = dotenv.env['API_BASE_URL']?.trim();
     final String resolved;
-    if (fromEnv != null && fromEnv.isNotEmpty) {
+    // Same-origin API (relative `/api/...`), e.g. when a host proxies API and web together.
+    if (fromEnv == '/' || fromEnv == 'same-origin') {
+      resolved = _isBrowserTarget() ? '' : 'http://127.0.0.1:8080';
+    } else if (fromEnv != null && fromEnv.isNotEmpty) {
       resolved =
           fromEnv.endsWith('/') ? fromEnv.substring(0, fromEnv.length - 1) : fromEnv;
     } else if (_isBrowserTarget()) {
-      // Same hostname as the app tab so session cookies stay same-site with the API.
+      // Dev: Flutter web tab on one port, API on :8080 (align loopback host below).
       final h = Uri.base.host;
       resolved = h.isNotEmpty ? 'http://$h:8080' : 'http://127.0.0.1:8080';
     } else {

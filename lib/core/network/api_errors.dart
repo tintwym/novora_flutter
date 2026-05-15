@@ -40,6 +40,14 @@ ApiException apiExceptionFromDio(DioException e) {
 
   final response = e.response;
   final status = response?.statusCode;
+  if (status == 403) {
+    return ApiException(
+      'Request blocked (403). Usually missing or invalid CSRF/session cookies. '
+      'Use the same host in the browser and in API_BASE_URL (e.g. both localhost). '
+      'Hard-refresh or clear site cookies, then sign in again.',
+      status,
+    );
+  }
   final data = response?.data;
   if (data is Map) {
     final map = Map<String, dynamic>.from(data);
