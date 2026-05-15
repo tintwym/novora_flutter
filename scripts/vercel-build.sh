@@ -12,7 +12,7 @@ if ! command -v flutter >/dev/null 2>&1; then
 fi
 
 if [[ -z "${API_BASE_URL:-}" ]]; then
-  echo "ERROR: Set API_BASE_URL in Vercel (your Render API URL, e.g. https://novora-api.onrender.com)."
+  echo "ERROR: Set API_BASE_URL in Vercel (e.g. https://novora-api-wf1w.onrender.com)."
   exit 1
 fi
 
