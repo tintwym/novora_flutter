@@ -55,12 +55,13 @@ class _BrandPanel extends StatelessWidget {
             _ring(160, bottom: 40, left: 40),
           ],
           Center(
-            child: SingleChildScrollView(
+            child: Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: 32,
                 vertical: compact ? 20 : 48,
               ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text.rich(

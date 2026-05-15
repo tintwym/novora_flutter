@@ -3,13 +3,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
-import '../../core/constants/app_strings.dart';
 import '../../shared/widgets/hr_data_table_card.dart';
 import '../../shared/widgets/hr_module_header.dart';
+import 'widgets/organisation_chart_tab.dart';
 
 /// Employment Management: Employee profile, Directory (wizard), Organisation chart.
 class EmploymentManagementScreen extends StatefulWidget {
-  const EmploymentManagementScreen({super.key});
+  const EmploymentManagementScreen({super.key, this.embeddedInShell = false});
+
+  /// When true, shown inside [DashboardScreen] — no app bar / back (shell provides chrome).
+  final bool embeddedInShell;
 
   @override
   State<EmploymentManagementScreen> createState() =>
@@ -28,6 +31,46 @@ class _EmploymentManagementScreenState extends State<EmploymentManagementScreen>
 
   @override
   Widget build(BuildContext context) {
+    final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        HrModuleHeader(
+          moduleSubtitle: 'EMPLOYMENT MANAGEMENT',
+          primaryActionLabel: '+ Add employee',
+          onPrimaryAction: () => Navigator.of(context, rootNavigator: true).pushNamed(AppRoutes.employeeWizard),
+        ),
+        Material(
+          color: Colors.white,
+          child: TabBar(
+            controller: _tab,
+            labelColor: AppColors.primary,
+            unselectedLabelColor: AppColors.textMuted,
+            indicatorColor: AppColors.primary,
+            tabs: const [
+              Tab(text: 'Employee profile'),
+              Tab(text: 'Employee directory'),
+              Tab(text: 'Organisation chart'),
+            ],
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tab,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              _profileOverview(),
+              _directoryList(),
+              const OrganisationChartTab(),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    if (widget.embeddedInShell) {
+      return ColoredBox(color: AppColors.bg, child: body);
+    }
+
     return Scaffold(
       backgroundColor: AppColors.bg,
       appBar: AppBar(
@@ -37,41 +80,7 @@ class _EmploymentManagementScreenState extends State<EmploymentManagementScreen>
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          HrModuleHeader(
-            moduleSubtitle: 'EMPLOYMENT MANAGEMENT',
-            primaryActionLabel: '+ Add employee',
-            onPrimaryAction: () =>
-                Navigator.pushNamed(context, AppRoutes.employeeWizard),
-          ),
-          Material(
-            color: Colors.white,
-            child: TabBar(
-              controller: _tab,
-              labelColor: AppColors.primary,
-              unselectedLabelColor: AppColors.textMuted,
-              indicatorColor: AppColors.primary,
-              tabs: const [
-                Tab(text: 'Employee profile'),
-                Tab(text: 'Employee directory'),
-                Tab(text: 'Organisation chart'),
-              ],
-            ),
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tab,
-              children: [
-                _profileOverview(),
-                _directoryList(),
-                _orgChart(),
-              ],
-            ),
-          ),
-        ],
-      ),
+      body: body,
     );
   }
 
@@ -177,7 +186,7 @@ class _EmploymentManagementScreenState extends State<EmploymentManagementScreen>
       child: HrDataTableCard(
         searchHint: 'Search employee...',
         actionLabel: '+ Add employee',
-        onAction: () => Navigator.pushNamed(context, AppRoutes.employeeWizard),
+        onAction: () => Navigator.of(context, rootNavigator: true).pushNamed(AppRoutes.employeeWizard),
         columns: const [
           DataColumn(label: Text('Employee No.')),
           DataColumn(label: Text('Name')),
@@ -189,12 +198,21 @@ class _EmploymentManagementScreenState extends State<EmploymentManagementScreen>
         rows: [
           DataRow(
             cells: [
-              const DataCell(Text('EMP-0285')),
-              const DataCell(Text('Sarah Lim')),
+              const DataCell(Text('EMP-0021')),
+              const DataCell(Text('Sarah Lim Wei Ling')),
               const DataCell(Text('Engineering')),
-              const DataCell(Text('Principal Engineer')),
+              const DataCell(Text('Senior Developer')),
               DataCell(_statusActive()),
-              DataCell(TextButton(onPressed: () {}, child: const Text('Open'))),
+              DataCell(
+                TextButton(
+                  onPressed: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.employeeProfile,
+                    arguments: 'EMP-0021',
+                  ),
+                  child: const Text('Open'),
+                ),
+              ),
             ],
           ),
           DataRow(
@@ -204,88 +222,19 @@ class _EmploymentManagementScreenState extends State<EmploymentManagementScreen>
               const DataCell(Text('Operations')),
               const DataCell(Text('Team Lead')),
               DataCell(_statusActive()),
-              DataCell(TextButton(onPressed: () {}, child: const Text('Open'))),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _orgChart() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: AppColors.border),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'CEO · ${AppStrings.brandName}',
-                    style: GoogleFonts.dmSans(fontWeight: FontWeight.w700),
+              DataCell(
+                TextButton(
+                  onPressed: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.employeeProfile,
+                    arguments: 'EMP-0199',
                   ),
-                  const SizedBox(height: 12),
-                  _orgRow('COO', 'Operations cluster', onTap: () {}),
-                  _orgRow('CTO', 'Engineering & Product', badges: const ['Open role · Staff Engineer']),
-                  _orgRow('CHRO', 'People & Culture'),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          OutlinedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.work_outline),
-            label: const Text('View open position · Staff Engineer'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _orgRow(String title, String subtitle, {VoidCallback? onTap, List<String> badges = const []}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: AppColors.bg,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700)),
-              Text(subtitle, style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.muted)),
-              if (badges.isNotEmpty) ...[
-                const SizedBox(height: 6),
-                Wrap(
-                  spacing: 6,
-                  children: badges
-                      .map((b) => Chip(
-                            label: Text(b, style: GoogleFonts.dmSans(fontSize: 10)),
-                            visualDensity: VisualDensity.compact,
-                          ))
-                      .toList(),
+                  child: const Text('Open'),
                 ),
-              ],
+              ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

@@ -71,6 +71,9 @@ flutter:
     - .env
     - assets/images/
     - assets/icons/
+    # Bundled with the app so Web / strict asset resolution can resolve font files
+    # referenced under [fonts:] (fixes runtime "Unable to load asset …/DMSans-*.ttf").
+    - assets/fonts/
 
   fonts:
     - family: DMSans

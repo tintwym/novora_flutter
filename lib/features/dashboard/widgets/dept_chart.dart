@@ -98,7 +98,7 @@ class DeptChart extends StatelessWidget {
   }
 }
 
-/// Second pie row on dashboard — attendance breakdown (mock slices from repo).
+/// Attendance breakdown donut fed by [DashboardRepository] (API or mock).
 class AttendanceOverviewChart extends StatelessWidget {
   const AttendanceOverviewChart({super.key, required this.repository});
 
@@ -107,6 +107,27 @@ class AttendanceOverviewChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final attData = repository.attendanceSlices;
+    final positive = attData.where((d) => d.value > 0).toList();
+    final pieSections = positive
+        .map(
+          (d) => PieChartSectionData(
+            value: d.value,
+            color: d.color,
+            radius: 46,
+            showTitle: false,
+          ),
+        )
+        .toList();
+    final chartSections = pieSections.isEmpty
+        ? [
+            PieChartSectionData(
+              value: 1,
+              color: AppColors.border.withValues(alpha: 0.4),
+              radius: 46,
+              showTitle: false,
+            ),
+          ]
+        : pieSections;
 
     return _DashboardSectionCard(
       child: Column(
@@ -141,46 +162,49 @@ class AttendanceOverviewChart extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           SizedBox(
-            height: 120,
+            height: 128,
             child: Stack(
               alignment: Alignment.center,
               children: [
                 PieChart(
                   PieChartData(
-                    sections: attData
-                        .map(
-                          (d) => PieChartSectionData(
-                            value: d.value,
-                            color: d.color,
-                            radius: 45,
-                            showTitle: false,
-                          ),
-                        )
-                        .toList(),
-                    centerSpaceRadius: 38,
-                    sectionsSpace: 2,
-                    startDegreeOffset: 90,
+                    sections: chartSections,
+                    centerSpaceRadius: 40,
+                    sectionsSpace: 0,
+                    startDegreeOffset: -90,
                   ),
                 ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '96.8%',
-                      style: GoogleFonts.sora(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.navy,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '${repository.attendanceOverviewRate.toStringAsFixed(1)}%',
+                          maxLines: 1,
+                          style: GoogleFonts.sora(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.navy,
+                            height: 1.05,
+                          ),
+                        ),
                       ),
-                    ),
-                    Text(
-                      'Attendance Rate',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 9,
-                        color: AppColors.muted,
+                      const SizedBox(height: 2),
+                      Text(
+                        'Attendance rate',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textMuted,
+                          height: 1.2,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -200,10 +224,7 @@ class AttendanceOverviewChart extends StatelessWidget {
           Container(
             width: 8,
             height: 8,
-            decoration: BoxDecoration(
-              color: d.color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: d.color, shape: BoxShape.circle),
           ),
           const SizedBox(width: 6),
           Expanded(

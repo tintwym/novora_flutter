@@ -9,7 +9,7 @@ import '../services/dashboard_service.dart';
 
 class DashboardRepository {
   DashboardRepository({DashboardService? service})
-      : _service = service ?? DashboardService();
+    : _service = service ?? DashboardService();
   final DashboardService _service;
 
   List<DashboardStatItem> get statItems => _service.fetchStatItems();
@@ -18,6 +18,9 @@ class DashboardRepository {
   PayrollTotalsModel get payroll => _service.fetchPayrollSummary();
   List<AttendanceSliceModel> get attendanceSlices =>
       _service.fetchAttendanceSlices();
+
+  double get attendanceOverviewRate => _service.fetchAttendanceOverviewRate();
+
   List<FlSpot> get growthSpots => _service.growthSpots;
   List<String> get monthLabels => _service.monthLabels;
 

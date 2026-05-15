@@ -38,6 +38,7 @@ class _Live {
     required this.leaveRequests,
     required this.payroll,
     required this.attendanceSlices,
+    required this.attendanceRatePercent,
     required this.growthSpots,
     required this.monthLabels,
     required this.departments,
@@ -48,6 +49,9 @@ class _Live {
   final List<LeaveRequestModel> leaveRequests;
   final PayrollTotalsModel payroll;
   final List<AttendanceSliceModel> attendanceSlices;
+
+  /// Matches Spring `attendanceRate` (present / all rows in range).
+  final double attendanceRatePercent;
   final List<FlSpot> growthSpots;
   final List<String> monthLabels;
   final List<DepartmentSliceModel> departments;
@@ -73,13 +77,17 @@ class DashboardService {
       final payroll = await _getJson(dio, AppEndpoints.dashboardPayrollSummary);
       final depts = await _getJson(dio, AppEndpoints.dashboardDepartments);
       final att = await _getJson(dio, AppEndpoints.dashboardAttendanceOverview);
+      final attParsed = _parseAttendanceSlicesAndRate(att);
+      final attSlices = attParsed?.slices ?? _mockAttendance();
+      final attRate = attParsed?.rate ?? _mockAttendanceCenterRate();
 
       _live = _Live(
         statItems: _parseKpis(summary) ?? _mockStatItems(),
         recentHires: _parseHires(hires) ?? _mockHires(),
         leaveRequests: _parseLeaves(leaves) ?? _mockLeaves(),
         payroll: _parsePayroll(payroll) ?? _mockPayroll(),
-        attendanceSlices: _parseAttendance(att) ?? _mockAttendance(),
+        attendanceSlices: attSlices,
+        attendanceRatePercent: attRate,
         growthSpots: _parseGrowth(growth) ?? _defaultGrowthSpots,
         monthLabels: _parseGrowthLabels(growth) ?? _defaultGrowthLabels,
         departments: () {
@@ -100,23 +108,32 @@ class DashboardService {
     return null;
   }
 
-  List<DashboardStatItem> fetchStatItems() => _live?.statItems ?? _mockStatItems();
+  List<DashboardStatItem> fetchStatItems() =>
+      _live?.statItems ?? _mockStatItems();
 
-  List<RecentHireModel> fetchRecentHires() => _live?.recentHires ?? _mockHires();
+  List<RecentHireModel> fetchRecentHires() =>
+      _live?.recentHires ?? _mockHires();
 
-  List<LeaveRequestModel> fetchLeaveRequests() => _live?.leaveRequests ?? _mockLeaves();
+  List<LeaveRequestModel> fetchLeaveRequests() =>
+      _live?.leaveRequests ?? _mockLeaves();
 
   PayrollTotalsModel fetchPayrollSummary() => _live?.payroll ?? _mockPayroll();
 
   List<AttendanceSliceModel> fetchAttendanceSlices() =>
       _live?.attendanceSlices ?? _mockAttendance();
 
+  /// Center label on attendance donut; aligned with API `attendanceRate` when live.
+  double fetchAttendanceOverviewRate() =>
+      _live?.attendanceRatePercent ?? _mockAttendanceCenterRate();
+
   List<FlSpot> get growthSpots => _live?.growthSpots ?? _defaultGrowthSpots;
 
   List<String> get monthLabels => _live?.monthLabels ?? _defaultGrowthLabels;
 
   List<DepartmentSliceModel> fetchDepartmentSlices() =>
-      _live?.departments.isNotEmpty == true ? _live!.departments : _mockDepartments();
+      _live?.departments.isNotEmpty == true
+      ? _live!.departments
+      : _mockDepartments();
 
   static List<DashboardStatItem>? _parseKpis(dynamic summary) {
     if (summary is! Map<String, dynamic>) return null;
@@ -217,7 +234,11 @@ class DashboardService {
       total += v;
       if (n.contains('deduct')) deductions += v;
     }
-    final fmt = NumberFormat.currency(locale: 'en_US', symbol: r'$', decimalDigits: 0);
+    final fmt = NumberFormat.currency(
+      locale: 'en_US',
+      symbol: r'$',
+      decimalDigits: 0,
+    );
     final net = (total - deductions).clamp(0, 1 << 60);
     return PayrollTotalsModel(
       totalPayroll: fmt.format(total),
@@ -228,7 +249,9 @@ class DashboardService {
     );
   }
 
-  static List<AttendanceSliceModel>? _parseAttendance(dynamic data) {
+  /// Returns slices and Spring `attendanceRate` for the donut center label.
+  static ({List<AttendanceSliceModel> slices, double rate})?
+  _parseAttendanceSlicesAndRate(dynamic data) {
     if (data is! Map<String, dynamic>) return null;
     final rate = (data['attendanceRate'] as num?)?.toDouble() ?? 0;
     final buckets = data['buckets'];
@@ -256,16 +279,19 @@ class DashboardService {
       );
     }
     if (out.isEmpty) {
-      return [
-        AttendanceSliceModel(
-          label: 'Attendance',
-          value: rate,
-          displayPercent: '${rate.toStringAsFixed(1)}%',
-          color: AppColors.primary,
-        ),
-      ];
+      return (
+        slices: [
+          AttendanceSliceModel(
+            label: 'Attendance',
+            value: rate,
+            displayPercent: '${rate.toStringAsFixed(1)}%',
+            color: AppColors.primary,
+          ),
+        ],
+        rate: rate,
+      );
     }
-    return out;
+    return (slices: out, rate: rate);
   }
 
   static List<FlSpot>? _parseGrowth(dynamic data) {
@@ -329,6 +355,7 @@ class DashboardService {
     if (l.contains('absent')) return AppColors.border;
     if (l.contains('late')) return AppColors.warning;
     if (l.contains('leave')) return AppColors.purple4;
+    if (l.contains('other')) return AppColors.muted;
     return AppColors.accent;
   }
 
@@ -368,7 +395,11 @@ class DashboardService {
   }
 
   static String _initials(String name) {
-    final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .toList();
     if (parts.isEmpty) return '?';
     if (parts.length == 1) {
       final s = parts.first;
@@ -378,171 +409,183 @@ class DashboardService {
   }
 
   static List<DashboardStatItem> _mockStatItems() => const [
-        DashboardStatItem(
-          label: 'Total Employees',
-          value: '1,248',
-          change: '+8.5%',
-          isPositive: true,
-          icon: Icons.groups_outlined,
-          color: AppColors.primary,
-        ),
-        DashboardStatItem(
-          label: 'New Hires',
-          value: '42',
-          change: '+16.7%',
-          isPositive: true,
-          icon: Icons.person_add_outlined,
-          color: AppColors.purple,
-        ),
-        DashboardStatItem(
-          label: 'On Leave',
-          value: '87',
-          change: '-3.2%',
-          isPositive: false,
-          icon: Icons.beach_access_outlined,
-          color: AppColors.accent,
-        ),
+    DashboardStatItem(
+      label: 'Total Employees',
+      value: '1,248',
+      change: '+8.5%',
+      isPositive: true,
+      icon: Icons.groups_outlined,
+      color: AppColors.primary,
+    ),
+    DashboardStatItem(
+      label: 'New Hires',
+      value: '42',
+      change: '+16.7%',
+      isPositive: true,
+      icon: Icons.person_add_outlined,
+      color: AppColors.purple,
+    ),
+    DashboardStatItem(
+      label: 'On Leave',
+      value: '87',
+      change: '-3.2%',
+      isPositive: false,
+      icon: Icons.beach_access_outlined,
+      color: AppColors.accent,
+    ),
         DashboardStatItem(
           label: 'Attendance Rate',
           value: '96.8%',
           change: '+2.4%',
-          isPositive: true,
-          icon: Icons.check_circle_outlined,
-          color: AppColors.success,
-        ),
-        DashboardStatItem(
-          label: 'Open Positions',
-          value: '23',
-          change: '-8.0%',
-          isPositive: false,
-          icon: Icons.work_outline_rounded,
-          color: AppColors.warning,
-        ),
-        DashboardStatItem(
-          label: 'Turnover Rate',
-          value: '6.2%',
-          change: '+1.1%',
-          isPositive: true,
-          icon: Icons.sync_alt_rounded,
-          color: AppColors.purple,
-        ),
-      ];
+      isPositive: true,
+      icon: Icons.check_circle_outlined,
+      color: AppColors.success,
+    ),
+    DashboardStatItem(
+      label: 'Open Positions',
+      value: '23',
+      change: '-8.0%',
+      isPositive: false,
+      icon: Icons.work_outline_rounded,
+      color: AppColors.warning,
+    ),
+    DashboardStatItem(
+      label: 'Turnover Rate',
+      value: '6.2%',
+      change: '+1.1%',
+      isPositive: true,
+      icon: Icons.sync_alt_rounded,
+      color: AppColors.purple,
+    ),
+  ];
 
   static List<RecentHireModel> _mockHires() => const [
-        RecentHireModel(
-          name: 'Sarah Johnson',
-          role: 'UI/UX Designer',
-          date: 'May 28, 2025',
-          initials: 'SJ',
-          color: AppColors.primary,
-        ),
-        RecentHireModel(
-          name: 'Michael Chen',
-          role: 'Backend Developer',
-          date: 'May 27, 2025',
-          initials: 'MC',
-          color: AppColors.purple,
-        ),
-        RecentHireModel(
-          name: 'Priya Sharma',
-          role: 'HR Executive',
-          date: 'May 26, 2025',
-          initials: 'PS',
-          color: AppColors.success,
-        ),
-        RecentHireModel(
-          name: 'David Wilson',
-          role: 'Sales Manager',
-          date: 'May 24, 2025',
-          initials: 'DW',
-          color: AppColors.warning,
-        ),
-        RecentHireModel(
-          name: 'Emma Brown',
-          role: 'Marketing Specialist',
-          date: 'May 23, 2025',
-          initials: 'EB',
-          color: AppColors.danger,
-        ),
-      ];
+    RecentHireModel(
+      name: 'Sarah Johnson',
+      role: 'UI/UX Designer',
+      date: 'May 28, 2025',
+      initials: 'SJ',
+      color: AppColors.primary,
+    ),
+    RecentHireModel(
+      name: 'Michael Chen',
+      role: 'Backend Developer',
+      date: 'May 27, 2025',
+      initials: 'MC',
+      color: AppColors.purple,
+    ),
+    RecentHireModel(
+      name: 'Priya Sharma',
+      role: 'HR Executive',
+      date: 'May 26, 2025',
+      initials: 'PS',
+      color: AppColors.success,
+    ),
+    RecentHireModel(
+      name: 'David Wilson',
+      role: 'Sales Manager',
+      date: 'May 24, 2025',
+      initials: 'DW',
+      color: AppColors.warning,
+    ),
+    RecentHireModel(
+      name: 'Emma Brown',
+      role: 'Marketing Specialist',
+      date: 'May 23, 2025',
+      initials: 'EB',
+      color: AppColors.danger,
+    ),
+  ];
 
   static List<LeaveRequestModel> _mockLeaves() => const [
-        LeaveRequestModel(
-          name: 'John Doe',
-          type: 'Annual Leave',
-          dates: 'May 30 – Jun 03',
-          status: 'Pending',
-          initials: 'JD',
-          color: AppColors.primary,
-        ),
-        LeaveRequestModel(
-          name: 'Emily Davis',
-          type: 'Sick Leave',
-          dates: 'May 29 – May 30',
-          status: 'Approved',
-          initials: 'ED',
-          color: AppColors.purple,
-        ),
-        LeaveRequestModel(
-          name: 'Robert Smith',
-          type: 'Personal Leave',
-          dates: 'May 31 – Jun 02',
-          status: 'Pending',
-          initials: 'RS',
-          color: AppColors.success,
-        ),
-        LeaveRequestModel(
-          name: 'Lisa Wilson',
-          type: 'Annual Leave',
-          dates: 'Jun 02 – Jun 06',
-          status: 'Approved',
-          initials: 'LW',
-          color: AppColors.warning,
-        ),
-        LeaveRequestModel(
-          name: 'James Taylor',
-          type: 'Sick Leave',
-          dates: 'May 30 – May 31',
-          status: 'Rejected',
-          initials: 'JT',
-          color: AppColors.danger,
-        ),
-      ];
+    LeaveRequestModel(
+      name: 'John Doe',
+      type: 'Annual Leave',
+      dates: 'May 30 – Jun 03',
+      status: 'Pending',
+      initials: 'JD',
+      color: AppColors.primary,
+    ),
+    LeaveRequestModel(
+      name: 'Emily Davis',
+      type: 'Sick Leave',
+      dates: 'May 29 – May 30',
+      status: 'Approved',
+      initials: 'ED',
+      color: AppColors.purple,
+    ),
+    LeaveRequestModel(
+      name: 'Robert Smith',
+      type: 'Personal Leave',
+      dates: 'May 31 – Jun 02',
+      status: 'Pending',
+      initials: 'RS',
+      color: AppColors.success,
+    ),
+    LeaveRequestModel(
+      name: 'Lisa Wilson',
+      type: 'Annual Leave',
+      dates: 'Jun 02 – Jun 06',
+      status: 'Approved',
+      initials: 'LW',
+      color: AppColors.warning,
+    ),
+    LeaveRequestModel(
+      name: 'James Taylor',
+      type: 'Sick Leave',
+      dates: 'May 30 – May 31',
+      status: 'Rejected',
+      initials: 'JT',
+      color: AppColors.danger,
+    ),
+  ];
 
   static PayrollTotalsModel _mockPayroll() => const PayrollTotalsModel(
-        totalPayroll: '\$1,248,320',
-        netPay: '\$896,450',
-        deductions: '\$195,870',
-        taxes: '\$156,000',
-        periodLabel: 'May 2025 ▾',
-      );
+    totalPayroll: '\$1,248,320',
+    netPay: '\$896,450',
+    deductions: '\$195,870',
+    taxes: '\$156,000',
+    periodLabel: 'May 2025 ▾',
+  );
 
-  static List<AttendanceSliceModel> _mockAttendance() => const [
-        AttendanceSliceModel(
-          label: 'Present',
-          value: 968,
-          displayPercent: '96.8%',
-          color: AppColors.primary,
-        ),
-        AttendanceSliceModel(
-          label: 'Absent',
-          value: 25,
-          displayPercent: '2.5%',
-          color: AppColors.border,
-        ),
-        AttendanceSliceModel(
-          label: 'Late',
-          value: 11,
-          displayPercent: '1.1%',
-          color: AppColors.warning,
-        ),
-        AttendanceSliceModel(
-          label: 'On Leave',
-          value: 79,
-          displayPercent: '7.9%',
-          color: AppColors.purple4,
-        ),
-      ];
+  /// Mock counts match the original dashboard demo; legend % and donut are derived so they sum to 100%.
+  static List<AttendanceSliceModel> _mockAttendance() {
+    const p = 968, a = 25, l = 11, ol = 79;
+    const t = p + a + l + ol;
+    String pct(int c) => '${(100 * c / t).toStringAsFixed(1)}%';
+    return [
+      AttendanceSliceModel(
+        label: 'Present',
+        value: p.toDouble(),
+        displayPercent: pct(p),
+        color: AppColors.primary,
+      ),
+      AttendanceSliceModel(
+        label: 'Absent',
+        value: a.toDouble(),
+        displayPercent: pct(a),
+        color: AppColors.border,
+      ),
+      AttendanceSliceModel(
+        label: 'Late',
+        value: l.toDouble(),
+        displayPercent: pct(l),
+        color: AppColors.warning,
+      ),
+      AttendanceSliceModel(
+        label: 'On Leave',
+        value: ol.toDouble(),
+        displayPercent: pct(ol),
+        color: AppColors.purple4,
+      ),
+    ];
+  }
+
+  static double _mockAttendanceCenterRate() {
+    const p = 968, a = 25, l = 11, ol = 79;
+    const t = p + a + l + ol;
+    return (100 * p / t);
+  }
 
   static const List<FlSpot> _defaultGrowthSpots = [
     FlSpot(0, 680),
@@ -575,41 +618,41 @@ class DashboardService {
   ];
 
   static List<DepartmentSliceModel> _mockDepartments() => const [
-        DepartmentSliceModel(
-          name: 'Engineering',
-          value: 35,
-          count: 437,
-          color: AppColors.primary,
-        ),
-        DepartmentSliceModel(
-          name: 'Sales',
-          value: 20,
-          count: 250,
-          color: AppColors.purple,
-        ),
-        DepartmentSliceModel(
-          name: 'Marketing',
-          value: 15,
-          count: 187,
-          color: AppColors.purple2,
-        ),
-        DepartmentSliceModel(
-          name: 'HR',
-          value: 10,
-          count: 125,
-          color: AppColors.purple3,
-        ),
-        DepartmentSliceModel(
-          name: 'Operations',
-          value: 12,
-          count: 150,
-          color: AppColors.purple4,
-        ),
-        DepartmentSliceModel(
-          name: 'Finance',
-          value: 8,
-          count: 99,
-          color: AppColors.success,
-        ),
-      ];
+    DepartmentSliceModel(
+      name: 'Engineering',
+      value: 35,
+      count: 437,
+      color: AppColors.primary,
+    ),
+    DepartmentSliceModel(
+      name: 'Sales',
+      value: 20,
+      count: 250,
+      color: AppColors.purple,
+    ),
+    DepartmentSliceModel(
+      name: 'Marketing',
+      value: 15,
+      count: 187,
+      color: AppColors.purple2,
+    ),
+    DepartmentSliceModel(
+      name: 'HR',
+      value: 10,
+      count: 125,
+      color: AppColors.purple3,
+    ),
+    DepartmentSliceModel(
+      name: 'Operations',
+      value: 12,
+      count: 150,
+      color: AppColors.purple4,
+    ),
+    DepartmentSliceModel(
+      name: 'Finance',
+      value: 8,
+      count: 99,
+      color: AppColors.success,
+    ),
+  ];
 }

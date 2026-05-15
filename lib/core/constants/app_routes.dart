@@ -6,9 +6,11 @@ abstract final class AppRoutes {
   static const String dashboard = '/dashboard';
 
   static const String employees = '/employees';
+  static const String employeeProfile = '/employees/profile';
   static const String employeeWizard = '/employees/wizard';
   static const String payroll = '/payroll';
   static const String leave = '/leave';
+  static const String disciplinary = '/disciplinary';
   static const String attendance = '/attendance';
   static const String recruitment = '/recruitment';
   static const String performance = '/performance';

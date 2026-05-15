@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_colors.dart';
+import 'leave_management_screen.dart';
 
+/// Shell route / dashboard entry — delegates to [LeaveManagementScreen].
 class LeaveListScreen extends StatelessWidget {
-  const LeaveListScreen({super.key});
+  const LeaveListScreen({super.key, this.embeddedInShell = false});
+
+  final bool embeddedInShell;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Leave Management'),
-        foregroundColor: AppColors.navy,
-      ),
-      body: const Center(child: Text('Leave')),
-    );
+    return LeaveManagementScreen(embeddedInShell: embeddedInShell);
   }
 }
 

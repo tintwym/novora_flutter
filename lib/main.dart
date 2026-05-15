@@ -12,6 +12,7 @@ import 'features/auth/screens/forgot_password_screen.dart';
 import 'features/auth/screens/login_screen.dart';
 import 'features/auth/screens/register_screen.dart';
 import 'features/dashboard/screens/dashboard_screen.dart';
+import 'features/disciplinary/screens/disciplinary_management_screen.dart';
 import 'features/employees/screens/add_employee_screen.dart';
 import 'features/employees/screens/employee_list_screen.dart';
 import 'features/leave/leave_screen.dart';
@@ -64,6 +65,7 @@ class NovoraApp extends StatelessWidget {
         AppRoutes.employeeWizard: (_) => const AddEmployeeScreen(),
         AppRoutes.payroll: (_) => const PayrollScreen(),
         AppRoutes.leave: (_) => const LeaveScreen(),
+        AppRoutes.disciplinary: (_) => const DisciplinaryManagementScreen(),
         AppRoutes.attendance: (_) => const AttendanceManagementScreen(),
         AppRoutes.recruitment: (_) => const RecruitmentScreen(),
         AppRoutes.performance: (_) => const PerformanceScreen(),

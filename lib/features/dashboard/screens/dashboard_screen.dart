@@ -10,6 +10,17 @@ import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/storage/local_storage.dart';
 import '../../../data/models/user_model.dart';
+import '../../attendance/screens/attendance_screen.dart';
+import '../../disciplinary/screens/disciplinary_management_screen.dart';
+import '../../employees/screens/employee_profile_screen.dart';
+import '../../employment/employment_management_screen.dart';
+import '../../leave/screens/leave_list_screen.dart';
+import '../../payroll/screens/payroll_list_screen.dart';
+import '../../performance/screens/performance_screen.dart';
+import '../../recruitment/screens/job_list_screen.dart';
+import '../../reports/screens/reports_screen.dart';
+import '../../settings/screens/settings_screen.dart';
+import '../../training/training_management_screen.dart';
 import '../../../shared/layouts/main_layout.dart';
 import '../../../shared/layouts/responsive_layout.dart';
 import '../../../shared/widgets/app_sidebar.dart';
@@ -32,48 +43,114 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   late final DashboardController _controller = DashboardController();
+  final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
+
+  /// Pushes inside the dashboard content stack so [MainLayout] sidebar + top bar stay visible.
+  void _popShellToRoot() {
+    _shellNavigatorKey.currentState?.popUntil((r) => r.isFirst);
+  }
 
   void _onSidebarTap(BuildContext context, String label) {
-    _controller.setActiveNav(label);
-
     switch (label) {
-      case 'Dashboard':
-        break;
-      case 'Employees':
-        Navigator.pushNamed(context, AppRoutes.employees);
-        break;
-      case 'Recruitment':
-        Navigator.pushNamed(context, AppRoutes.recruitment);
-        break;
-      case 'Attendance':
-        Navigator.pushNamed(context, AppRoutes.attendance);
-        break;
-      case 'Leave Management':
-        Navigator.pushNamed(context, AppRoutes.leave);
-        break;
-      case 'Payroll':
-        Navigator.pushNamed(context, AppRoutes.payroll);
-        break;
-      case 'Performance':
-        Navigator.pushNamed(context, AppRoutes.performance);
-        break;
-      case 'Training':
-        Navigator.pushNamed(context, AppRoutes.training);
-        break;
-      case 'Reports':
-        Navigator.pushNamed(context, AppRoutes.reports);
-        break;
-      case 'Settings':
-        Navigator.pushNamed(context, AppRoutes.settings);
-        break;
       case 'Assets':
       case 'Documents':
+        _popShellToRoot();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('$label — coming soon')),
         );
-        break;
+        return;
+      case 'Dashboard':
+        _popShellToRoot();
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        _controller.setActiveNav('Dashboard');
+        return;
+      case 'Employees':
+      case 'Recruitment':
+      case 'Attendance':
+      case 'Leave Management':
+      case 'Disciplinary Management':
+      case 'Payroll':
+      case 'Performance':
+      case 'Training':
+      case 'Reports':
+      case 'Settings':
+        _popShellToRoot();
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        _controller.setActiveNav(label);
+        return;
       default:
         break;
+    }
+  }
+
+  /// Module area only — nested routes (e.g. employee profile) keep shell chrome.
+  Widget _shellNavigatorHost() {
+    return Navigator(
+      key: _shellNavigatorKey,
+      initialRoute: '/',
+      onGenerateRoute: (RouteSettings settings) {
+        if (settings.name == AppRoutes.employeeProfile) {
+          final id = settings.arguments as String?;
+          return MaterialPageRoute<void>(
+            settings: settings,
+            builder: (_) => EmployeeProfileScreen(employeeId: id, embeddedInShell: true),
+          );
+        }
+        return MaterialPageRoute<void>(
+          settings: settings,
+          builder: (_) => ListenableBuilder(
+            listenable: _controller,
+            builder: (context, _) => _shellBody(),
+          ),
+        );
+      },
+    );
+  }
+
+  String _shellTitle() {
+    switch (_controller.activeNavLabel) {
+      case 'Dashboard':
+        return 'Dashboard';
+      case 'Employees':
+        return 'Employment';
+      default:
+        return _controller.activeNavLabel;
+    }
+  }
+
+  String? _shellSubtitle() {
+    if (_controller.activeNavLabel == 'Dashboard') {
+      return _dashboardWelcomeLine();
+    }
+    return null;
+  }
+
+  Widget _shellBody() {
+    switch (_controller.activeNavLabel) {
+      case 'Dashboard':
+        return _buildScrollBody();
+      case 'Employees':
+        return const EmploymentManagementScreen(embeddedInShell: true);
+      case 'Recruitment':
+        return const JobListScreen(embeddedInShell: true);
+      case 'Attendance':
+        return const AttendanceScreen(embeddedInShell: true);
+      case 'Leave Management':
+        return const LeaveListScreen(embeddedInShell: true);
+      case 'Disciplinary Management':
+        return const DisciplinaryManagementScreen(embeddedInShell: true);
+      case 'Payroll':
+        return const PayrollListScreen(embeddedInShell: true);
+      case 'Performance':
+        return const PerformanceScreen(embeddedInShell: true);
+      case 'Training':
+        return const TrainingManagementScreen(embeddedInShell: true);
+      case 'Reports':
+        return const ReportsScreen(embeddedInShell: true);
+      case 'Settings':
+        return const SettingsScreen(embeddedInShell: true);
+      default:
+        return _buildScrollBody();
     }
   }
 
@@ -109,12 +186,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onSelect: (l) => _onSidebarTap(context, l),
                   ),
                   topBar: AppTopBar(
-                    title: 'Dashboard',
-                    subtitle: _dashboardWelcomeLine(),
-                    trailingDateLabel:
-                        DateFormat.yMMMd().format(DateTime.now()),
+                    title: _shellTitle(),
+                    subtitle: _shellSubtitle(),
+                    trailingDateLabel: _controller.activeNavLabel == 'Dashboard'
+                        ? DateFormat.yMMMd().format(DateTime.now())
+                        : null,
                   ),
-                  body: _buildScrollBody(),
+                  body: _shellNavigatorHost(),
                 );
               }
               return Scaffold(
@@ -133,7 +211,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   backgroundColor: Colors.white,
                   elevation: 0,
                   title: Text(
-                    'Dashboard',
+                    _shellTitle(),
                     style: GoogleFonts.sora(
                       fontWeight: FontWeight.w700,
                       color: AppColors.navy,
@@ -151,7 +229,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(width: 8),
                   ],
                 ),
-                body: _buildScrollBody(),
+                body: _shellNavigatorHost(),
               );
             },
           );

@@ -3,17 +3,36 @@ import 'package:dio/dio.dart';
 import '../error/exceptions.dart';
 import 'api_client.dart';
 
-/// Maps Spring / Dio failures to [ApiException] with a readable message.
-ApiException apiExceptionFromDio(DioException e) {
+bool _looksLikeConnectionFailure(DioException e) {
   if (e.type == DioExceptionType.connectionError ||
       e.type == DioExceptionType.connectionTimeout) {
-    return ApiException(
-      'Cannot reach the API (${ApiClient.baseUrl}). '
-      'Start the Spring backend, set API_BASE_URL in novora_flutter/.env if needed, '
-      'and use the same scheme (http/https) as this app. On Flutter web from a LAN IP, '
-      'add that origin to backend app.cors.additional-origin-patterns.',
-      e.response?.statusCode,
-    );
+    return true;
+  }
+  // Flutter web often reports failed requests as [unknown] with XMLHttpRequest in the message.
+  if (e.type == DioExceptionType.unknown || e.response == null) {
+    final m = e.message?.toLowerCase() ?? '';
+    if (m.contains('xmlhttprequest') ||
+        m.contains('socketexception') ||
+        m.contains('connection refused') ||
+        m.contains('failed host lookup') ||
+        m.contains('network is unreachable')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+String _cannotReachApiMessage() =>
+    'Cannot reach the API (${ApiClient.baseUrl}). '
+    'In another terminal, from the repo root, run: ./scripts/run-backend-local.sh '
+    '(H2, no Postgres). For Neon, run ./mvnw spring-boot:run in novora_backend/ with DB_* in .env. '
+    'Set API_BASE_URL in novora_flutter/.env if the backend uses another host or port. '
+    'Flutter web from a LAN IP needs that origin in backend app.cors.additional-origin-patterns.';
+
+/// Maps Spring / Dio failures to [ApiException] with a readable message.
+ApiException apiExceptionFromDio(DioException e) {
+  if (_looksLikeConnectionFailure(e)) {
+    return ApiException(_cannotReachApiMessage(), e.response?.statusCode);
   }
 
   final response = e.response;

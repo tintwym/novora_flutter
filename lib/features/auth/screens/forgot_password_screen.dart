@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
+import '../../../core/ui/app_snackbar.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/error/exceptions.dart';
 import '../../../shared/layouts/auth_layout.dart';
@@ -32,9 +33,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     if (_loading) return;
     final email = _emailCtrl.text.trim();
     if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter your work email.')),
-      );
+      AppSnackBar.showError(context, 'Enter your work email.');
       return;
     }
     setState(() => _loading = true);
@@ -42,19 +41,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       await _auth.forgotPassword(email);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Check your email for reset instructions.')),
+        const SnackBar(
+          content: Text('Check your email for reset instructions.'),
+        ),
       );
       Navigator.pushReplacementNamed(context, AppRoutes.login);
     } on ApiException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      AppSnackBar.showError(context, e.message);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Request failed: $e')),
-      );
+      AppSnackBar.showError(context, 'Request failed: $e');
     } finally {
       if (mounted) setState(() => _loading = false);
     }

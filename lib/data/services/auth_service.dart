@@ -14,8 +14,8 @@ class AuthService {
   Future<void> _ensureCsrf() => ApiClient.ensureCsrfToken();
 
   Future<UserModel> signIn(String email, String password) async {
-    await _ensureCsrf();
     try {
+      await _ensureCsrf();
       final res = await ApiClient.dio.post<Map<String, dynamic>>(
         AppEndpoints.authLogin,
         data: {
@@ -38,8 +38,8 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    await _ensureCsrf();
     try {
+      await _ensureCsrf();
       final res = await ApiClient.dio.post<Map<String, dynamic>>(
         AppEndpoints.authRegister,
         data: {

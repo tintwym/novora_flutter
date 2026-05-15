@@ -20,6 +20,7 @@ class DashboardController extends ChangeNotifier {
     const NavMenuItem(icon: Icons.assignment_outlined, label: 'Recruitment'),
     const NavMenuItem(icon: Icons.access_time_outlined, label: 'Attendance'),
     const NavMenuItem(icon: Icons.beach_access_outlined, label: 'Leave Management'),
+    const NavMenuItem(icon: Icons.gavel_outlined, label: 'Disciplinary Management'),
     const NavMenuItem(icon: Icons.payments_outlined, label: 'Payroll'),
     const NavMenuItem(icon: Icons.trending_up_rounded, label: 'Performance'),
     const NavMenuItem(icon: Icons.school_outlined, label: 'Training'),
@@ -29,8 +30,8 @@ class DashboardController extends ChangeNotifier {
     const NavMenuItem(icon: Icons.settings_outlined, label: 'Settings'),
   ];
 
-  void setActiveNav(String label) {
-    if (activeNavLabel == label) return;
+  void setActiveNav(String label, {bool forceNotify = false}) {
+    if (!forceNotify && activeNavLabel == label) return;
     activeNavLabel = label;
     notifyListeners();
   }

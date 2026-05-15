@@ -17,6 +17,34 @@ import 'dio_adapter_hook.dart' as dio_hook;
 /// and [kIsWasm] for Wasm web.
 const bool _compileTimeClassicWeb = bool.fromEnvironment('dart.library.html');
 
+bool _isBrowserTarget() =>
+    kIsWeb || kIsWasm || _compileTimeClassicWeb;
+
+/// [localhost], [127.0.0.1], and [[::1]] are different browser *sites* for cookies.
+/// Flutter web is often served at `http://localhost:*` while `.env` points at `127.0.0.1`,
+/// so `JSESSIONID` / `XSRF-TOKEN` are not sent on the next request → Spring CSRF returns 403.
+bool _isLoopbackHost(String host) {
+  final h = host.toLowerCase();
+  return h == 'localhost' || h == '127.0.0.1' || h == '::1';
+}
+
+/// On web, rewrite API host to match [Uri.base.host] when both are loopback variants.
+String _alignLoopbackHostForWeb(String url) {
+  if (!_isBrowserTarget()) return url;
+  final pageHost = Uri.base.host;
+  if (pageHost.isEmpty) return url;
+  late final Uri u;
+  try {
+    u = Uri.parse(url);
+  } catch (_) {
+    return url;
+  }
+  if (!u.hasScheme || u.host.isEmpty) return url;
+  if (!_isLoopbackHost(u.host) || !_isLoopbackHost(pageHost)) return url;
+  if (u.host == pageHost) return url;
+  return u.replace(host: pageHost).toString();
+}
+
 /// Global Dio client: Spring session cookies + CSRF for mutating calls.
 abstract final class ApiClient {
   static CookieJar? _jar;
@@ -32,7 +60,7 @@ abstract final class ApiClient {
   /// Persists session cookies on mobile/desktop. On **web**, uses an in-memory
   /// jar only (`path_provider` / disk persistence is not available there).
   static Future<void> initPersistence() async {
-    if (kIsWeb || kIsWasm || _compileTimeClassicWeb) {
+    if (_isBrowserTarget()) {
       _jarInit ??= Future<void>.value();
       await _jarInit;
       return;
@@ -60,19 +88,34 @@ abstract final class ApiClient {
 
   static String get baseUrl {
     final fromEnv = dotenv.env['API_BASE_URL']?.trim();
+    final String resolved;
     if (fromEnv != null && fromEnv.isNotEmpty) {
-      return fromEnv.endsWith('/') ? fromEnv.substring(0, fromEnv.length - 1) : fromEnv;
+      resolved =
+          fromEnv.endsWith('/') ? fromEnv.substring(0, fromEnv.length - 1) : fromEnv;
+    } else if (_isBrowserTarget()) {
+      // Same hostname as the app tab so session cookies stay same-site with the API.
+      final h = Uri.base.host;
+      resolved = h.isNotEmpty ? 'http://$h:8080' : 'http://127.0.0.1:8080';
+    } else {
+      // Prefer loopback IP on native: avoids some macOS localhost → IPv6 (::1) mismatches with Java.
+      resolved = 'http://127.0.0.1:8080';
     }
-    return 'http://localhost:8080';
+    return _alignLoopbackHostForWeb(resolved);
   }
 
   static Dio get dio {
+    final resolved = baseUrl;
+    if (_dio != null && _dio!.options.baseUrl != resolved) {
+      _csrf.clear();
+      _dio!.close(force: true);
+      _dio = null;
+    }
     _dio ??= _create();
     return _dio!;
   }
 
   static Dio _create() {
-    final webTarget = kIsWeb || kIsWasm || _compileTimeClassicWeb;
+    final webTarget = _isBrowserTarget();
     final client = Dio(
       BaseOptions(
         baseUrl: baseUrl,
@@ -99,7 +142,7 @@ abstract final class ApiClient {
   /// Clears HTTP state (cookies, CSRF token, Dio instance). Call on logout.
   static Future<void> clearSession() async {
     _csrf.clear();
-    if (!(kIsWeb || kIsWasm || _compileTimeClassicWeb)) {
+    if (!_isBrowserTarget()) {
       await _cookieJar.deleteAll();
     }
     _dio?.close(force: true);

@@ -1,4 +1,4 @@
-/// REST paths (joined with [ApiClient.baseUrl]). Mirrors Spring `novora_hrms_backend` routes.
+/// REST paths (joined with [ApiClient.baseUrl]). Mirrors Spring `novora_backend` routes.
 abstract final class AppEndpoints {
   static const authCsrf = '/api/v1/auth/csrf';
   static const authLogin = '/api/v1/auth/login';

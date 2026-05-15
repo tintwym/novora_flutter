@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_colors.dart';
+import 'payroll_management_screen.dart';
 
+/// Dashboard / route entry — delegates to [PayrollManagementScreen].
 class PayrollListScreen extends StatelessWidget {
-  const PayrollListScreen({super.key});
+  const PayrollListScreen({super.key, this.embeddedInShell = false});
+
+  final bool embeddedInShell;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Payroll'),
-        foregroundColor: AppColors.navy,
-      ),
-      body: const Center(child: Text('Payroll')),
-    );
+    return PayrollManagementScreen(embeddedInShell: embeddedInShell);
   }
 }
 

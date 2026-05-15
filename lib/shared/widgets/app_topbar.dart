@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_routes.dart';
 import '../../core/storage/local_storage.dart';
 import '../../data/models/user_model.dart';
-import '../../data/repositories/auth_repository.dart';
-import 'avatar_widget.dart';
 
 class AppTopBar extends StatelessWidget {
   const AppTopBar({
@@ -34,34 +31,19 @@ class AppTopBar extends StatelessWidget {
     }
   }
 
-  String _initials(UserModel? u) {
-    if (u == null) return 'NV';
-    final n = u.displayName.trim();
-    if (n.isEmpty) {
-      final e = u.email;
-      if (e.length >= 2) return e.substring(0, 2).toUpperCase();
-      return 'NV';
-    }
-    final parts = n.split(RegExp(r'\s+'));
-    if (parts.length >= 2 &&
-        parts[0].isNotEmpty &&
-        parts[1].isNotEmpty) {
-      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    }
-    if (n.length >= 2) return n.substring(0, 2).toUpperCase();
-    return n[0].toUpperCase();
-  }
-
-  Future<void> _logout(BuildContext context) async {
-    await AuthRepository().logout();
-    if (!context.mounted) return;
-    Navigator.pushReplacementNamed(context, AppRoutes.login);
+  String _usernameLabel(UserModel? user) {
+    if (user == null) return 'Signed in';
+    final name = user.displayName.trim();
+    if (name.isNotEmpty) return name;
+    final email = user.email.trim();
+    if (email.isNotEmpty) return email;
+    return 'Signed in';
   }
 
   @override
   Widget build(BuildContext context) {
     final user = _readUser();
-    final roleLabel = user?.primaryRole ?? 'User';
+    final username = _usernameLabel(user);
 
     return Container(
       height: 64,
@@ -164,47 +146,17 @@ class AppTopBar extends StatelessWidget {
           const SizedBox(width: 8),
           _iconButton(Icons.settings_outlined),
           const SizedBox(width: 12),
-          GestureDetector(
-            onTap: () => _logout(context),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.bg,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.border, width: 1.5),
-              ),
-              child: Row(
-                children: [
-                  AvatarWidget(initials: _initials(user), size: 30),
-                  const SizedBox(width: 8),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user?.displayName ?? 'Signed in',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.navy,
-                        ),
-                      ),
-                      Text(
-                        roleLabel,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 10,
-                          color: AppColors.muted,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 6),
-                  const Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: AppColors.muted,
-                    size: 16,
-                  ),
-                ],
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 200),
+            child: Text(
+              username,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+              style: GoogleFonts.dmSans(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.navy,
               ),
             ),
           ),

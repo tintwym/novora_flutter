@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
+import '../../../core/ui/app_snackbar.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/error/exceptions.dart';
 import '../../../core/utils/validators.dart';
@@ -61,22 +62,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _submit() async {
     if (_loading) return;
     if (_passCtrl.text != _confirmCtrl.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Passwords do not match.')));
+      AppSnackBar.showError(context, 'Passwords do not match.');
       return;
     }
     final pwdErr = strongPasswordValidator(_passCtrl.text);
     if (pwdErr != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(pwdErr)));
+      AppSnackBar.showError(context, pwdErr);
       return;
     }
     if (_emailCtrl.text.trim().isEmpty || _passCtrl.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please complete email and password.')),
-      );
+      AppSnackBar.showError(context, 'Please complete email and password.');
       return;
     }
     setState(() => _loading = true);
@@ -89,14 +84,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
     } on ApiException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.message)));
+      AppSnackBar.showError(context, e.message);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Registration failed: $e')));
+      AppSnackBar.showError(context, 'Registration failed: $e');
     } finally {
       if (mounted) setState(() => _loading = false);
     }

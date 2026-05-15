@@ -21,6 +21,9 @@ abstract final class AppColors {
   static const Color success = Color(0xFF059669);
   static const Color warning = Color(0xFFD97706);
   static const Color danger = Color(0xFFEF4444);
+
+  /// Light fill behind error SnackBars / inline alerts (pairs with [danger] text).
+  static const Color errorSurface = Color(0xFFFEE2E2);
   static const Color muted = Color(0xFF94A3B8);
   static const Color textMuted = Color(0xFF64748B);
   static const Color bg = Color(0xFFF8FAFC);
@@ -42,11 +45,7 @@ abstract final class AppColors {
 
   /// Auth hero: deep slate–indigo (no brown / forest mix).
   static const LinearGradient navyGrad = LinearGradient(
-    colors: [
-      Color(0xFF0B1220),
-      Color(0xFF111C38),
-      Color(0xFF172554),
-    ],
+    colors: [Color(0xFF0B1220), Color(0xFF111C38), Color(0xFF172554)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

@@ -62,6 +62,7 @@ class HrDataTableCard extends StatelessWidget {
             final table = DataTable(
               headingRowColor: WidgetStateProperty.all(AppColors.bg),
               dataRowMinHeight: 48,
+              dataRowMaxHeight: 64,
               horizontalMargin: 16,
               columns: columns,
               rows: rows,
