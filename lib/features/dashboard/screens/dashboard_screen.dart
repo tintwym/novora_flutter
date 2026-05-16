@@ -35,7 +35,10 @@ import '../widgets/recent_hires_card.dart';
 import '../widgets/stat_card.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({super.key, this.skipInitialSessionRefresh = false});
+
+  /// When true, skips `/me` + dashboard API refresh on first frame (widget tests / offline).
+  final bool skipInitialSessionRefresh;
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -170,6 +173,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     SessionNotifier.instance.addListener(_onSessionChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      if (widget.skipInitialSessionRefresh) return;
       unawaited(_refreshSessionAndDashboard());
     });
   }

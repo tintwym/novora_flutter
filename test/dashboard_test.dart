@@ -15,7 +15,7 @@ void main() {
 
   testWidgets('Dashboard screen builds', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const MaterialApp(home: DashboardScreen()),
+      const MaterialApp(home: DashboardScreen(skipInitialSessionRefresh: true)),
     );
     await tester.pump();
     expect(tester.takeException(), isNull);

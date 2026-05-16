@@ -89,9 +89,10 @@ abstract final class ApiClient {
 
   static String get baseUrl {
     const fromDefine = String.fromEnvironment('API_BASE_URL');
+    // Widget / integration tests often skip [dotenv.load]; treat as unset.
     final rawEnv = fromDefine.isNotEmpty
         ? fromDefine.trim()
-        : dotenv.env['API_BASE_URL']?.trim();
+        : (dotenv.isInitialized ? dotenv.env['API_BASE_URL']?.trim() : null);
     final fromEnv = (rawEnv == null || rawEnv.isEmpty) ? null : rawEnv;
     final String resolved;
     // Same-origin API: Vercel rewrites `/api` + `/auth` → Render. Web needs an absolute origin (not "").
