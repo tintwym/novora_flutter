@@ -28,7 +28,6 @@ import '../../../shared/widgets/app_sidebar.dart';
 import '../../../shared/widgets/app_topbar.dart';
 import '../dashboard_controller.dart';
 import '../widgets/attendance_donut_chart.dart';
-import '../widgets/dept_pie_chart.dart';
 import '../widgets/growth_chart.dart';
 import '../widgets/leave_requests_card.dart';
 import '../widgets/payroll_summary_card.dart';
@@ -57,7 +56,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _onSidebarTap(BuildContext context, String label) {
     switch (label) {
       case 'Assets':
-      case 'Documents':
         _popShellToRoot();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('$label — coming soon')),
@@ -341,22 +339,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(flex: 9, child: GrowthChart(repository: repo)),
+              Expanded(flex: 12, child: GrowthChart(repository: repo)),
               const SizedBox(width: 16),
-              Expanded(flex: 5, child: DeptPieChart(repository: repo)),
-              const SizedBox(width: 16),
-              Expanded(
-                flex: 5,
-                child: AttendanceDonutChart(repository: repo),
-              ),
+              Expanded(flex: 10, child: AttendanceDonutChart(repository: repo)),
             ],
           );
         }
         return Column(
           children: [
             GrowthChart(repository: repo),
-            const SizedBox(height: 16),
-            DeptPieChart(repository: repo),
             const SizedBox(height: 16),
             AttendanceDonutChart(repository: repo),
           ],

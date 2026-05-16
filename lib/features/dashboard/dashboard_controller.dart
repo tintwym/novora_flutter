@@ -27,7 +27,6 @@ class DashboardController extends ChangeNotifier {
     NavMenuItem(icon: Icons.trending_up_rounded, label: 'Performance'),
     NavMenuItem(icon: Icons.school_outlined, label: 'Training'),
     NavMenuItem(icon: Icons.inventory_2_outlined, label: 'Assets'),
-    NavMenuItem(icon: Icons.description_outlined, label: 'Documents'),
     NavMenuItem(icon: Icons.bar_chart_outlined, label: 'Reports'),
     NavMenuItem(icon: Icons.settings_outlined, label: 'Settings'),
   ];
@@ -37,7 +36,6 @@ class DashboardController extends ChangeNotifier {
     NavMenuItem(icon: Icons.access_time_outlined, label: 'Attendance'),
     NavMenuItem(icon: Icons.beach_access_outlined, label: 'Leave Management'),
     NavMenuItem(icon: Icons.receipt_long_outlined, label: 'Claims'),
-    NavMenuItem(icon: Icons.description_outlined, label: 'Documents'),
     NavMenuItem(icon: Icons.settings_outlined, label: 'Settings'),
   ];
 

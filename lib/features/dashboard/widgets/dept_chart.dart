@@ -4,99 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../data/models/attendance_model.dart';
-import '../../../data/models/department_slice_model.dart';
 import '../../../data/repositories/dashboard_repository.dart';
-
-/// Department distribution donut + legend.
-class DeptChart extends StatelessWidget {
-  const DeptChart({super.key, required this.repository});
-
-  final DashboardRepository repository;
-
-  @override
-  Widget build(BuildContext context) {
-    final deptData = repository.departmentSlices
-        .map(
-          (DepartmentSliceModel s) => <String, Object>{
-            'name': s.name,
-            'value': s.value,
-            'count': s.count,
-            'color': s.color,
-          },
-        )
-        .toList();
-
-    return _DashboardSectionCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Employees by Department',
-            style: GoogleFonts.dmSans(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: AppColors.navy,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 120,
-            child: PieChart(
-              PieChartData(
-                sections: deptData.map((d) {
-                  return PieChartSectionData(
-                    value: d['value'] as double,
-                    color: d['color'] as Color,
-                    radius: 45,
-                    showTitle: false,
-                  );
-                }).toList(),
-                centerSpaceRadius: 30,
-                sectionsSpace: 2,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          ...deptData.map(
-            (d) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: d['color'] as Color,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      d['name'] as String,
-                      style: GoogleFonts.dmSans(
-                        fontSize: 11,
-                        color: AppColors.textMuted,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    '${d['value']}% (${d['count']})',
-                    style: GoogleFonts.dmSans(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.navy,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 /// Attendance breakdown donut fed by [DashboardRepository] (API or mock).
 class AttendanceOverviewChart extends StatelessWidget {
@@ -192,7 +100,7 @@ class AttendanceOverviewChart extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 6),
                       Text(
                         'Attendance rate',
                         textAlign: TextAlign.center,
@@ -209,7 +117,7 @@ class AttendanceOverviewChart extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 22),
           ...attData.map(_sliceRow),
         ],
       ),

@@ -7,6 +7,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 import '../../../shared/widgets/hr_pill_segmented_control.dart';
+import '../widgets/my_check_in_tab.dart';
 
 /// Time & Attendance — mock-aligned tabs (Duty roster through Report).
 class AttendanceScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class AttendanceScreen extends StatefulWidget {
 
 class _AttendanceScreenState extends State<AttendanceScreen>
     with SingleTickerProviderStateMixin {
-  late final TabController _tab = TabController(length: 8, vsync: this);
+  late final TabController _tab = TabController(length: 9, vsync: this);
 
   String _rosterGranularity = 'week';
   final Set<int> _unknownSelected = {};
@@ -64,6 +65,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
             unselectedLabelColor: AppColors.textMuted,
             indicatorColor: AppColors.primary,
             tabs: [
+              const Tab(text: 'Check-in'),
               const Tab(text: 'Duty roster'),
               const Tab(text: 'Timesheet'),
               const Tab(text: 'Shift pattern'),
@@ -103,6 +105,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
             controller: _tab,
             physics: const NeverScrollableScrollPhysics(),
             children: [
+              const MyCheckInTab(),
               _dutyRosterTab(),
               _timesheetTab(),
               _shiftPatternTab(),

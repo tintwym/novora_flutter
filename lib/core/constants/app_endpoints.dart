@@ -20,6 +20,10 @@ abstract final class AppEndpoints {
   static const dashboardDepartments = '/api/v1/admin/dashboard/departments';
   static const dashboardAttendanceOverview = '/api/v1/admin/dashboard/attendance-overview';
 
+  static const myAttendance = '/api/v1/my/attendance';
+  static const myAttendanceCheckIn = '/api/v1/my/attendance/check-in';
+  static const myAttendanceCheckOut = '/api/v1/my/attendance/check-out';
+
   static const employees = '/api/v1/admin/employees';
   static const departments = '/api/v1/admin/departments';
 }
