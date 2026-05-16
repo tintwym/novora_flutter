@@ -12,6 +12,21 @@ class AttendanceOverviewChart extends StatelessWidget {
 
   final DashboardRepository repository;
 
+  static const _sliceColors = {
+    'present': AppColors.brandBlueDeep,
+    'absent': Color(0xFFCBD5E1),
+    'late': Color(0xFFF59E0B),
+    'on leave': Color(0xFFA5B4FC),
+  };
+
+  static Color _colorForLabel(String label, Color fallback) {
+    final key = label.toLowerCase();
+    for (final entry in _sliceColors.entries) {
+      if (key.contains(entry.key)) return entry.value;
+    }
+    return fallback;
+  }
+
   @override
   Widget build(BuildContext context) {
     final attData = repository.attendanceSlices;
@@ -20,8 +35,8 @@ class AttendanceOverviewChart extends StatelessWidget {
         .map(
           (d) => PieChartSectionData(
             value: d.value,
-            color: d.color,
-            radius: 46,
+            color: _colorForLabel(d.label, d.color),
+            radius: 52,
             showTitle: false,
           ),
         )
@@ -31,11 +46,13 @@ class AttendanceOverviewChart extends StatelessWidget {
             PieChartSectionData(
               value: 1,
               color: AppColors.border.withValues(alpha: 0.4),
-              radius: 46,
+              radius: 52,
               showTitle: false,
             ),
           ]
         : pieSections;
+
+    final centerRate = repository.attendanceOverviewRate;
 
     return _DashboardSectionCard(
       child: Column(
@@ -53,59 +70,60 @@ class AttendanceOverviewChart extends StatelessWidget {
               ),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEEF2FF),
-                  borderRadius: BorderRadius.circular(6),
+                  color: const Color(0xFFE3F2FD),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   'This Month',
                   style: GoogleFonts.dmSans(
-                    fontSize: 11,
+                    fontSize: 12,
                     color: AppColors.primary,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           SizedBox(
-            height: 128,
+            height: 148,
             child: Stack(
               alignment: Alignment.center,
               children: [
                 PieChart(
                   PieChartData(
                     sections: chartSections,
-                    centerSpaceRadius: 40,
-                    sectionsSpace: 0,
+                    centerSpaceRadius: 46,
+                    sectionsSpace: 1.5,
                     startDegreeOffset: -90,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          '${repository.attendanceOverviewRate.toStringAsFixed(1)}%',
+                          '${centerRate.toStringAsFixed(1)}%',
                           maxLines: 1,
                           style: GoogleFonts.sora(
-                            fontSize: 17,
+                            fontSize: 22,
                             fontWeight: FontWeight.w800,
                             color: AppColors.navy,
                             height: 1.05,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
                       Text(
                         'Attendance rate',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.dmSans(
-                          fontSize: 10,
+                          fontSize: 11,
                           fontWeight: FontWeight.w500,
                           color: AppColors.textMuted,
                           height: 1.2,
@@ -117,7 +135,7 @@ class AttendanceOverviewChart extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 22),
+          const SizedBox(height: 16),
           ...attData.map(_sliceRow),
         ],
       ),
@@ -125,21 +143,22 @@ class AttendanceOverviewChart extends StatelessWidget {
   }
 
   Widget _sliceRow(AttendanceSliceModel d) {
+    final dotColor = _colorForLabel(d.label, d.color);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
         children: [
           Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(color: d.color, shape: BoxShape.circle),
+            width: 9,
+            height: 9,
+            decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
               d.label,
               style: GoogleFonts.dmSans(
-                fontSize: 11,
+                fontSize: 12,
                 color: AppColors.textMuted,
               ),
             ),
@@ -147,8 +166,8 @@ class AttendanceOverviewChart extends StatelessWidget {
           Text(
             d.displayPercent,
             style: GoogleFonts.dmSans(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
               color: AppColors.navy,
             ),
           ),

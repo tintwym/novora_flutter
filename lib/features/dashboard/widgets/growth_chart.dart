@@ -11,23 +11,38 @@ class GrowthChart extends StatelessWidget {
 
   final DashboardRepository repository;
 
+  /// Design reference axis (screenshot): 611 → 1316 with 200-step grid lines.
+  static const double _axisMinY = 611;
+  static const double _axisMaxY = 1316;
+  static const Set<int> _yTickLabels = {611, 800, 1000, 1200, 1316};
+
+  static bool _showLeftTick(double value) {
+    final v = value.round();
+    for (final tick in _yTickLabels) {
+      if ((v - tick).abs() < 12) return true;
+    }
+    return false;
+  }
+
+  static String _leftTickLabel(double value) {
+    final v = value.round();
+    var best = v;
+    var bestDist = 9999.0;
+    for (final tick in _yTickLabels) {
+      final d = (v - tick).abs();
+      if (d < bestDist) {
+        bestDist = d.toDouble();
+        best = tick;
+      }
+    }
+    return best.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     final months = repository.monthLabels;
     final spots = repository.growthSpots;
-
-    double minY = 0;
-    double maxY = 10;
-    if (spots.isNotEmpty) {
-      final ys = spots.map((s) => s.y).toList();
-      minY = ys.reduce((a, b) => a < b ? a : b);
-      maxY = ys.reduce((a, b) => a > b ? a : b);
-      final span = (maxY - minY).abs();
-      final pad = span < 1e-6 ? 1.0 : span * 0.12;
-      minY = minY - pad;
-      maxY = maxY + pad;
-      if (minY < 0) minY = 0;
-    }
+    final maxX = spots.isEmpty ? 11.0 : (spots.length - 1).toDouble();
 
     return _DashboardSectionCard(
       child: Column(
@@ -64,14 +79,20 @@ class GrowthChart extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           SizedBox(
-            height: 180,
+            height: 200,
             child: LineChart(
               LineChartData(
+                minX: 0,
+                maxX: maxX,
+                minY: _axisMinY,
+                maxY: _axisMaxY,
+                clipData: const FlClipData.all(),
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
+                  horizontalInterval: 200,
                   getDrawingHorizontalLine: (value) =>
                       FlLine(color: AppColors.border, strokeWidth: 1),
                 ),
@@ -79,29 +100,41 @@ class GrowthChart extends StatelessWidget {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 42,
-                      getTitlesWidget: (value, meta) => Text(
-                        value.toInt().toString(),
-                        style: GoogleFonts.dmSans(
-                          fontSize: 10,
-                          color: AppColors.muted,
-                        ),
-                      ),
+                      reservedSize: 40,
+                      interval: 1,
+                      getTitlesWidget: (value, meta) {
+                        if (!_showLeftTick(value)) return const SizedBox();
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: Text(
+                            _leftTickLabel(value),
+                            style: GoogleFonts.dmSans(
+                              fontSize: 10,
+                              color: AppColors.muted,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
+                      reservedSize: 22,
+                      interval: 1,
                       getTitlesWidget: (value, meta) {
-                        final idx = value.toInt();
+                        final idx = value.round();
                         if (idx < 0 || idx >= months.length) {
                           return const SizedBox();
                         }
-                        return Text(
-                          months[idx],
-                          style: GoogleFonts.dmSans(
-                            fontSize: 10,
-                            color: AppColors.muted,
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Text(
+                            months[idx],
+                            style: GoogleFonts.dmSans(
+                              fontSize: 10,
+                              color: AppColors.muted,
+                            ),
                           ),
                         );
                       },
@@ -119,24 +152,25 @@ class GrowthChart extends StatelessWidget {
                   LineChartBarData(
                     spots: spots,
                     isCurved: true,
-                    color: AppColors.primary,
+                    curveSmoothness: 0.22,
+                    color: AppColors.brandBlueDeep,
                     barWidth: 2.5,
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(
                       show: true,
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.primary.withValues(alpha: 0.25),
-                          AppColors.primary.withValues(alpha: 0.02),
+                          AppColors.brandBlue.withValues(alpha: 0.35),
+                          AppColors.brandBlueSoft.withValues(alpha: 0.12),
+                          Colors.white.withValues(alpha: 0),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
+                        stops: const [0.0, 0.55, 1.0],
                       ),
                     ),
                   ),
                 ],
-                minY: minY,
-                maxY: maxY,
                 lineTouchData: LineTouchData(
                   touchTooltipData: LineTouchTooltipData(
                     getTooltipItems: (touchedSpots) => touchedSpots.map((spot) {

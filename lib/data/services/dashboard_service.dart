@@ -662,44 +662,35 @@ class DashboardService {
     periodLabel: 'May 2025 ▾',
   );
 
-  /// Mock counts match the original dashboard demo; legend % and donut are derived so they sum to 100%.
-  static List<AttendanceSliceModel> _mockAttendance() {
-    const p = 968, a = 25, l = 11, ol = 79;
-    const t = p + a + l + ol;
-    String pct(int c) => '${(100 * c / t).toStringAsFixed(1)}%';
-    return [
-      AttendanceSliceModel(
-        label: 'Present',
-        value: p.toDouble(),
-        displayPercent: pct(p),
-        color: AppColors.primary,
-      ),
-      AttendanceSliceModel(
-        label: 'Absent',
-        value: a.toDouble(),
-        displayPercent: pct(a),
-        color: AppColors.border,
-      ),
-      AttendanceSliceModel(
-        label: 'Late',
-        value: l.toDouble(),
-        displayPercent: pct(l),
-        color: AppColors.warning,
-      ),
-      AttendanceSliceModel(
-        label: 'On Leave',
-        value: ol.toDouble(),
-        displayPercent: pct(ol),
-        color: AppColors.purple4,
-      ),
-    ];
-  }
+  /// Mock attendance matches dashboard design (89.4% present center rate).
+  static List<AttendanceSliceModel> _mockAttendance() => const [
+    AttendanceSliceModel(
+      label: 'Present',
+      value: 89.4,
+      displayPercent: '89.4%',
+      color: AppColors.primary,
+    ),
+    AttendanceSliceModel(
+      label: 'Absent',
+      value: 2.3,
+      displayPercent: '2.3%',
+      color: Color(0xFFCBD5E1),
+    ),
+    AttendanceSliceModel(
+      label: 'Late',
+      value: 1.0,
+      displayPercent: '1.0%',
+      color: Color(0xFFF59E0B),
+    ),
+    AttendanceSliceModel(
+      label: 'On Leave',
+      value: 7.3,
+      displayPercent: '7.3%',
+      color: AppColors.purple4,
+    ),
+  ];
 
-  static double _mockAttendanceCenterRate() {
-    const p = 968, a = 25, l = 11, ol = 79;
-    const t = p + a + l + ol;
-    return (100 * p / t);
-  }
+  static double _mockAttendanceCenterRate() => 89.4;
 
   static const List<FlSpot> _defaultGrowthSpots = [
     FlSpot(0, 680),

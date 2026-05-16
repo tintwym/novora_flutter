@@ -68,7 +68,9 @@ flutter:
   uses-material-design: true
 
   assets:
-    - .env
+    # Committed template (`.env` is gitignored). Override at build time via
+    # `--dart-define=API_BASE_URL=…` or copy `.env.example` → `.env` locally.
+    - .env.example
     - assets/images/
     - assets/icons/
     # Bundled with the app so Web / strict asset resolution can resolve font files

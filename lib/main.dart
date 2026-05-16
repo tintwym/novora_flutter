@@ -26,9 +26,9 @@ import 'features/training/screens/training_list_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    await dotenv.load(fileName: '.env');
+    await dotenv.load(fileName: '.env.example');
   } catch (_) {
-    // `.env` may be absent locally; ApiClient falls back to localhost.
+    // Asset missing in some builds; ApiClient falls back to localhost / dart-define.
   }
   await LocalStorage.init();
   await ApiClient.initPersistence();

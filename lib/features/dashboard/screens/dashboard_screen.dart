@@ -336,13 +336,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth > 900) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(flex: 12, child: GrowthChart(repository: repo)),
-              const SizedBox(width: 16),
-              Expanded(flex: 10, child: AttendanceDonutChart(repository: repo)),
-            ],
+          return IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(flex: 12, child: GrowthChart(repository: repo)),
+                const SizedBox(width: 16),
+                Expanded(
+                  flex: 10,
+                  child: AttendanceDonutChart(repository: repo),
+                ),
+              ],
+            ),
           );
         }
         return Column(
