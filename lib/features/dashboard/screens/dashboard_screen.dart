@@ -16,6 +16,7 @@ import '../../employees/screens/employee_profile_screen.dart';
 import '../../employment/employment_management_screen.dart';
 import '../../leave/screens/leave_list_screen.dart';
 import '../../payroll/screens/payroll_list_screen.dart';
+import '../../claim_management/screens/claim_management_screen.dart';
 import '../../performance/screens/performance_screen.dart';
 import '../../recruitment/screens/job_list_screen.dart';
 import '../../reports/screens/reports_screen.dart';
@@ -73,6 +74,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'Leave Management':
       case 'Disciplinary Management':
       case 'Payroll':
+      case 'Claims':
       case 'Performance':
       case 'Training':
       case 'Reports':
@@ -147,6 +149,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return const DisciplinaryManagementScreen(embeddedInShell: true);
       case 'Payroll':
         return const PayrollListScreen(embeddedInShell: true);
+      case 'Claims':
+        return ClaimManagementScreen(
+          key: ValueKey('claims-${_currentUser()?.primaryRole}'),
+          embeddedInShell: true,
+          employeeView: !(_currentUser()?.canAccessHrAdmin ?? true),
+        );
       case 'Performance':
         return const PerformanceScreen(embeddedInShell: true);
       case 'Training':
