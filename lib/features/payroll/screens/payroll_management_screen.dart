@@ -324,7 +324,28 @@ class _AllowanceBodyState extends State<_AllowanceBody> {
           const SizedBox(height: 16),
           _whiteCard(
             child: HrFullWidthDataTable(
-              cellHorizontalPadding: 8,
+              cellHorizontalPadding: 12,
+              headerCells: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    'Allowance name',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+              ],
               columnSpecs: const [
                 ('Allowance name', 2.0),
                 ('Policy type', 1.0),
@@ -363,11 +384,14 @@ class _AllowanceBodyState extends State<_AllowanceBody> {
     return DataRow(
       cells: [
         DataCell(
-          Text(
-            name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600),
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600),
+            ),
           ),
         ),
         DataCell(_pill(pol, polBg, polFg)),
