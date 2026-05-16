@@ -11,31 +11,19 @@ class GrowthChart extends StatelessWidget {
 
   final DashboardRepository repository;
 
-  /// Design reference axis (screenshot): 611 → 1316 with 200-step grid lines.
-  static const double _axisMinY = 611;
-  static const double _axisMaxY = 1316;
-  static const Set<int> _yTickLabels = {611, 800, 1000, 1200, 1316};
+  /// Axis range aligned to 200-step grid (labels match design: 611 … 1316).
+  static const double _axisMinY = 600;
+  static const double _axisMaxY = 1400;
+  static const double _yInterval = 200;
 
-  static bool _showLeftTick(double value) {
+  static String? _leftAxisLabel(double value) {
     final v = value.round();
-    for (final tick in _yTickLabels) {
-      if ((v - tick).abs() < 12) return true;
-    }
-    return false;
-  }
-
-  static String _leftTickLabel(double value) {
-    final v = value.round();
-    var best = v;
-    var bestDist = 9999.0;
-    for (final tick in _yTickLabels) {
-      final d = (v - tick).abs();
-      if (d < bestDist) {
-        bestDist = d.toDouble();
-        best = tick;
-      }
-    }
-    return best.toString();
+    if (v <= _axisMinY) return '611';
+    if (v == 800) return '800';
+    if (v == 1000) return '1000';
+    if (v == 1200) return '1200';
+    if (v >= _axisMaxY) return '1316';
+    return null;
   }
 
   @override
@@ -92,7 +80,7 @@ class GrowthChart extends StatelessWidget {
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
-                  horizontalInterval: 200,
+                  horizontalInterval: _yInterval,
                   getDrawingHorizontalLine: (value) =>
                       FlLine(color: AppColors.border, strokeWidth: 1),
                 ),
@@ -100,14 +88,15 @@ class GrowthChart extends StatelessWidget {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 40,
-                      interval: 1,
+                      reservedSize: 44,
+                      interval: _yInterval,
                       getTitlesWidget: (value, meta) {
-                        if (!_showLeftTick(value)) return const SizedBox();
+                        final label = _leftAxisLabel(value);
+                        if (label == null) return const SizedBox.shrink();
                         return Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: Text(
-                            _leftTickLabel(value),
+                            label,
                             style: GoogleFonts.dmSans(
                               fontSize: 10,
                               color: AppColors.muted,
@@ -121,7 +110,6 @@ class GrowthChart extends StatelessWidget {
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 22,
-                      interval: 1,
                       getTitlesWidget: (value, meta) {
                         final idx = value.round();
                         if (idx < 0 || idx >= months.length) {
