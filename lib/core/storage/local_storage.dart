@@ -21,7 +21,6 @@ class LocalStorage {
 
   static const _kToken = 'auth_token';
   static const _kUser = 'auth_user_json';
-
   String? get authToken => _prefs.getString(_kToken);
   set authToken(String? v) {
     if (v == null) {

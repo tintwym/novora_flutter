@@ -6,6 +6,7 @@ import 'core/constants/app_strings.dart';
 import 'core/network/api_client.dart';
 import 'core/storage/local_storage.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_notifier.dart';
 import 'data/repositories/auth_repository.dart';
 import 'features/attendance/attendance_management_screen.dart';
 import 'features/auth/screens/forgot_password_screen.dart';
@@ -31,6 +32,7 @@ Future<void> main() async {
     // Asset missing in some builds; ApiClient falls back to localhost / dart-define.
   }
   await LocalStorage.init();
+  await ThemeNotifier.instance.load();
   await ApiClient.initPersistence();
   var initialRoute = AppRoutes.login;
   try {
@@ -49,14 +51,17 @@ class NovoraApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppStrings.appTitle,
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.light,
-      initialRoute: initialRoute,
-      routes: {
+    return ListenableBuilder(
+      listenable: ThemeNotifier.instance,
+      builder: (context, _) {
+        return MaterialApp(
+          title: AppStrings.appTitle,
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: ThemeNotifier.instance.mode,
+          initialRoute: initialRoute,
+          routes: {
         AppRoutes.login: (_) => const LoginScreen(),
         AppRoutes.register: (_) => const RegisterScreen(),
         AppRoutes.forgotPassword: (_) => const ForgotPasswordScreen(),
@@ -72,6 +77,8 @@ class NovoraApp extends StatelessWidget {
         AppRoutes.training: (_) => const TrainingListScreen(),
         AppRoutes.reports: (_) => const ReportsScreen(),
         AppRoutes.settings: (_) => const SettingsScreen(),
+          },
+        );
       },
     );
   }

@@ -44,6 +44,7 @@ dependencies:
   cookie_jar: ^4.0.9
   dio_cookie_manager: ^3.4.0
   path_provider: ^2.1.5
+  sunrise_sunset_calc: ^3.0.0
 
 dev_dependencies:
   flutter_test:

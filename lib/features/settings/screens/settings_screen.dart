@@ -24,6 +24,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       barrierDismissible: true,
       builder: (ctx) {
+        final scheme = Theme.of(ctx).colorScheme;
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(
@@ -31,7 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: GoogleFonts.sora(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.navy,
+              color: scheme.onSurface,
             ),
           ),
           content: Text(
@@ -39,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: GoogleFonts.dmSans(
               fontSize: 14,
               height: 1.45,
-              color: AppColors.textMuted,
+              color: scheme.onSurfaceVariant,
             ),
           ),
           actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -50,7 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 'Cancel',
                 style: GoogleFonts.dmSans(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textMuted,
+                  color: scheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -123,6 +124,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildBody(BuildContext context, String email, String role) {
+    final scheme = Theme.of(context).colorScheme;
+    final cardColor = Theme.of(context).cardColor;
+
     final body = SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Align(
@@ -137,30 +141,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style: GoogleFonts.sora(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.navy,
+                  color: scheme.onSurface,
                 ),
               ),
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: cardColor,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: scheme.outline),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _row('Email', email.isEmpty ? '—' : email),
+                    _row(context, 'Email', email.isEmpty ? '—' : email),
                     const SizedBox(height: 10),
-                    _row('Role', role),
+                    _row(context, 'Role', role),
                   ],
                 ),
               ),
               const SizedBox(height: 12),
               Text(
                 'Changed your role in the database? Refresh here, or log out and sign in again.',
-                style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.textMuted, height: 1.4),
+                style: GoogleFonts.dmSans(
+                  fontSize: 12,
+                  color: scheme.onSurfaceVariant,
+                  height: 1.4,
+                ),
               ),
               const SizedBox(height: 12),
               OutlinedButton.icon(
@@ -206,21 +214,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
 
     if (widget.embeddedInShell) {
-      return ColoredBox(color: AppColors.bg, child: body);
+      return ColoredBox(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: body,
+      );
     }
     return Scaffold(
       appBar: AppBar(
         title: Text('Settings', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
-        elevation: 0,
       ),
-      backgroundColor: AppColors.bg,
       body: body,
     );
   }
 
-  Widget _row(String label, String value) {
+  Widget _row(BuildContext context, String label, String value) {
+    final scheme = Theme.of(context).colorScheme;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -228,7 +236,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           width: 72,
           child: Text(
             label,
-            style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.textMuted),
+            style: GoogleFonts.dmSans(fontSize: 13, color: scheme.onSurfaceVariant),
           ),
         ),
         Expanded(
@@ -237,7 +245,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: GoogleFonts.dmSans(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppColors.navy,
+              color: scheme.onSurface,
             ),
           ),
         ),

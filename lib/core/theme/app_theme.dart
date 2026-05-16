@@ -49,26 +49,68 @@ class AppTheme {
   }
 
   static ThemeData dark() {
+    const scaffold = Color(0xFF0F172A);
+    const surface = Color(0xFF1E293B);
+    const border = Color(0xFF334155);
+
     final base = ThemeData(
       useMaterial3: true,
+      brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.brandBlue,
         brightness: Brightness.dark,
+        surface: surface,
       ).copyWith(
         secondary: AppColors.secondaryAccent,
         onSecondary: Colors.white,
         tertiary: AppColors.success,
         onTertiary: Colors.white,
+        outline: border,
       ),
     );
+
     return base.copyWith(
-      textTheme: GoogleFonts.dmSansTextTheme(base.textTheme),
+      scaffoldBackgroundColor: scaffold,
+      cardColor: surface,
+      dividerColor: border,
+      textTheme: GoogleFonts.dmSansTextTheme(base.textTheme).apply(
+        bodyColor: base.colorScheme.onSurface,
+        displayColor: base.colorScheme.onSurface,
+      ),
       appBarTheme: AppBarTheme(
         elevation: 0,
         centerTitle: false,
-        backgroundColor: base.colorScheme.surface,
+        backgroundColor: surface,
         foregroundColor: base.colorScheme.onSurface,
-        titleTextStyle: AppTextStyles.appBarTitle(),
+        titleTextStyle: AppTextStyles.appBarTitle(
+          color: base.colorScheme.onSurface,
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: const Color(0xFF0B1220),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: border, width: 1.5),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: border, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.brandBlueLight, width: 1.5),
+        ),
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return Colors.white;
+            }
+            return base.colorScheme.onSurfaceVariant;
+          }),
+        ),
       ),
     );
   }

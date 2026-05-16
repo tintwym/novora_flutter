@@ -194,7 +194,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: ListenableBuilder(
         listenable: Listenable.merge([_controller, SessionNotifier.instance]),
         builder: (context, _) {
@@ -218,7 +218,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
               }
               return Scaffold(
-                backgroundColor: AppColors.bg,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 drawer: Drawer(
                   child: AppSidebar(
                     items: _navItems(),
