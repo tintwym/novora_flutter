@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../shared/widgets/hr_pill_segmented_control.dart';
 import '../screens/open_position_profile_screen.dart';
 
 /// Organisation chart + list view (mock data — replace with API later).
@@ -152,17 +153,14 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
   }
 
   Widget _viewToggle() {
-    return SegmentedButton<bool>(
+    return HrPillSegmentedControl(
+      width: 248,
       segments: const [
-        ButtonSegment(value: true, label: Text('Org view')),
-        ButtonSegment(value: false, label: Text('List view')),
+        HrPillSegment(value: 'org', label: 'Org view'),
+        HrPillSegment(value: 'list', label: 'List view'),
       ],
-      selected: {_orgView},
-      onSelectionChanged: (s) => setState(() => _orgView = s.first),
-      style: ButtonStyle(
-        visualDensity: VisualDensity.compact,
-        textStyle: WidgetStatePropertyAll(GoogleFonts.dmSans(fontWeight: FontWeight.w600, fontSize: 12)),
-      ),
+      selected: _orgView ? 'org' : 'list',
+      onChanged: (v) => setState(() => _orgView = v == 'org'),
     );
   }
 

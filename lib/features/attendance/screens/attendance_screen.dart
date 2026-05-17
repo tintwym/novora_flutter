@@ -1062,13 +1062,15 @@ class _AttendanceScreenState extends State<AttendanceScreen>
               spacing: 12,
               runSpacing: 12,
               children: [
-                SegmentedButton<bool>(
+                HrPillSegmentedControl(
+                  width: 368,
                   segments: const [
-                    ButtonSegment(value: true, label: Text('Detail report')),
-                    ButtonSegment(value: false, label: Text('Summary report')),
+                    HrPillSegment(value: 'detail', label: 'Detail report'),
+                    HrPillSegment(value: 'summary', label: 'Summary report'),
                   ],
-                  selected: {_reportDetail},
-                  onSelectionChanged: (s) => setState(() => _reportDetail = s.first),
+                  selected: _reportDetail ? 'detail' : 'summary',
+                  onChanged: (v) =>
+                      setState(() => _reportDetail = v == 'detail'),
                 ),
                 Wrap(
                   spacing: 8,

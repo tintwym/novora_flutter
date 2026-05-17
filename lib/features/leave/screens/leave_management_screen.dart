@@ -8,6 +8,7 @@ import '../../../core/storage/local_storage.dart';
 import '../../../data/models/user_model.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
+import '../../../shared/widgets/hr_pill_segmented_control.dart';
 
 /// Leave Management — mock-aligned tabs (Leave type … Employee leave profile).
 class LeaveManagementScreen extends StatefulWidget {
@@ -1280,13 +1281,14 @@ class _LeaveRequestTabState extends State<_LeaveRequestTab> {
                     Row(
                       children: [
                         Expanded(child: Text('Leave request form', style: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w700))),
-                        SegmentedButton<bool>(
+                        HrPillSegmentedControl(
+                          width: 220,
                           segments: const [
-                            ButtonSegment(value: true, label: Text('By day')),
-                            ButtonSegment(value: false, label: Text('By hour')),
+                            HrPillSegment(value: 'day', label: 'By day'),
+                            HrPillSegment(value: 'hour', label: 'By hour'),
                           ],
-                          selected: {_byDay},
-                          onSelectionChanged: (s) => setState(() => _byDay = s.first),
+                          selected: _byDay ? 'day' : 'hour',
+                          onChanged: (v) => setState(() => _byDay = v == 'day'),
                         ),
                       ],
                     ),

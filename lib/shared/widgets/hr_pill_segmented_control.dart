@@ -29,7 +29,8 @@ class HrPillSegmentedControl extends StatelessWidget {
   final double height;
 
   static const Color _selectedFill = Color(0xFFE8E4F8);
-  static const Color _border = Color(0xFF94A3B8);
+  /// Outer capsule + dividers — slate-600 so the pill reads clearly on white.
+  static const Color _border = Color(0xFF475569);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class HrPillSegmentedControl extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: _border, width: 1),
+          border: Border.all(color: _border, width: 1.25),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(999),
@@ -89,28 +90,38 @@ class _SegmentTile extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             border: Border(
-              right: showRightDivider ? const BorderSide(color: HrPillSegmentedControl._border, width: 1) : BorderSide.none,
+              right: showRightDivider
+                  ? const BorderSide(color: HrPillSegmentedControl._border, width: 1.25)
+                  : BorderSide.none,
             ),
           ),
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (selected) ...[
-                  Icon(Icons.check, size: 15, color: fg),
-                  const SizedBox(width: 4),
-                ],
-                Text(
-                  segment.label,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: fg,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Symmetric gutters: label stays centered; check only toggles visibility.
+              SizedBox(
+                width: 19,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    Icons.check,
+                    size: 15,
+                    color: selected ? fg : Colors.transparent,
                   ),
                 ),
-              ],
-            ),
+              ),
+              Text(
+                segment.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.dmSans(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: fg,
+                ),
+              ),
+              const SizedBox(width: 19),
+            ],
           ),
         ),
       ),
