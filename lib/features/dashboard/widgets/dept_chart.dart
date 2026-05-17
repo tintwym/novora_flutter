@@ -36,7 +36,7 @@ class AttendanceOverviewChart extends StatelessWidget {
           (d) => PieChartSectionData(
             value: d.value,
             color: _colorForLabel(d.label, d.color),
-            radius: 52,
+            radius: 54,
             showTitle: false,
           ),
         )
@@ -46,7 +46,7 @@ class AttendanceOverviewChart extends StatelessWidget {
             PieChartSectionData(
               value: 1,
               color: AppColors.border.withValues(alpha: 0.4),
-              radius: 52,
+              radius: 54,
               showTitle: false,
             ),
           ]
@@ -95,7 +95,7 @@ class AttendanceOverviewChart extends StatelessWidget {
                 PieChart(
                   PieChartData(
                     sections: chartSections,
-                    centerSpaceRadius: 46,
+                    centerSpaceRadius: 50,
                     sectionsSpace: 1.5,
                     startDegreeOffset: -90,
                   ),
