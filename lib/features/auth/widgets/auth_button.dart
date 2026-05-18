@@ -17,10 +17,6 @@ class AuthPrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppButton(
-      label: label,
-      onPressed: onPressed,
-      isLoading: isLoading,
-    );
+    return AppButton(label: label, onPressed: onPressed, isLoading: isLoading);
   }
 }

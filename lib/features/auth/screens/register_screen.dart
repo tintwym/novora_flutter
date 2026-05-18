@@ -8,6 +8,7 @@ import '../../../core/ui/app_snackbar.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/error/exceptions.dart';
 import '../../../core/utils/validators.dart';
+import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
 import '../auth_controller.dart';
 import '../widgets/auth_button.dart';
@@ -95,145 +96,131 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
     return AuthLayout(
-      form: ColoredBox(
-        color: AppColors.cardBg,
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(40, 20, 40, 20 + bottomInset),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 440),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      form: AuthFormScaffold(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              AppStrings.brandName,
+              style: GoogleFonts.sora(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: AppColors.navy,
+              ),
+            ),
+            Text(
+              AppStrings.hrmsSubtitle,
+              style: GoogleFonts.dmSans(
+                fontSize: 8,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textMuted,
+                letterSpacing: 1.0,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Create Account',
+              style: GoogleFonts.sora(
+                fontSize: 32,
+                fontWeight: FontWeight.w800,
+                color: AppColors.navy,
+                height: 1.15,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Fill in your details to get started.',
+              style: GoogleFonts.dmSans(
+                fontSize: 15,
+                color: AppColors.textMuted,
+                height: 1.45,
+              ),
+            ),
+            const SizedBox(height: 20),
+            AuthTextField(
+              label: 'Full Name',
+              hint: 'John Doe',
+              controller: _nameCtrl,
+              prefixIcon: Icons.person_outline_rounded,
+            ),
+            const SizedBox(height: 14),
+            AuthTextField(
+              label: 'Work Email',
+              hint: 'name@novora.com',
+              controller: _emailCtrl,
+              prefixIcon: Icons.mail_outline_rounded,
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(height: 14),
+            AuthTextField(
+              label: 'Password',
+              hint: 'Enter your password',
+              controller: _passCtrl,
+              prefixIcon: Icons.lock_outline_rounded,
+              obscureText: !_showPass,
+              suffix: IconButton(
+                icon: Icon(
+                  _showPass
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  color: AppColors.muted,
+                  size: 20,
+                ),
+                onPressed: () => setState(() => _showPass = !_showPass),
+              ),
+            ),
+            const SizedBox(height: 14),
+            AuthTextField(
+              label: 'Confirm Password',
+              hint: 'Confirm your password',
+              controller: _confirmCtrl,
+              prefixIcon: Icons.lock_outline_rounded,
+              obscureText: !_showConfirmPass,
+              suffix: IconButton(
+                icon: Icon(
+                  _showConfirmPass
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  color: AppColors.muted,
+                  size: 20,
+                ),
+                onPressed: () =>
+                    setState(() => _showConfirmPass = !_showConfirmPass),
+              ),
+            ),
+            const SizedBox(height: 20),
+            AuthPrimaryButton(
+              label: 'Create Account',
+              isLoading: _loading,
+              onPressed: _loading ? null : _submit,
+            ),
+            const SizedBox(height: 16),
+            Center(
+              child: Text.rich(
+                TextSpan(
+                  style: GoogleFonts.dmSans(
+                    fontSize: 14,
+                    color: AppColors.textMuted,
+                  ),
                   children: [
-                    Text(
-                      AppStrings.brandName,
-                      style: GoogleFonts.sora(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.navy,
-                      ),
-                    ),
-                    Text(
-                      AppStrings.hrmsSubtitle,
+                    const TextSpan(text: 'Already have an account? '),
+                    TextSpan(
+                      text: 'Sign In',
                       style: GoogleFonts.dmSans(
-                        fontSize: 8,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textMuted,
-                        letterSpacing: 1.0,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'Create Account',
-                      style: GoogleFonts.sora(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.navy,
-                        height: 1.15,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Fill in your details to get started.',
-                      style: GoogleFonts.dmSans(
-                        fontSize: 15,
-                        color: AppColors.textMuted,
-                        height: 1.45,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    AuthTextField(
-                      label: 'Full Name',
-                      hint: 'John Doe',
-                      controller: _nameCtrl,
-                      prefixIcon: Icons.person_outline_rounded,
-                    ),
-                    const SizedBox(height: 14),
-                    AuthTextField(
-                      label: 'Work Email',
-                      hint: 'name@novora.com',
-                      controller: _emailCtrl,
-                      prefixIcon: Icons.mail_outline_rounded,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 14),
-                    AuthTextField(
-                      label: 'Password',
-                      hint: 'Enter your password',
-                      controller: _passCtrl,
-                      prefixIcon: Icons.lock_outline_rounded,
-                      obscureText: !_showPass,
-                      suffix: IconButton(
-                        icon: Icon(
-                          _showPass
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          color: AppColors.muted,
-                          size: 20,
-                        ),
-                        onPressed: () => setState(() => _showPass = !_showPass),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    AuthTextField(
-                      label: 'Confirm Password',
-                      hint: 'Confirm your password',
-                      controller: _confirmCtrl,
-                      prefixIcon: Icons.lock_outline_rounded,
-                      obscureText: !_showConfirmPass,
-                      suffix: IconButton(
-                        icon: Icon(
-                          _showConfirmPass
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          color: AppColors.muted,
-                          size: 20,
-                        ),
-                        onPressed: () => setState(
-                          () => _showConfirmPass = !_showConfirmPass,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    AuthPrimaryButton(
-                      label: 'Create Account',
-                      isLoading: _loading,
-                      onPressed: _loading ? null : _submit,
-                    ),
-                    const SizedBox(height: 16),
-                    Center(
-                      child: Text.rich(
-                        TextSpan(
-                          style: GoogleFonts.dmSans(
-                            fontSize: 14,
-                            color: AppColors.textMuted,
-                          ),
-                          children: [
-                            const TextSpan(text: 'Already have an account? '),
-                            TextSpan(
-                              text: 'Sign In',
-                              style: GoogleFonts.dmSans(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.primary,
-                              ),
-                              recognizer: _loginRecognizer,
-                            ),
-                          ],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      recognizer: _loginRecognizer,
                     ),
                   ],
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

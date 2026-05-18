@@ -19,7 +19,7 @@ import '../../leave/screens/leave_list_screen.dart';
 import '../../payroll/screens/payroll_list_screen.dart';
 import '../../claim_management/screens/claim_management_screen.dart';
 import '../../performance/screens/performance_screen.dart';
-import '../../recruitment/screens/job_list_screen.dart';
+import '../../recruitment/screens/recruitment_management_screen.dart';
 import '../../reports/screens/reports_screen.dart';
 import '../../settings/screens/settings_screen.dart';
 import '../../asset_management/screens/asset_management_screen.dart';
@@ -132,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'Employees':
         return const EmploymentManagementScreen(embeddedInShell: true);
       case 'Recruitment':
-        return const JobListScreen(embeddedInShell: true);
+        return const RecruitmentManagementScreen(embeddedInShell: true);
       case 'Attendance':
         return const AttendanceScreen(embeddedInShell: true);
       case 'Leave Management':

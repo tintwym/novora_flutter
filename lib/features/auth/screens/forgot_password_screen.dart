@@ -6,6 +6,7 @@ import '../../../core/constants/app_routes.dart';
 import '../../../core/ui/app_snackbar.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/error/exceptions.dart';
+import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
 import '../auth_controller.dart';
 import '../widgets/auth_button.dart';
@@ -60,74 +61,63 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return AuthLayout(
-      form: ColoredBox(
-        color: AppColors.cardBg,
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 36),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 440),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppStrings.brandName,
-                    style: GoogleFonts.sora(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.navy,
-                    ),
-                  ),
-                  const SizedBox(height: 36),
-                  Text(
-                    'Forgot password',
-                    style: GoogleFonts.sora(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.navy,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Enter your work email and we will send reset instructions.',
-                    style: GoogleFonts.dmSans(
-                      fontSize: 15,
-                      color: AppColors.textMuted,
-                      height: 1.45,
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  AuthTextField(
-                    label: 'Work Email',
-                    hint: 'name@novora.com',
-                    controller: _emailCtrl,
-                    prefixIcon: Icons.mail_outline_rounded,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: 26),
-                  AuthPrimaryButton(
-                    label: 'Send reset link',
-                    isLoading: _loading,
-                    onPressed: _loading ? null : _submit,
-                  ),
-                  const SizedBox(height: 16),
-                  TextButton(
-                    onPressed: () => Navigator.pushReplacementNamed(
-                      context,
-                      AppRoutes.login,
-                    ),
-                    child: Text(
-                      'Back to Sign In',
-                      style: GoogleFonts.dmSans(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
-                ],
+      form: AuthFormScaffold(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              AppStrings.brandName,
+              style: GoogleFonts.sora(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: AppColors.navy,
               ),
             ),
-          ),
+            const SizedBox(height: 36),
+            Text(
+              'Forgot password',
+              style: GoogleFonts.sora(
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: AppColors.navy,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Enter your work email and we will send reset instructions.',
+              style: GoogleFonts.dmSans(
+                fontSize: 15,
+                color: AppColors.textMuted,
+                height: 1.45,
+              ),
+            ),
+            const SizedBox(height: 28),
+            AuthTextField(
+              label: 'Work Email',
+              hint: 'name@novora.com',
+              controller: _emailCtrl,
+              prefixIcon: Icons.mail_outline_rounded,
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(height: 26),
+            AuthPrimaryButton(
+              label: 'Send reset link',
+              isLoading: _loading,
+              onPressed: _loading ? null : _submit,
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () =>
+                  Navigator.pushReplacementNamed(context, AppRoutes.login),
+              child: Text(
+                'Back to Sign In',
+                style: GoogleFonts.dmSans(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

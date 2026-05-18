@@ -6,10 +6,7 @@ import 'responsive_layout.dart';
 
 /// Split-screen layout for login / register / forgot-password flows.
 class AuthLayout extends StatelessWidget {
-  const AuthLayout({
-    super.key,
-    required this.form,
-  });
+  const AuthLayout({super.key, required this.form});
 
   final Widget form;
 
@@ -29,7 +26,10 @@ class AuthLayout extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: 260, child: _BrandPanel(compact: true)),
+                SizedBox(
+                  height: MediaQuery.sizeOf(context).height * 0.28,
+                  child: _BrandPanel(compact: true),
+                ),
                 Expanded(child: form),
               ],
             ),
@@ -122,11 +122,20 @@ class _BrandPanel extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _feature(Icons.verified_user_outlined, 'Secure &\nReliable'),
+                        _feature(
+                          Icons.verified_user_outlined,
+                          'Secure &\nReliable',
+                        ),
                         const SizedBox(width: 28),
-                        _feature(Icons.insights_rounded, 'Data-Driven\nInsights'),
+                        _feature(
+                          Icons.insights_rounded,
+                          'Data-Driven\nInsights',
+                        ),
                         const SizedBox(width: 28),
-                        _feature(Icons.groups_outlined, 'Workforce\nExcellence'),
+                        _feature(
+                          Icons.groups_outlined,
+                          'Workforce\nExcellence',
+                        ),
                       ],
                     ),
                   ],
