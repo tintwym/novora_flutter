@@ -276,15 +276,21 @@ class _AssetRegisterSheetState extends State<AssetRegisterSheet> {
       children: [
         Text(label, style: GoogleFonts.dmSans(fontSize: 12, color: tc.secondaryText)),
         const SizedBox(height: 6),
-        DropdownButtonFormField<String>(
-          initialValue: value,
+        InputDecorator(
           decoration: InputDecoration(
             filled: true,
             fillColor: tc.subtleFill,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           ),
-          items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-          onChanged: onChanged,
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: value,
+              isExpanded: true,
+              items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+              onChanged: onChanged,
+            ),
+          ),
         ),
       ],
     );

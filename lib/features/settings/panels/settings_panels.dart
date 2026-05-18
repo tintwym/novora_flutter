@@ -298,7 +298,8 @@ class _ModulesPanelState extends State<_ModulesPanel> {
                           ),
                           Switch.adaptive(
                             value: e.value,
-                            activeColor: AppColors.primary,
+                            activeThumbColor: AppColors.primary,
+                            activeTrackColor: AppColors.primary.withValues(alpha: 0.35),
                             onChanged: (v) => setState(() => _modules[e.key] = v),
                           ),
                         ],
@@ -565,7 +566,8 @@ class _RolesPermissionsPanelState extends State<_RolesPermissionsPanel> {
             badge: const SettingsPill('Full access', tone: SettingsPillTone.info),
             trailing: Switch.adaptive(
               value: _superAdminOn,
-              activeColor: AppColors.primary,
+              activeThumbColor: AppColors.primary,
+              activeTrackColor: AppColors.primary.withValues(alpha: 0.35),
               onChanged: (v) => setState(() => _superAdminOn = v),
             ),
           ),

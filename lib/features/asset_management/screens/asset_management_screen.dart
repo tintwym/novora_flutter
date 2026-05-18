@@ -431,7 +431,7 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         ...leading,
-        if (trailing != null) trailing,
+        ?trailing,
       ],
     );
   }

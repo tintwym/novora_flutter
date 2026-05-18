@@ -184,7 +184,7 @@ class _RecruitmentManagementScreenState extends State<RecruitmentManagementScree
       spacing: 8,
       runSpacing: 8,
       crossAxisAlignment: WrapCrossAlignment.center,
-      children: [...leading, if (trailing != null) trailing],
+      children: [...leading, ?trailing],
     );
   }
 

@@ -48,7 +48,7 @@ class SettingsPageHeader extends StatelessWidget {
             ],
           ),
         ),
-        if (trailing != null) trailing!,
+        ?trailing,
       ],
     );
   }
@@ -94,7 +94,7 @@ class SettingsCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (trailing != null) trailing!,
+                ?trailing,
               ],
             ),
           ),
@@ -260,7 +260,8 @@ class SettingsToggleRow extends StatelessWidget {
           ),
           Switch.adaptive(
             value: value,
-            activeColor: AppColors.primary,
+            activeThumbColor: AppColors.primary,
+            activeTrackColor: AppColors.primary.withValues(alpha: 0.35),
             onChanged: onChanged,
           ),
         ],
