@@ -50,13 +50,15 @@ bool _looksLikeConnectionFailure(DioException e) {
 String _cannotReachApiMessage() {
   final base = ApiClient.baseUrl;
   final target = base.isEmpty ? 'same-origin (check Vercel API rewrites)' : base;
+  if (target.contains('novora-hrms.vercel.app')) {
+    return 'API URL is set to the Vercel website ($target), not the Spring API. '
+        'In Vercel → Environment Variables set API_BASE_URL=same-origin (not the app URL), '
+        'redeploy, then try again. API lives on Render and is proxied via /api and /auth.';
+  }
   return 'Cannot reach the API ($target). '
-    'Start a backend on that host/port, then retry. '
-    'Quick options from repo root: '
-    './scripts/run-backend-local.sh (H2, local) '
-    'or cd novora_backend && ./mvnw spring-boot:run with DB_* in .env (Neon). '
-    'Override URL in novora_flutter/.env as API_BASE_URL=… '
-    '(use http://localhost:PORT for Flutter web on localhost).';
+      'Start a backend on that host/port, then retry. '
+      'Local: ./scripts/run-backend-local.sh then API_BASE_URL=http://localhost:8080 in novora_flutter/.env. '
+      'Production: Vercel API_BASE_URL=same-origin with rewrites to Render.';
 }
 
 /// Maps Spring / Dio failures to [ApiException] with a readable message.

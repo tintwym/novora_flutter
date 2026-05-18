@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 
 class AssetPill extends StatelessWidget {
   const AssetPill(this.label, {super.key, this.tone = AssetPillTone.neutral});
@@ -21,7 +22,7 @@ class AssetPill extends StatelessWidget {
       AssetPillTone.vehicle => (const Color(0xFFFFEDD5), const Color(0xFF9A3412)),
       AssetPillTone.furniture => (const Color(0xFFD1FAE5), const Color(0xFF065F46)),
       AssetPillTone.office => (const Color(0xFFEDE9FE), const Color(0xFF5B21B6)),
-      AssetPillTone.neutral => (AppColors.bg, AppColors.textMuted),
+      AssetPillTone.neutral => (const Color(0xFFF1F5F9), AppColors.textMuted),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -65,13 +66,13 @@ class AssetAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = color ?? AppColors.bg;
+    final bg = color ?? context.subtleFill;
     return CircleAvatar(
       radius: 14,
       backgroundColor: bg,
       child: Text(
         initials,
-        style: GoogleFonts.dmSans(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.navy),
+        style: GoogleFonts.dmSans(fontSize: 10, fontWeight: FontWeight.w700, color: context.primaryText),
       ),
     );
   }
@@ -93,6 +94,7 @@ class AssetKpiTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -104,13 +106,13 @@ class AssetKpiTile extends StatelessWidget {
               style: GoogleFonts.sora(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
-                color: AppColors.navy,
+                color: tc.primaryText,
               ),
             ),
             const SizedBox(height: 2),
             Text(
               label,
-              style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.textMuted),
+              style: GoogleFonts.dmSans(fontSize: 12, color: tc.secondaryText),
             ),
             if (subLabel != null) ...[
               const SizedBox(height: 2),
@@ -170,6 +172,7 @@ class AssetHBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     final frac = max > 0 ? (value / max).clamp(0.0, 1.0) : 0.0;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -177,7 +180,7 @@ class AssetHBar extends StatelessWidget {
         children: [
           SizedBox(
             width: 120,
-            child: Text(label, style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.navy)),
+            child: Text(label, style: GoogleFonts.dmSans(fontSize: 12, color: tc.primaryText)),
           ),
           Expanded(
             child: ClipRRect(
@@ -185,7 +188,7 @@ class AssetHBar extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: frac,
                 minHeight: 10,
-                backgroundColor: AppColors.bg,
+                backgroundColor: tc.subtleFill,
                 color: color,
               ),
             ),
@@ -196,7 +199,7 @@ class AssetHBar extends StatelessWidget {
             child: Text(
               trailing ?? value.toStringAsFixed(0),
               textAlign: TextAlign.right,
-              style: GoogleFonts.dmSans(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted),
+              style: GoogleFonts.dmSans(fontSize: 11, fontWeight: FontWeight.w600, color: tc.secondaryText),
             ),
           ),
         ],

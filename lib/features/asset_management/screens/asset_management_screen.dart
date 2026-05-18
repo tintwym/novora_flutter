@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../shared/widgets/hr_module_header.dart';
+import '../../../shared/widgets/module_shell_background.dart';
+import '../../../shared/widgets/themed_surface_card.dart';
+import '../models/asset_registry_entry.dart';
+import '../widgets/asset_register_sheet.dart';
 import '../widgets/asset_ui_helpers.dart';
 
 /// Asset Management — registry, categories, assignment, maintenance, disposal, reports.
@@ -22,14 +26,23 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
 
   late final TabController _tab = TabController(length: 6, vsync: this);
   final Map<String, String> _dd = {};
+  final TextEditingController _registrySearchCtrl = TextEditingController();
+  List<AssetRegistryEntry> _registry = AssetRegistryEntry.seed();
   bool _ack = true;
   bool _emailNotify = false;
   bool _unavailable = true;
   bool _notifyOwner = false;
 
   @override
+  void initState() {
+    super.initState();
+    _registrySearchCtrl.addListener(() => setState(() {}));
+  }
+
+  @override
   void dispose() {
     _tab.dispose();
+    _registrySearchCtrl.dispose();
     super.dispose();
   }
 
@@ -54,7 +67,7 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
           showDepartmentFilter: true,
           navyPrimaryButton: true,
           primaryActionLabel: 'Register asset',
-          onPrimaryAction: () => _toast('Register asset'),
+          onPrimaryAction: _openRegisterAsset,
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,
@@ -150,13 +163,8 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
   }
 
   Widget _card({required Widget child, EdgeInsets? padding}) {
-    return Container(
+    return ThemedSurfaceCard(
       padding: padding ?? const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
-      ),
       child: child,
     );
   }
@@ -167,9 +175,9 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: v,
@@ -200,7 +208,7 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
       children: [
         Text(
           required ? '$label *' : label,
-          style: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textMuted),
+          style: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w500, color: context.secondaryText),
         ),
         const SizedBox(height: 6),
         TextField(
@@ -208,16 +216,16 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
           decoration: InputDecoration(
             hintText: hint,
             filled: true,
-            fillColor: const Color(0xFFFAFAFA),
+            fillColor: context.subtleFill,
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: context.borderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: context.borderColor),
             ),
           ),
         ),
@@ -241,52 +249,177 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
 
   // --- Asset registry ---
 
+  List<AssetRegistryEntry> get _filteredRegistry {
+    final q = _registrySearchCtrl.text.trim().toLowerCase();
+    final cat = _d('reg_cat', 'All categories', const [
+      'All categories',
+      'IT equipment',
+      'Vehicle',
+      'Furniture',
+      'Office equipment',
+    ]);
+    final status = _d('reg_status', 'All status', const [
+      'All status',
+      'Active',
+      'Maintenance',
+      'Unassigned',
+      'Disposed',
+    ]);
+    return _registry.where((a) {
+      if (cat != 'All categories' && a.category != cat) return false;
+      if (status != 'All status' && a.status != status) return false;
+      if (q.isEmpty) return true;
+      return a.name.toLowerCase().contains(q) || a.tag.toLowerCase().contains(q);
+    }).toList();
+  }
+
+  int get _registryActiveCount =>
+      _registry.where((a) => a.status == 'Active').length;
+
+  int get _registryUnassignedCount =>
+      _registry.where((a) => a.status == 'Unassigned').length;
+
+  int get _registryMaintenanceCount =>
+      _registry.where((a) => a.status == 'Maintenance').length;
+
+  int get _registryDisposedCount =>
+      _registry.where((a) => a.status == 'Disposed').length;
+
+  Future<void> _openRegisterAsset() async {
+    final created = await showModalBottomSheet<AssetRegistryEntry>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.surfaceCard,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => AssetRegisterSheet(
+        existingTags: _registry.map((e) => e.tag).toList(),
+      ),
+    );
+    if (created == null || !mounted) return;
+    setState(() => _registry = [created, ..._registry]);
+    _toast('${created.name} added to registry (${created.tag})');
+  }
+
+  void _showRegistryDetail(AssetRegistryEntry entry) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(entry.name, style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Tag: ${entry.tag}', style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            Text('Category: ${entry.category}'),
+            Text('Assigned: ${entry.assigneeLabel}'),
+            Text('Purchase: ${entry.purchaseDate}'),
+            Text('Cost: MYR ${entry.cost} · Book: ${entry.bookValue}'),
+            const SizedBox(height: 8),
+            AssetPill(entry.status, tone: entry.statusTone),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close')),
+        ],
+      ),
+    );
+  }
+
   Widget _registryTab() {
+    final filtered = _filteredRegistry;
     return _scroll([
       _card(
         child: Row(
-          children: const [
-            AssetKpiTile(value: '1,847', label: 'Total assets', subLabel: '1,612 active', subColor: AppColors.success),
-            AssetKpiTile(value: 'MYR 4.2M', label: 'Total asset value', subLabel: 'Acquisition cost'),
-            AssetKpiTile(value: '48', label: 'Under maintenance', subLabel: '12 overdue service', subColor: AppColors.warning),
+          children: [
+            AssetKpiTile(
+              value: '${_registry.length}',
+              label: 'Total assets',
+              subLabel: '$_registryActiveCount active',
+              subColor: AppColors.success,
+            ),
+            const AssetKpiTile(
+              value: 'MYR 4.2M',
+              label: 'Total asset value',
+              subLabel: 'Acquisition cost',
+            ),
+            AssetKpiTile(
+              value: '$_registryMaintenanceCount',
+              label: 'Under maintenance',
+              subLabel: '12 overdue service',
+              subColor: AppColors.warning,
+            ),
           ],
         ),
       ),
       const SizedBox(height: 12),
       _card(
         child: Row(
-          children: const [
-            AssetKpiTile(value: '187', label: 'Unassigned', subLabel: 'Available in store'),
-            AssetKpiTile(value: '23', label: 'Disposed / written off', subLabel: 'This year', subColor: AppColors.danger),
-            AssetKpiTile(value: 'MYR 2.8M', label: 'Current book value', subLabel: 'After depreciation'),
+          children: [
+            AssetKpiTile(
+              value: '$_registryUnassignedCount',
+              label: 'Unassigned',
+              subLabel: 'Available in store',
+            ),
+            AssetKpiTile(
+              value: '$_registryDisposedCount',
+              label: 'Disposed / written off',
+              subLabel: 'This year',
+              subColor: AppColors.danger,
+            ),
+            const AssetKpiTile(
+              value: 'MYR 2.8M',
+              label: 'Current book value',
+              subLabel: 'After depreciation',
+            ),
           ],
         ),
       ),
       const SizedBox(height: 16),
       _toolbar([
-        Expanded(
+        SizedBox(
+          width: 280,
           child: TextField(
+            controller: _registrySearchCtrl,
             decoration: InputDecoration(
               hintText: 'Search asset name or tag...',
               prefixIcon: const Icon(Icons.search_rounded, color: AppColors.muted),
               filled: true,
-              fillColor: AppColors.bg,
+              fillColor: context.subtleFill,
               isDense: true,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppColors.border),
+                borderSide: BorderSide(color: context.borderColor),
               ),
             ),
           ),
         ),
-        _filterDd('reg_cat', 'All categories', const ['All categories', 'IT equipment', 'Vehicle', 'Furniture']),
-        _filterDd('reg_status', 'All status', const ['All status', 'Active', 'Maintenance', 'Unassigned', 'Disposed']),
-        TextButton(onPressed: () {}, child: const Text('Filter')),
-      ], trailing: _primaryBtn('+ Register asset', () => _toast('Register asset'))),
-      const SizedBox(height: 12),
+        _filterDd('reg_cat', 'All categories', const [
+          'All categories',
+          'IT equipment',
+          'Vehicle',
+          'Furniture',
+          'Office equipment',
+        ]),
+        _filterDd('reg_status', 'All status', const [
+          'All status',
+          'Active',
+          'Maintenance',
+          'Unassigned',
+          'Disposed',
+        ]),
+      ], trailing: _primaryBtn('+ Register asset', _openRegisterAsset)),
+      const SizedBox(height: 8),
+      Text(
+        '${filtered.length} asset${filtered.length == 1 ? '' : 's'} shown',
+        style: GoogleFonts.dmSans(fontSize: 12, color: context.secondaryText),
+      ),
+      const SizedBox(height: 8),
       _card(
         padding: EdgeInsets.zero,
-        child: _registryTable(),
+        child: _registryTable(filtered),
       ),
     ]);
   }
@@ -303,19 +436,23 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
     );
   }
 
-  Widget _registryTable() {
-    final rows = [
-      ('MacBook Pro 14"', 'AST-IT-0021', 'IT equipment', 'SL', 'Sarah Lim', '12 Jan 2021', '8,500', '4,250', 'Active', AssetPillTone.success),
-      ('Toyota Hilux (WMB 1234)', 'AST-VH-0008', 'Vehicle', 'RK', 'Raj Kumar', '3 Jun 2020', '95,000', '47,500', 'Active', AssetPillTone.success),
-      ('Standing desk', 'AST-FN-0142', 'Furniture', null, '—', '8 Mar 2023', '1,200', '960', 'Unassigned', AssetPillTone.neutral),
-      ('HP LaserJet', 'AST-OE-0088', 'Office equipment', null, '—', '15 Sep 2022', '2,800', '1,680', 'Maintenance', AssetPillTone.warning),
-      ('iPhone 14 Pro', 'AST-IT-0199', 'IT equipment', null, '—', '5 May 2026', '4,800', 'Written off', 'Disposed', AssetPillTone.danger),
-    ];
+  Widget _registryTable(List<AssetRegistryEntry> rows) {
+    if (rows.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(32),
+        child: Center(
+          child: Text(
+            'No assets match your search or filters.',
+            style: GoogleFonts.dmSans(color: context.secondaryText),
+          ),
+        ),
+      );
+    }
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
-        headingRowColor: WidgetStateProperty.all(AppColors.bg),
+        headingRowColor: WidgetStateProperty.all(context.subtleFill),
         columns: [
           _col(''),
           _col('Asset name'),
@@ -334,34 +471,38 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: AppColors.bg,
+                color: context.subtleFill,
                 borderRadius: BorderRadius.circular(6),
               ),
+              child: Icon(Icons.inventory_2_outlined, size: 18, color: context.secondaryText),
             )),
-            DataCell(Text(r.$1, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600))),
-            DataCell(Text(r.$2, style: GoogleFonts.dmSans(color: AppColors.primary, fontWeight: FontWeight.w600))),
-            DataCell(AssetPill(r.$3, tone: categoryTone(r.$3))),
-            DataCell(r.$4 == null
-                ? Text(r.$5)
+            DataCell(Text(r.name, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600, color: context.primaryText))),
+            DataCell(Text(r.tag, style: GoogleFonts.dmSans(color: AppColors.primary, fontWeight: FontWeight.w600))),
+            DataCell(AssetPill(r.category, tone: categoryTone(r.category))),
+            DataCell(r.assigneeInitials == null
+                ? Text(r.assigneeLabel)
                 : Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AssetAvatar(r.$4!),
+                      AssetAvatar(r.assigneeInitials!),
                       const SizedBox(width: 6),
-                      Text(r.$5),
+                      Text(r.assigneeLabel),
                     ],
                   )),
-            DataCell(Text(r.$6)),
-            DataCell(Text(r.$7)),
+            DataCell(Text(r.purchaseDate)),
+            DataCell(Text(r.cost)),
             DataCell(Text(
-              r.$8,
+              r.bookValue,
               style: GoogleFonts.dmSans(
-                color: r.$8 == 'Written off' ? AppColors.danger : AppColors.navy,
+                color: r.bookValue == 'Written off' ? AppColors.danger : context.primaryText,
                 fontWeight: FontWeight.w600,
               ),
             )),
-            DataCell(AssetPill(r.$9, tone: r.$10)),
-            DataCell(TextButton(onPressed: () {}, child: const Text('View'))),
+            DataCell(AssetPill(r.status, tone: r.statusTone)),
+            DataCell(TextButton(
+              onPressed: () => _showRegistryDetail(r),
+              child: const Text('View'),
+            )),
           ]);
         }).toList(),
       ),
@@ -371,7 +512,7 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
   DataColumn _col(String label) => DataColumn(
         label: Text(
           label,
-          style: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.textMuted),
+          style: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w700, color: context.secondaryText),
         ),
       );
 
@@ -664,7 +805,7 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
-        headingRowColor: WidgetStateProperty.all(AppColors.bg),
+        headingRowColor: WidgetStateProperty.all(context.subtleFill),
         columns: headers.map((h) => _col(h)).toList(),
         rows: rows
             .map(
