@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'gmt_daylight_schedule.dart';
+import 'daylight_schedule.dart';
 
-/// Switches between light and dark theme at GMT sunrise and sunset (Greenwich).
+/// Switches between light and dark theme at local sunrise and sunset.
 class ThemeNotifier extends ChangeNotifier with WidgetsBindingObserver {
   ThemeNotifier._();
 
@@ -16,7 +16,7 @@ class ThemeNotifier extends ChangeNotifier with WidgetsBindingObserver {
   ThemeMode get mode => _mode;
 
   /// Human-readable summary for debugging / optional UI.
-  String get scheduleLabel => 'GMT (Greenwich sunrise & sunset)';
+  String get scheduleLabel => 'Local sunrise & sunset';
 
   Future<void> load() async {
     WidgetsBinding.instance.addObserver(this);
@@ -29,8 +29,8 @@ class ThemeNotifier extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void _applyForNow() {
-    final utc = DateTime.now().toUtc();
-    final next = GmtDaylightSchedule.isDaytimeUtc(utc)
+    final now = DateTime.now();
+    final next = DaylightSchedule.isDaytime(now)
         ? ThemeMode.light
         : ThemeMode.dark;
     if (next != _mode) {
@@ -41,9 +41,9 @@ class ThemeNotifier extends ChangeNotifier with WidgetsBindingObserver {
 
   void _scheduleNextTransition() {
     _timer?.cancel();
-    final utc = DateTime.now().toUtc();
-    final at = GmtDaylightSchedule.nextTransitionUtc(utc);
-    var delay = at.difference(utc);
+    final now = DateTime.now();
+    final at = DaylightSchedule.nextTransition(now);
+    var delay = at.difference(now);
     if (delay.isNegative) {
       delay = Duration.zero;
     } else {
