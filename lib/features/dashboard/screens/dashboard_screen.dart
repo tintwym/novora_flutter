@@ -21,6 +21,7 @@ import '../../performance/screens/performance_screen.dart';
 import '../../recruitment/screens/job_list_screen.dart';
 import '../../reports/screens/reports_screen.dart';
 import '../../settings/screens/settings_screen.dart';
+import '../../asset_management/screens/asset_management_screen.dart';
 import '../../training/training_management_screen.dart';
 import '../../../shared/layouts/main_layout.dart';
 import '../../../shared/layouts/responsive_layout.dart';
@@ -55,12 +56,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void _onSidebarTap(BuildContext context, String label) {
     switch (label) {
-      case 'Assets':
-        _popShellToRoot();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$label — coming soon')),
-        );
-        return;
       case 'Dashboard':
         _popShellToRoot();
         Navigator.of(context).popUntil((route) => route.isFirst);
@@ -75,6 +70,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'Claims':
       case 'Performance':
       case 'Training':
+      case 'Assets':
       case 'Reports':
       case 'Settings':
         _popShellToRoot();
@@ -157,6 +153,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return const PerformanceScreen(embeddedInShell: true);
       case 'Training':
         return const TrainingManagementScreen(embeddedInShell: true);
+      case 'Assets':
+        return const AssetManagementScreen(embeddedInShell: true);
       case 'Reports':
         return const ReportsScreen(embeddedInShell: true);
       case 'Settings':
