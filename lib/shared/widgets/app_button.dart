@@ -57,7 +57,7 @@ class AppButton extends StatelessWidget {
                       style: GoogleFonts.dmSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.surface,
                       ),
                     ),
             ),

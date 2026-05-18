@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -78,7 +79,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
           onPrimaryAction: () => _toast('New leave request'),
         ),
         Material(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           child: TabBar(
             controller: _tab,
             isScrollable: true,
@@ -129,7 +130,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
     );
 
     if (widget.embeddedInShell) {
-      return ColoredBox(color: AppColors.bg, child: body);
+      return ModuleShellBackground(child: body);
     }
 
     return Scaffold(
@@ -1038,7 +1039,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
     return Container(
       padding: padding ?? const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -1159,7 +1160,7 @@ extension on _LeaveManagementScreenState {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -1248,7 +1249,7 @@ class _LeaveRequestTabState extends State<_LeaveRequestTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _LeaveChrome.whiteCard(
+          _LeaveChrome.whiteCard(context, 
             child: Wrap(
               spacing: 10,
               runSpacing: 10,
@@ -1274,7 +1275,7 @@ class _LeaveRequestTabState extends State<_LeaveRequestTab> {
           const SizedBox(height: 16),
           LayoutBuilder(
             builder: (context, c) {
-              final form = _LeaveChrome.whiteCard(
+              final form = _LeaveChrome.whiteCard(context, 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1345,7 +1346,7 @@ class _LeaveRequestTabState extends State<_LeaveRequestTab> {
                 ),
               );
 
-              final overview = _LeaveChrome.whiteCard(
+              final overview = _LeaveChrome.whiteCard(context, 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1359,7 +1360,7 @@ class _LeaveRequestTabState extends State<_LeaveRequestTab> {
                 ),
               );
 
-              final history = _LeaveChrome.whiteCard(
+              final history = _LeaveChrome.whiteCard(context, 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1586,7 +1587,7 @@ class _RequestForOthersTabState extends State<_RequestForOthersTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _LeaveChrome.whiteCard(
+          _LeaveChrome.whiteCard(context, 
             child: Wrap(
               alignment: WrapAlignment.spaceBetween,
               children: [
@@ -1602,7 +1603,7 @@ class _RequestForOthersTabState extends State<_RequestForOthersTab> {
           const SizedBox(height: 16),
           LayoutBuilder(
             builder: (context, c) {
-              final form = _LeaveChrome.whiteCard(
+              final form = _LeaveChrome.whiteCard(context, 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1700,7 +1701,7 @@ class _RequestForOthersTabState extends State<_RequestForOthersTab> {
                 ),
               );
 
-              final table = _LeaveChrome.whiteCard(
+              final table = _LeaveChrome.whiteCard(context, 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1769,11 +1770,11 @@ class _RequestForOthersTabState extends State<_RequestForOthersTab> {
 }
 
 abstract final class _LeaveChrome {
-  static Widget whiteCard({required Widget child}) {
+  static Widget whiteCard(BuildContext context, {required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/auth/user_roles.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_routes.dart';
+import '../../../core/theme/theme_colors.dart';
+import '../../../core/navigation/app_navigation.dart';
 import '../../../core/session/session_notifier.dart';
 import '../../../core/ui/app_snackbar.dart';
 import '../../../data/repositories/auth_repository.dart';
@@ -80,7 +82,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _logout() async {
     await AuthRepository().logout();
     if (!mounted) return;
-    Navigator.pushReplacementNamed(context, AppRoutes.login);
+    navigateToLogin(context);
   }
 
   Future<void> _onLogoutPressed() async {
@@ -123,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         Expanded(
           child: ColoredBox(
-            color: AppColors.bg,
+            color: context.pageBackground,
             child: buildSettingsPanel(_selectedId, context),
           ),
         ),
@@ -131,7 +133,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
 
     if (widget.embeddedInShell) {
-      return ColoredBox(color: AppColors.bg, child: body);
+      return ModuleShellBackground(child: body);
     }
 
     return Scaffold(
@@ -169,11 +171,12 @@ class _SettingsSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return Container(
       width: 260,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(right: BorderSide(color: AppColors.border)),
+      decoration: BoxDecoration(
+        color: tc.surfaceCard,
+        border: Border(right: BorderSide(color: tc.borderColor)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -188,16 +191,16 @@ class _SettingsSidebar extends StatelessWidget {
                 prefixIcon: const Icon(Icons.search_rounded, size: 20, color: AppColors.muted),
                 prefixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                 filled: true,
-                fillColor: AppColors.bg,
+                fillColor: tc.subtleFill,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(vertical: 10),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: tc.borderColor),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: AppColors.border),
+                  borderSide: BorderSide(color: tc.borderColor),
                 ),
               ),
             ),
@@ -229,7 +232,7 @@ class _SettingsSidebar extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 1, color: AppColors.border),
+          Divider(height: 1, color: tc.borderColor),
           ListenableBuilder(
             listenable: SessionNotifier.instance,
             builder: (context, _) {
@@ -248,10 +251,10 @@ class _SettingsSidebar extends StatelessWidget {
                       style: GoogleFonts.dmSans(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.navy,
+                        color: tc.primaryText,
                       ),
                     ),
-                    Text(role, style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.textMuted)),
+                    Text(role, style: GoogleFonts.dmSans(fontSize: 11, color: tc.secondaryText)),
                     const SizedBox(height: 8),
                     OutlinedButton(
                       onPressed: onRefreshAccount,
@@ -297,10 +300,15 @@ class _NavTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return Padding(
       padding: const EdgeInsets.only(bottom: 2),
       child: Material(
-        color: selected ? const Color(0xFFEFF6FF) : Colors.transparent,
+        color: selected
+            ? (tc.isDarkMode
+                ? AppColors.brandBlue.withValues(alpha: 0.25)
+                : const Color(0xFFEFF6FF))
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: onTap,
@@ -312,7 +320,7 @@ class _NavTile extends StatelessWidget {
                 Icon(
                   item.icon,
                   size: 18,
-                  color: selected ? AppColors.primary : AppColors.textMuted,
+                  color: selected ? tc.filterChipText : tc.secondaryText,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -321,7 +329,7 @@ class _NavTile extends StatelessWidget {
                     style: GoogleFonts.dmSans(
                       fontSize: 13,
                       fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                      color: selected ? AppColors.primary : AppColors.navy,
+                      color: selected ? tc.filterChipText : tc.primaryText,
                     ),
                   ),
                 ),

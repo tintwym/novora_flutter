@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -56,7 +57,7 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
           onPrimaryAction: () => _toast('Register asset'),
         ),
         Material(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           child: TabBar(
             controller: _tab,
             isScrollable: true,
@@ -92,7 +93,7 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
     );
 
     if (widget.embeddedInShell) {
-      return ColoredBox(color: AppColors.bg, child: body);
+      return ModuleShellBackground(child: body);
     }
 
     return Scaffold(
@@ -139,11 +140,11 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
   }
 
   Widget _scroll(List<Widget> children) {
-    return ColoredBox(
-      color: AppColors.bg,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
       ),
     );
   }
@@ -152,7 +153,7 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
     return Container(
       padding: padding ?? const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),

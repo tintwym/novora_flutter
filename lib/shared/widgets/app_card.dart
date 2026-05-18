@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_colors.dart';
 
 class AppCard extends StatelessWidget {
   const AppCard({super.key, required this.child, this.padding = const EdgeInsets.all(16)});
@@ -10,12 +10,13 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return Material(
-      color: AppColors.card,
+      color: tc.surfaceCard,
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.border),
+        side: BorderSide(color: tc.borderColor),
       ),
       child: Padding(padding: padding, child: child),
     );

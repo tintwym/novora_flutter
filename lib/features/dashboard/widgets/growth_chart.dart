@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../data/repositories/dashboard_repository.dart';
+import '../../../shared/widgets/themed_surface_card.dart';
 
 /// Employee headcount trend — uses repository mock spots until API wiring.
 class GrowthChart extends StatelessWidget {
@@ -32,7 +34,8 @@ class GrowthChart extends StatelessWidget {
     final spots = repository.growthSpots;
     final maxX = spots.isEmpty ? 11.0 : (spots.length - 1).toDouble();
 
-    return _DashboardSectionCard(
+    final tc = context;
+    return ThemedSurfaceCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -43,7 +46,7 @@ class GrowthChart extends StatelessWidget {
                 style: GoogleFonts.dmSans(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.navy,
+                  color: tc.primaryText,
                 ),
               ),
               const Spacer(),
@@ -53,14 +56,14 @@ class GrowthChart extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE3F2FD),
+                  color: tc.filterChipBg,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   'Last 12 Months ▾',
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
-                    color: AppColors.primary,
+                    color: tc.filterChipText,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -82,7 +85,7 @@ class GrowthChart extends StatelessWidget {
                   drawVerticalLine: false,
                   horizontalInterval: _yInterval,
                   getDrawingHorizontalLine: (value) =>
-                      FlLine(color: AppColors.border, strokeWidth: 1),
+                      FlLine(color: tc.borderColor, strokeWidth: 1),
                 ),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
@@ -150,7 +153,7 @@ class GrowthChart extends StatelessWidget {
                         colors: [
                           AppColors.brandBlue.withValues(alpha: 0.35),
                           AppColors.brandBlueSoft.withValues(alpha: 0.12),
-                          Colors.white.withValues(alpha: 0),
+                          tc.chartAreaFade,
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -187,28 +190,3 @@ class GrowthChart extends StatelessWidget {
   }
 }
 
-class _DashboardSectionCard extends StatelessWidget {
-  const _DashboardSectionCard({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-}

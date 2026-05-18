@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -47,7 +48,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
           onPrimaryAction: () => _toast('New request'),
         ),
         Material(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           child: TabBar(
             controller: _tab,
             isScrollable: true,
@@ -91,7 +92,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
     );
 
     if (widget.embeddedInShell) {
-      return ColoredBox(color: AppColors.bg, child: body);
+      return ModuleShellBackground(child: body);
     }
 
     return Scaffold(
@@ -832,7 +833,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -850,7 +851,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -947,7 +948,7 @@ class _TrainingRequestPaneState extends State<_TrainingRequestPane> {
   Widget _summaryBar() {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
       child: Wrap(
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -983,7 +984,7 @@ class _TrainingRequestPaneState extends State<_TrainingRequestPane> {
   Widget _formCard() {
     return Container(
       padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -1076,7 +1077,7 @@ class _TrainingRequestPaneState extends State<_TrainingRequestPane> {
   Widget _trackerCard() {
     return Container(
       padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -1177,7 +1178,7 @@ class _RequestOnBehalfPaneState extends State<_RequestOnBehalfPane> {
             builder: (context, c) {
               final form = Container(
                 padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
+                decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1230,7 +1231,7 @@ class _RequestOnBehalfPaneState extends State<_RequestOnBehalfPane> {
 
               final table = Container(
                 padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
+                decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

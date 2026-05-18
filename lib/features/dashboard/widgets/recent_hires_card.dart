@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../data/models/employee_model.dart';
+import '../../../shared/widgets/themed_surface_card.dart';
 
 class RecentHiresCard extends StatelessWidget {
   const RecentHiresCard({super.key, required this.hires});
@@ -11,20 +12,8 @@ class RecentHiresCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    final tc = context;
+    return ThemedSurfaceCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,7 +24,7 @@ class RecentHiresCard extends StatelessWidget {
                 style: GoogleFonts.dmSans(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.navy,
+                  color: tc.primaryText,
                 ),
               ),
               const Spacer(),
@@ -43,7 +32,7 @@ class RecentHiresCard extends StatelessWidget {
                 'View All',
                 style: GoogleFonts.dmSans(
                   fontSize: 12,
-                  color: AppColors.primary,
+                  color: tc.filterChipText,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -81,14 +70,14 @@ class RecentHiresCard extends StatelessWidget {
                               style: GoogleFonts.dmSans(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.navy,
+                                color: tc.primaryText,
                               ),
                             ),
                             Text(
                               h.role,
                               style: GoogleFonts.dmSans(
                                 fontSize: 11,
-                                color: AppColors.muted,
+                                color: tc.secondaryText,
                               ),
                             ),
                           ],
@@ -98,13 +87,13 @@ class RecentHiresCard extends StatelessWidget {
                         h.date,
                         style: GoogleFonts.dmSans(
                           fontSize: 11,
-                          color: AppColors.muted,
+                          color: tc.secondaryText,
                         ),
                       ),
                     ],
                   ),
                 ),
-                if (!isLast) Divider(color: AppColors.border, height: 1),
+                if (!isLast) Divider(color: tc.borderColor, height: 1),
               ],
             );
           }),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -98,7 +99,7 @@ class _EmployeeProfileScreenState extends State<EmployeeProfileScreen>
     );
 
     if (widget.embeddedInShell) {
-      return ColoredBox(color: AppColors.bg, child: content);
+      return ModuleShellBackground(child: content);
     }
 
     return Scaffold(
@@ -122,7 +123,7 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(context, shrinkOffset, overlapsContent) {
     return Material(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       elevation: overlapsContent ? 1 : 0,
       child: tabBar,
     );
@@ -149,8 +150,8 @@ class _ProfileToolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 4, 12, 8),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
         border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
       child: LayoutBuilder(
@@ -230,7 +231,7 @@ class _ProfileHeaderCard extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -404,7 +405,7 @@ class _ProfileCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),

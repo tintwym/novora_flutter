@@ -1,26 +1,8 @@
-import 'package:flutter/material.dart';
+import 'recruitment_management_screen.dart';
 
-import '../../../core/constants/app_colors.dart';
+export 'recruitment_management_screen.dart' show RecruitmentManagementScreen;
 
-class JobListScreen extends StatelessWidget {
-  const JobListScreen({super.key, this.embeddedInShell = false});
+/// Legacy alias — dashboard and routes use [JobListScreen].
+typedef JobListScreen = RecruitmentManagementScreen;
 
-  final bool embeddedInShell;
-
-  @override
-  Widget build(BuildContext context) {
-    final body = const Center(child: Text('Recruitment'));
-    if (embeddedInShell) {
-      return ColoredBox(color: AppColors.bg, child: body);
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Recruitment'),
-        foregroundColor: AppColors.navy,
-      ),
-      body: body,
-    );
-  }
-}
-
-typedef RecruitmentScreen = JobListScreen;
+typedef RecruitmentScreen = RecruitmentManagementScreen;

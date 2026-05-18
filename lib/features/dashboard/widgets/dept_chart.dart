@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../data/models/attendance_model.dart';
 import '../../../data/repositories/dashboard_repository.dart';
+import '../../../shared/widgets/themed_surface_card.dart';
 
 /// Attendance breakdown donut fed by [DashboardRepository] (API or mock).
 class AttendanceOverviewChart extends StatelessWidget {
@@ -54,7 +56,8 @@ class AttendanceOverviewChart extends StatelessWidget {
 
     final centerRate = repository.attendanceOverviewRate;
 
-    return _DashboardSectionCard(
+    final tc = context;
+    return ThemedSurfaceCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -65,21 +68,21 @@ class AttendanceOverviewChart extends StatelessWidget {
                 style: GoogleFonts.dmSans(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.navy,
+                  color: tc.primaryText,
                 ),
               ),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE3F2FD),
+                  color: tc.filterChipBg,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   'This Month',
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
-                    color: AppColors.primary,
+                    color: tc.filterChipText,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -113,7 +116,7 @@ class AttendanceOverviewChart extends StatelessWidget {
                           style: GoogleFonts.sora(
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.navy,
+                            color: tc.primaryText,
                             height: 1.05,
                           ),
                         ),
@@ -125,7 +128,7 @@ class AttendanceOverviewChart extends StatelessWidget {
                         style: GoogleFonts.dmSans(
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.textMuted,
+                          color: tc.secondaryText,
                           height: 1.2,
                         ),
                       ),
@@ -136,13 +139,14 @@ class AttendanceOverviewChart extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          ...attData.map(_sliceRow),
+          ...attData.map((d) => _sliceRow(context, d)),
         ],
       ),
     );
   }
 
-  Widget _sliceRow(AttendanceSliceModel d) {
+  Widget _sliceRow(BuildContext context, AttendanceSliceModel d) {
+    final tc = context;
     final dotColor = _colorForLabel(d.label, d.color);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -159,7 +163,7 @@ class AttendanceOverviewChart extends StatelessWidget {
               d.label,
               style: GoogleFonts.dmSans(
                 fontSize: 12,
-                color: AppColors.textMuted,
+                color: tc.secondaryText,
               ),
             ),
           ),
@@ -168,37 +172,11 @@ class AttendanceOverviewChart extends StatelessWidget {
             style: GoogleFonts.dmSans(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.navy,
+              color: tc.primaryText,
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _DashboardSectionCard extends StatelessWidget {
-  const _DashboardSectionCard({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: child,
     );
   }
 }

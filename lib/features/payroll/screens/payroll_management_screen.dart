@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -42,7 +43,7 @@ class _PayrollManagementScreenState extends State<PayrollManagementScreen>
           onPrimaryAction: () => _toast('Run payroll'),
         ),
         Material(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           child: TabBar(
             controller: _primary,
             isScrollable: true,
@@ -79,7 +80,7 @@ class _PayrollManagementScreenState extends State<PayrollManagementScreen>
     );
 
     if (widget.embeddedInShell) {
-      return ColoredBox(color: AppColors.bg, child: body);
+      return ModuleShellBackground(child: body);
     }
 
     return Scaffold(
@@ -106,11 +107,11 @@ Widget _pill(String t, Color bg, Color fg) {
   );
 }
 
-Widget _whiteCard({required Widget child}) {
+Widget _whiteCard(BuildContext context, {required Widget child}) {
   return Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: AppColors.border),
     ),
@@ -287,7 +288,7 @@ class _AllowanceBodyState extends State<_AllowanceBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _whiteCard(
+          _whiteCard(context, 
             child: Wrap(
               alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.center,
@@ -322,7 +323,7 @@ class _AllowanceBodyState extends State<_AllowanceBody> {
             ),
           ),
           const SizedBox(height: 16),
-          _whiteCard(
+          _whiteCard(context, 
             child: HrFullWidthDataTable(
               cellHorizontalPadding: 12,
               headerCells: [
@@ -442,7 +443,7 @@ class _BonusBodyState extends State<_BonusBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _whiteCard(
+          _whiteCard(context, 
             child: Wrap(
               alignment: WrapAlignment.spaceBetween,
               children: [
@@ -456,7 +457,7 @@ class _BonusBodyState extends State<_BonusBody> {
             ),
           ),
           const SizedBox(height: 16),
-          _whiteCard(
+          _whiteCard(context, 
             child: HrFullWidthDataTable(
               columnSpecs: const [
                 ('Bonus name', 2.2),
@@ -553,7 +554,7 @@ class _OvertimeBodyState extends State<_OvertimeBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _whiteCard(
+          _whiteCard(context, 
             child: Wrap(
               alignment: WrapAlignment.spaceBetween,
               children: [
@@ -569,7 +570,7 @@ class _OvertimeBodyState extends State<_OvertimeBody> {
           const SizedBox(height: 16),
           LayoutBuilder(
             builder: (context, c) {
-              final left = _whiteCard(
+              final left = _whiteCard(context, 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -590,7 +591,7 @@ class _OvertimeBodyState extends State<_OvertimeBody> {
                   ],
                 ),
               );
-              final right = _whiteCard(
+              final right = _whiteCard(context, 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -719,7 +720,7 @@ class _DepositBodyState extends State<_DepositBody> {
             ),
           ),
           const SizedBox(height: 12),
-          _whiteCard(
+          _whiteCard(context, 
             child: HrFullWidthDataTable(
               cellHorizontalPadding: 8,
               columnSpecs: const [
@@ -807,7 +808,7 @@ class _DeductionBodyState extends State<_DeductionBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _whiteCard(
+          _whiteCard(context, 
             child: Wrap(
               alignment: WrapAlignment.spaceBetween,
               children: [
@@ -821,7 +822,7 @@ class _DeductionBodyState extends State<_DeductionBody> {
             ),
           ),
           const SizedBox(height: 16),
-          _whiteCard(
+          _whiteCard(context, 
             child: HrFullWidthDataTable(
               columnSpecs: const [
                 ('Deduction name', 1.8),
@@ -906,7 +907,7 @@ class _TaxBodyState extends State<_TaxBody> {
             ),
           ),
           const SizedBox(height: 12),
-          _whiteCard(
+          _whiteCard(context, 
             child: HrFullWidthDataTable(
               columnSpecs: const [
                 ('Tax name', 2.0),
@@ -977,7 +978,7 @@ class _PayManagementBodyState extends State<_PayManagementBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _whiteCard(
+          _whiteCard(context, 
             child: Wrap(
               alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.center,
@@ -994,7 +995,7 @@ class _PayManagementBodyState extends State<_PayManagementBody> {
           const SizedBox(height: 16),
           LayoutBuilder(
             builder: (context, c) {
-              final left = _whiteCard(
+              final left = _whiteCard(context, 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1021,7 +1022,7 @@ class _PayManagementBodyState extends State<_PayManagementBody> {
                   ],
                 ),
               );
-              final right = _whiteCard(
+              final right = _whiteCard(context, 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

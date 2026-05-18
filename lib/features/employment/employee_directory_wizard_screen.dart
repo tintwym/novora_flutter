@@ -218,7 +218,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surface,
                       padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
                       child: _stepIndicator(),
                     ),
@@ -263,7 +263,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.border),
             ),
@@ -294,7 +294,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.border),
               ),
@@ -346,8 +346,8 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
   Widget _footerBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
         border: Border(top: BorderSide(color: AppColors.border)),
       ),
       child: LayoutBuilder(
@@ -469,7 +469,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
           color: AppColors.primary,
           shape: BoxShape.circle,
         ),
-        child: const Icon(Icons.check, color: Colors.white, size: 16),
+        child: Icon(Icons.check, color: Theme.of(context).colorScheme.surface, size: 16),
       );
     }
     if (active) {
@@ -480,7 +480,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.primary, width: 2),
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
         ),
         child: Text(
           '$index',
@@ -1392,7 +1392,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),

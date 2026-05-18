@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 
 class SettingsPageHeader extends StatelessWidget {
   const SettingsPageHeader({
@@ -17,6 +18,7 @@ class SettingsPageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -29,7 +31,7 @@ class SettingsPageHeader extends StatelessWidget {
                 style: GoogleFonts.sora(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.navy,
+                  color: tc.primaryText,
                 ),
               ),
               if (subtitle != null) ...[
@@ -38,7 +40,7 @@ class SettingsPageHeader extends StatelessWidget {
                   subtitle!,
                   style: GoogleFonts.dmSans(
                     fontSize: 13,
-                    color: AppColors.textMuted,
+                    color: tc.secondaryText,
                     height: 1.4,
                   ),
                 ),
@@ -68,11 +70,12 @@ class SettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: tc.surfaceCard,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: tc.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -87,7 +90,7 @@ class SettingsCard extends StatelessWidget {
                     style: GoogleFonts.dmSans(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.navy,
+                      color: tc.primaryText,
                     ),
                   ),
                 ),
@@ -95,7 +98,7 @@ class SettingsCard extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 1, color: AppColors.border),
+          Divider(height: 1, color: tc.borderColor),
           Padding(padding: padding, child: child),
         ],
       ),

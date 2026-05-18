@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
+import '../../core/theme/theme_colors.dart';
 
 /// Top banner used across Training / Attendance / Employment modules (mock-aligned).
 class HrModuleHeader extends StatelessWidget {
@@ -38,11 +39,12 @@ class HrModuleHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppColors.border)),
+      decoration: BoxDecoration(
+        color: tc.surfaceCard,
+        border: Border(bottom: BorderSide(color: tc.borderColor)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +58,7 @@ class HrModuleHeader extends StatelessWidget {
                   style: GoogleFonts.sora(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.navy,
+                    color: tc.primaryText,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -147,9 +149,9 @@ class _PeriodDropdownState extends State<_PeriodDropdown> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: _v,
@@ -182,9 +184,9 @@ class _YearDropdownState extends State<_YearDropdown> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: _v,
@@ -215,9 +217,9 @@ class _DeptDropdownState extends State<_DeptDropdown> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: _v,

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/storage/local_storage.dart';
+import '../../core/theme/theme_colors.dart';
 import '../../data/models/user_model.dart';
 
 class AppTopBar extends StatelessWidget {
@@ -42,6 +43,7 @@ class AppTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     final user = _readUser();
     final username = _usernameLabel(user);
 
@@ -49,8 +51,8 @@ class AppTopBar extends StatelessWidget {
       height: 64,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppColors.border)),
+        color: tc.surfaceCard,
+        border: Border(bottom: BorderSide(color: tc.borderColor)),
       ),
       child: Row(
         children: [
@@ -63,7 +65,7 @@ class AppTopBar extends StatelessWidget {
                 style: GoogleFonts.sora(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.navy,
+                  color: tc.primaryText,
                 ),
               ),
               if (subtitle != null)
@@ -71,7 +73,7 @@ class AppTopBar extends StatelessWidget {
                   subtitle!,
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
-                    color: AppColors.textMuted,
+                    color: tc.secondaryText,
                   ),
                 ),
             ],
@@ -84,7 +86,7 @@ class AppTopBar extends StatelessWidget {
               child: TextField(
                 style: GoogleFonts.dmSans(
                   fontSize: 13,
-                  color: AppColors.navy,
+                  color: tc.primaryText,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Search employees, modules...',
@@ -102,16 +104,16 @@ class AppTopBar extends StatelessWidget {
                     minHeight: 40,
                   ),
                   filled: true,
-                  fillColor: AppColors.bg,
+                  fillColor: tc.subtleFill,
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(vertical: 10),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppColors.border),
+                    borderSide: BorderSide(color: tc.borderColor),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppColors.border),
+                    borderSide: BorderSide(color: tc.borderColor),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -127,7 +129,7 @@ class AppTopBar extends StatelessWidget {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              _iconButton(Icons.notifications_outlined),
+              _iconButton(context, Icons.notifications_outlined),
               Positioned(
                 top: -4,
                 right: -4,
@@ -153,7 +155,7 @@ class AppTopBar extends StatelessWidget {
             ],
           ),
           const SizedBox(width: 8),
-          _iconButton(Icons.settings_outlined),
+          _iconButton(context, Icons.settings_outlined),
           const SizedBox(width: 12),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 200),
@@ -165,7 +167,7 @@ class AppTopBar extends StatelessWidget {
               style: GoogleFonts.dmSans(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.navy,
+                color: tc.primaryText,
               ),
             ),
           ),
@@ -183,7 +185,7 @@ class AppTopBar extends StatelessWidget {
                   trailingDateLabel!,
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
-                    color: AppColors.textMuted,
+                    color: tc.secondaryText,
                   ),
                 ),
               ],
@@ -193,16 +195,17 @@ class AppTopBar extends StatelessWidget {
     );
   }
 
-  Widget _iconButton(IconData icon) {
+  Widget _iconButton(BuildContext context, IconData icon) {
+    final tc = context;
     return Container(
       width: 38,
       height: 38,
       decoration: BoxDecoration(
-        color: AppColors.bg,
+        color: tc.subtleFill,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.border, width: 1.5),
+        border: Border.all(color: tc.borderColor, width: 1.5),
       ),
-      child: Icon(icon, color: AppColors.navy, size: 20),
+      child: Icon(icon, color: tc.primaryText, size: 20),
     );
   }
 }

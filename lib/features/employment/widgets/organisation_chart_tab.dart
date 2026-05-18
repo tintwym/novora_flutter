@@ -92,7 +92,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -168,7 +168,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -208,7 +208,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -397,7 +397,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
     final rows = _flattenMock().where((n) => !n.isOpenPosition && _matchesFilter(n)).where(_nodeMatchesSearch).toList();
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -539,7 +539,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
     final n = _selected!;
     return Material(
       elevation: 8,
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       child: Container(
         padding: const EdgeInsets.fromLTRB(20, 16, 12, 16),
         decoration: const BoxDecoration(

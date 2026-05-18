@@ -40,7 +40,7 @@ class HrPillSegmentedControl extends StatelessWidget {
       height: height,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(999),
           border: Border.all(color: _border, width: 1.25),
         ),

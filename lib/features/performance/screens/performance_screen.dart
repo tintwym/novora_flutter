@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -59,7 +60,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
           },
         ),
         Material(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           child: TabBar(
             controller: _tab,
             isScrollable: true,
@@ -112,7 +113,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
     );
 
     if (widget.embeddedInShell) {
-      return ColoredBox(color: AppColors.bg, child: body);
+      return ModuleShellBackground(child: body);
     }
 
     return Scaffold(
@@ -190,7 +191,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),

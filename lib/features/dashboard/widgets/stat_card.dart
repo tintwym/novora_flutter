@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../data/services/dashboard_service.dart';
 
 class StatCard extends StatelessWidget {
@@ -11,15 +12,16 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: tc.surfaceCard,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: tc.borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: tc.cardShadow,
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -46,7 +48,7 @@ class StatCard extends StatelessWidget {
                 style: GoogleFonts.sora(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.navy,
+                  color: tc.primaryText,
                 ),
               ),
               const SizedBox(height: 2),
@@ -54,7 +56,7 @@ class StatCard extends StatelessWidget {
                 item.label,
                 style: GoogleFonts.dmSans(
                   fontSize: 11,
-                  color: AppColors.textMuted,
+                  color: tc.secondaryText,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

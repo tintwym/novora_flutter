@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/session/session_notifier.dart';
@@ -228,21 +229,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 appBar: AppBar(
-                  backgroundColor: Colors.white,
+                  backgroundColor: context.surfaceCard,
                   elevation: 0,
                   title: Text(
                     _shellTitle(),
                     style: GoogleFonts.sora(
                       fontWeight: FontWeight.w700,
-                      color: AppColors.navy,
+                      color: context.primaryText,
                       fontSize: 18,
                     ),
                   ),
                   actions: [
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.notifications_outlined,
-                        color: AppColors.navy,
+                        color: context.primaryText,
                       ),
                       onPressed: () {},
                     ),

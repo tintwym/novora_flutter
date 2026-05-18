@@ -68,7 +68,7 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
         children: [
           _headerBlock(),
           Material(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             child: TabBar(
               controller: _tab,
               labelColor: AppColors.primary,
@@ -105,8 +105,8 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
         border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
       child: LayoutBuilder(
@@ -664,7 +664,7 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),

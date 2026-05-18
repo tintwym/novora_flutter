@@ -19,9 +19,22 @@ class AppTheme {
       ),
     );
 
+    final scheme = base.colorScheme.copyWith(
+      surface: Colors.white,
+      onSurface: AppColors.navy,
+      onSurfaceVariant: AppColors.textMuted,
+      outline: AppColors.border,
+    );
+
     return base.copyWith(
-      scaffoldBackgroundColor: const Color(0xFFF8FAFC),
-      textTheme: GoogleFonts.dmSansTextTheme(base.textTheme),
+      colorScheme: scheme,
+      scaffoldBackgroundColor: AppColors.bg,
+      cardColor: Colors.white,
+      dividerColor: AppColors.border,
+      textTheme: GoogleFonts.dmSansTextTheme(base.textTheme).apply(
+        bodyColor: AppColors.navy,
+        displayColor: AppColors.navy,
+      ),
       appBarTheme: AppBarTheme(
         elevation: 0,
         centerTitle: false,
@@ -69,7 +82,15 @@ class AppTheme {
       ),
     );
 
+    final scheme = base.colorScheme.copyWith(
+      surface: surface,
+      onSurface: const Color(0xFFF1F5F9),
+      onSurfaceVariant: const Color(0xFF94A3B8),
+      outline: border,
+    );
+
     return base.copyWith(
+      colorScheme: scheme,
       scaffoldBackgroundColor: scaffold,
       cardColor: surface,
       dividerColor: border,

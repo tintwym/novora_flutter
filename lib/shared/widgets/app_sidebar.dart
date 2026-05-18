@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
+import '../../core/theme/theme_colors.dart';
 
 class NavMenuItem {
   const NavMenuItem({required this.icon, required this.label});
@@ -24,15 +25,16 @@ class AppSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return Container(
       width: 242,
-      color: Colors.white,
+      color: tc.surfaceCard,
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: AppColors.border)),
+              border: Border(bottom: BorderSide(color: tc.borderColor)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +44,7 @@ class AppSidebar extends StatelessWidget {
                   style: GoogleFonts.sora(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.navy,
+                    color: tc.primaryText,
                   ),
                 ),
                 Text(
@@ -85,7 +87,7 @@ class AppSidebar extends StatelessWidget {
                           children: [
                             Icon(
                               item.icon,
-                              color: isActive ? Colors.white : AppColors.textMuted,
+                              color: isActive ? Colors.white : tc.secondaryText,
                               size: 20,
                             ),
                             const SizedBox(width: 12),
@@ -96,7 +98,7 @@ class AppSidebar extends StatelessWidget {
                                   fontSize: 14,
                                   fontWeight:
                                       isActive ? FontWeight.w600 : FontWeight.w400,
-                                  color: isActive ? Colors.white : AppColors.textMuted,
+                                  color: isActive ? Colors.white : tc.secondaryText,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -122,23 +124,28 @@ class AppSidebar extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFFE3F2FD),
-                    Color(0xFFFFF3E0),
-                    Color(0xFFE8F5E9),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                gradient: tc.isDarkMode
+                    ? null
+                    : const LinearGradient(
+                        colors: [
+                          Color(0xFFE3F2FD),
+                          Color(0xFFFFF3E0),
+                          Color(0xFFE8F5E9),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                color: tc.isDarkMode ? tc.subtleFill : null,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFBBDEFB)),
+                border: Border.all(
+                  color: tc.isDarkMode ? tc.borderColor : const Color(0xFFBBDEFB),
+                ),
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.help_outline_rounded,
-                    color: AppColors.primary,
+                    color: tc.filterChipText,
                     size: 20,
                   ),
                   const SizedBox(width: 10),
@@ -150,14 +157,14 @@ class AppSidebar extends StatelessWidget {
                         style: GoogleFonts.dmSans(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.navy,
+                          color: tc.primaryText,
                         ),
                       ),
                       Text(
                         'Visit our support center',
                         style: GoogleFonts.dmSans(
                           fontSize: 11,
-                          color: AppColors.textMuted,
+                          color: tc.secondaryText,
                         ),
                       ),
                     ],
