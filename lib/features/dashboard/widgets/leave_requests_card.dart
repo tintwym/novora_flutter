@@ -12,11 +12,13 @@ class LeaveRequestsCard extends StatelessWidget {
     super.key,
     required this.requests,
     this.title = 'Leave Requests',
+    this.linkLabel = 'View All',
     this.emptyMessage = 'No leave requests yet.',
   });
 
   final List<LeaveRequestModel> requests;
   final String title;
+  final String linkLabel;
   final String emptyMessage;
 
   @override
@@ -29,20 +31,21 @@ class LeaveRequestsCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                title,
+                title.toUpperCase(),
                 style: GoogleFonts.dmSans(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: tc.primaryText,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.6,
+                  color: tc.secondaryText,
                 ),
               ),
               const Spacer(),
               Text(
-                'View All',
+                linkLabel,
                 style: GoogleFonts.dmSans(
-                  fontSize: 12,
-                  color: tc.filterChipText,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 11,
+                  color: AppColors.brandBlue,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],

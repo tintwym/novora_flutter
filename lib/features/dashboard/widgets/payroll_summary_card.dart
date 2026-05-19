@@ -21,26 +21,12 @@ class PayrollSummaryCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Payroll Summary',
+                'FINANCIAL OVERVIEW',
                 style: GoogleFonts.dmSans(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: tc.primaryText,
-                ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: tc.filterChipBg,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  payroll.periodLabel,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 11,
-                    color: tc.filterChipText,
-                  ),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.6,
+                  color: tc.secondaryText,
                 ),
               ),
             ],
@@ -55,7 +41,7 @@ class PayrollSummaryCard extends StatelessWidget {
             ),
           ),
           Text(
-            'Total Payroll',
+            'Total Operational Payroll',
             style: GoogleFonts.dmSans(fontSize: 12, color: tc.secondaryText),
           ),
           const SizedBox(height: 16),
@@ -90,21 +76,33 @@ class PayrollSummaryCard extends StatelessWidget {
             color: AppColors.primary,
             label: 'Net Pay',
             value: payroll.netPay,
-            pct: '71.9%',
+            pct: '71%',
           ),
           const SizedBox(height: 8),
           _PayrollRow(
             color: AppColors.purple,
             label: 'Deductions',
             value: payroll.deductions,
-            pct: '15.7%',
+            pct: '16%',
           ),
           const SizedBox(height: 8),
           _PayrollRow(
             color: AppColors.purple3,
             label: 'Taxes',
             value: payroll.taxes,
-            pct: '12.4%',
+            pct: '12%',
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {},
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.navy,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              child: const Text('\$ FINALIZE AUDIT'),
+            ),
           ),
         ],
       ),

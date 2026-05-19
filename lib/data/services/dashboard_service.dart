@@ -25,6 +25,7 @@ class DashboardStatItem {
     required this.isPositive,
     required this.icon,
     required this.color,
+    this.showTrend = true,
   });
 
   final String label;
@@ -33,6 +34,7 @@ class DashboardStatItem {
   final bool isPositive;
   final IconData icon;
   final Color color;
+  final bool showTrend;
 }
 
 class _Live {
@@ -489,28 +491,40 @@ class DashboardService {
 
   static List<DashboardStatItem> _mockEmployeeStatItems() => const [
     DashboardStatItem(
-      label: 'Attendance Rate',
-      value: '—',
-      change: 'This month',
+      label: 'Leave Balance',
+      value: '14 Days',
+      change: '',
       isPositive: true,
-      icon: Icons.check_circle_outlined,
-      color: AppColors.success,
-    ),
-    DashboardStatItem(
-      label: 'Leave Requests',
-      value: '0',
-      change: '0 pending',
-      isPositive: true,
-      icon: Icons.beach_access_outlined,
-      color: AppColors.accent,
-    ),
-    DashboardStatItem(
-      label: 'Onboarding Tasks',
-      value: '0',
-      change: 'remaining',
-      isPositive: true,
-      icon: Icons.assignment_outlined,
+      icon: Icons.event_busy_outlined,
       color: AppColors.primary,
+      showTrend: false,
+    ),
+    DashboardStatItem(
+      label: 'Training Streak',
+      value: '94%',
+      change: '',
+      isPositive: true,
+      icon: Icons.trending_up_rounded,
+      color: AppColors.success,
+      showTrend: false,
+    ),
+    DashboardStatItem(
+      label: 'Expenses YTD',
+      value: '\$4,850',
+      change: '',
+      isPositive: true,
+      icon: Icons.payments_outlined,
+      color: AppColors.warning,
+      showTrend: false,
+    ),
+    DashboardStatItem(
+      label: 'Task Completion',
+      value: '22/24',
+      change: '',
+      isPositive: true,
+      icon: Icons.task_alt_outlined,
+      color: AppColors.danger,
+      showTrend: false,
     ),
   ];
 
@@ -525,7 +539,7 @@ class DashboardService {
   static List<DashboardStatItem> _mockStatItems() => const [
     DashboardStatItem(
       label: 'Total Employees',
-      value: '1,248',
+      value: '1,284',
       change: '+8.5%',
       isPositive: true,
       icon: Icons.groups_outlined,

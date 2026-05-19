@@ -53,50 +53,54 @@ class StatCard extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                item.label,
+                item.label.toUpperCase(),
                 style: GoogleFonts.dmSans(
-                  fontSize: 11,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.4,
                   color: tc.secondaryText,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Icon(
-                    item.isPositive
-                        ? Icons.arrow_upward_rounded
-                        : Icons.arrow_downward_rounded,
-                    size: 12,
-                    color: item.isPositive
-                        ? AppColors.success
-                        : AppColors.danger,
-                  ),
-                  const SizedBox(width: 2),
-                  Text(
-                    item.change,
-                    style: GoogleFonts.dmSans(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
+              if (item.showTrend && item.change.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(
+                      item.isPositive
+                          ? Icons.arrow_upward_rounded
+                          : Icons.arrow_downward_rounded,
+                      size: 12,
                       color: item.isPositive
                           ? AppColors.success
                           : AppColors.danger,
                     ),
-                  ),
-                  const SizedBox(width: 4),
-                  Flexible(
-                    child: Text(
-                      'vs last month',
+                    const SizedBox(width: 2),
+                    Text(
+                      item.change,
                       style: GoogleFonts.dmSans(
-                        fontSize: 10,
-                        color: AppColors.muted,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: item.isPositive
+                            ? AppColors.success
+                            : AppColors.danger,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
-              ),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        'vs last month',
+                        style: GoogleFonts.dmSans(
+                          fontSize: 10,
+                          color: AppColors.muted,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ],

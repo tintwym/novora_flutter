@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../data/models/employee_model.dart';
 import '../../../shared/widgets/themed_surface_card.dart';
@@ -20,20 +21,21 @@ class RecentHiresCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Recent New Hires',
+                'NEW TALENT',
                 style: GoogleFonts.dmSans(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: tc.primaryText,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.6,
+                  color: tc.secondaryText,
                 ),
               ),
               const Spacer(),
               Text(
-                'View All',
+                'EXPLORER',
                 style: GoogleFonts.dmSans(
-                  fontSize: 12,
-                  color: tc.filterChipText,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 11,
+                  color: AppColors.brandBlue,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],

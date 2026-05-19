@@ -64,27 +64,42 @@ class AttendanceOverviewChart extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Attendance Overview',
+                'ATTENDANCE',
                 style: GoogleFonts.dmSans(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: tc.primaryText,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.6,
+                  color: tc.secondaryText,
                 ),
               ),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: tc.filterChipBg,
-                  borderRadius: BorderRadius.circular(8),
+                  color: const Color(0xFFDCFCE7),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                child: Text(
-                  'This Month',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 12,
-                    color: tc.filterChipText,
-                    fontWeight: FontWeight.w500,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                        color: AppColors.success,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'LIVE',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF065F46),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

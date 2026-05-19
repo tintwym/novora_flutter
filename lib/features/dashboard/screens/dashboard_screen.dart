@@ -29,18 +29,21 @@ import '../../../shared/layouts/responsive_layout.dart';
 import '../../../shared/widgets/app_sidebar.dart';
 import '../../../shared/widgets/app_topbar.dart';
 import '../dashboard_controller.dart';
-import '../widgets/attendance_donut_chart.dart';
-import '../widgets/growth_chart.dart';
-import '../widgets/leave_requests_card.dart';
-import '../widgets/payroll_summary_card.dart';
-import '../widgets/recent_hires_card.dart';
-import '../widgets/stat_card.dart';
+import '../widgets/dashboard_admin_body.dart';
+import '../widgets/dashboard_employee_body.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key, this.skipInitialSessionRefresh = false});
+  const DashboardScreen({
+    super.key,
+    this.skipInitialSessionRefresh = false,
+    this.skipTimeTrackingLiveUpdates = false,
+  });
 
   /// When true, skips `/me` + dashboard API refresh on first frame (widget tests / offline).
   final bool skipInitialSessionRefresh;
+
+  /// Disables live clock timer and attendance API in the time-tracking card (widget tests).
+  final bool skipTimeTrackingLiveUpdates;
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -292,110 +295,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildScrollBody() {
     final repo = _controller.repository;
+    final isEmployee = _currentUser()?.isEmployee ?? repo.isEmployeeView;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildStatGrid(
-            repo.statItems.map((i) => StatCard(item: i)).toList(),
-          ),
-          const SizedBox(height: 20),
-          _buildChartsRow(),
-          const SizedBox(height: 16),
-          _buildBottomRow(),
+          if (isEmployee)
+            DashboardEmployeeBody(
+              repository: repo,
+              skipTimeTrackingLiveUpdates: widget.skipTimeTrackingLiveUpdates,
+            )
+          else
+            DashboardAdminBody(
+              repository: repo,
+              skipTimeTrackingLiveUpdates: widget.skipTimeTrackingLiveUpdates,
+            ),
           const SizedBox(height: 20),
           _buildFooter(),
         ],
       ),
-    );
-  }
-
-  Widget _buildStatGrid(List<Widget> cards) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final crossCount = constraints.maxWidth > 1000
-            ? 6
-            : (constraints.maxWidth > 600 ? 3 : 2);
-        return GridView.count(
-          crossAxisCount: crossCount,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          childAspectRatio: 1.3,
-          children: cards,
-        );
-      },
-    );
-  }
-
-  Widget _buildChartsRow() {
-    final repo = _controller.repository;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth > 900) {
-          return IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(flex: 12, child: GrowthChart(repository: repo)),
-                const SizedBox(width: 16),
-                Expanded(
-                  flex: 10,
-                  child: AttendanceDonutChart(repository: repo),
-                ),
-              ],
-            ),
-          );
-        }
-        return Column(
-          children: [
-            GrowthChart(repository: repo),
-            const SizedBox(height: 16),
-            AttendanceDonutChart(repository: repo),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildBottomRow() {
-    final repo = _controller.repository;
-    final isEmployee = _currentUser()?.isEmployee ?? repo.isEmployeeView;
-
-    if (isEmployee) {
-      return LeaveRequestsCard(
-        title: 'My leave requests',
-        emptyMessage: 'You have not submitted any leave requests yet.',
-        requests: repo.leaveRequests,
-      );
-    }
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth > 900) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: RecentHiresCard(hires: repo.recentHires)),
-              const SizedBox(width: 16),
-              Expanded(child: LeaveRequestsCard(requests: repo.leaveRequests)),
-              const SizedBox(width: 16),
-              Expanded(child: PayrollSummaryCard(payroll: repo.payroll)),
-            ],
-          );
-        }
-        return Column(
-          children: [
-            RecentHiresCard(hires: repo.recentHires),
-            const SizedBox(height: 16),
-            LeaveRequestsCard(requests: repo.leaveRequests),
-            const SizedBox(height: 16),
-            PayrollSummaryCard(payroll: repo.payroll),
-          ],
-        );
-      },
     );
   }
 

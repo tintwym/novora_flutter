@@ -42,11 +42,12 @@ class GrowthChart extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Employee Growth',
+                'WORKFORCE TRENDS',
                 style: GoogleFonts.dmSans(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: tc.primaryText,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.6,
+                  color: tc.secondaryText,
                 ),
               ),
               const Spacer(),
@@ -60,7 +61,7 @@ class GrowthChart extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'Last 12 Months ▾',
+                  'Last 12 months ▾',
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
                     color: tc.filterChipText,
