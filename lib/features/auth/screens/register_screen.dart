@@ -5,11 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/ui/app_snackbar.dart';
-import '../../../core/constants/app_strings.dart';
 import '../../../core/error/exceptions.dart';
 import '../../../core/utils/validators.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
+import '../../../shared/widgets/novora_logo.dart';
 import '../auth_controller.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/auth_text_field.dart';
@@ -101,23 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              AppStrings.brandName,
-              style: GoogleFonts.sora(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: AppColors.navy,
-              ),
-            ),
-            Text(
-              AppStrings.hrmsSubtitle,
-              style: GoogleFonts.dmSans(
-                fontSize: 8,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textMuted,
-                letterSpacing: 1.0,
-              ),
-            ),
+            const NovoraLogo(width: 220),
             const SizedBox(height: 24),
             Text(
               'Create Account',

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../../../core/network/api_client.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -47,7 +48,7 @@ class _DashboardTimeTrackingCardState extends State<DashboardTimeTrackingCard> {
       });
     }
     if (widget.enableAttendanceApi) {
-      _load();
+      unawaited(_primeSession());
     } else {
       _loading = false;
     }
@@ -69,6 +70,16 @@ class _DashboardTimeTrackingCardState extends State<DashboardTimeTrackingCard> {
       if (l.workDate == _todayIso) return l;
     }
     return null;
+  }
+
+  Future<void> _primeSession() async {
+    try {
+      await ApiClient.ensureCsrfToken();
+    } catch (_) {
+      // Punch will retry; avoid blocking the widget.
+    }
+    if (!mounted) return;
+    await _load();
   }
 
   Future<void> _load() async {

@@ -129,6 +129,17 @@ class _MyCheckInTabState extends State<MyCheckInTab> {
                       'Your account must be linked to an employee record in HR to use check-in.',
                       style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.muted),
                     ),
+                  ] else if (_fatalMessage!.contains('403') ||
+                      _fatalMessage!.toLowerCase().contains('forbidden') ||
+                      _fatalMessage!.toLowerCase().contains('csrf') ||
+                      _fatalMessage!.toLowerCase().contains('session')) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      'The dashboard may still show sample data when the API is unreachable, but check-in '
+                      'always needs a live session. Start ./scripts/run-backend-local.sh, set API_BASE_URL to '
+                      'match your browser host, then sign in again.',
+                      style: GoogleFonts.dmSans(fontSize: 13, height: 1.4, color: AppColors.muted),
+                    ),
                   ],
                 ],
               ),

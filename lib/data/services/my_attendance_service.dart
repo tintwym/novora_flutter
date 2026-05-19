@@ -21,8 +21,8 @@ class MyAttendanceService {
   }
 
   Future<AttendanceLogModel> checkIn() async {
-    await ApiClient.ensureCsrfToken();
     try {
+      await ApiClient.ensureCsrfToken();
       final res = await ApiClient.dio.post<Map<String, dynamic>>(AppEndpoints.myAttendanceCheckIn);
       if (res.statusCode != 200 || res.data == null) {
         throw Exception('Check-in failed');
@@ -34,8 +34,8 @@ class MyAttendanceService {
   }
 
   Future<AttendanceLogModel> checkOut() async {
-    await ApiClient.ensureCsrfToken();
     try {
+      await ApiClient.ensureCsrfToken();
       final res = await ApiClient.dio.post<Map<String, dynamic>>(AppEndpoints.myAttendanceCheckOut);
       if (res.statusCode != 200 || res.data == null) {
         throw Exception('Check-out failed');

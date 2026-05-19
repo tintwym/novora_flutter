@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_strings.dart';
 import '../../core/theme/theme_colors.dart';
+import 'novora_logo.dart';
 
 class NavMenuItem {
   const NavMenuItem({required this.icon, required this.label});
@@ -36,27 +36,9 @@ class AppSidebar extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: tc.borderColor)),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppStrings.brandName,
-                  style: GoogleFonts.sora(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: tc.primaryText,
-                  ),
-                ),
-                Text(
-                  AppStrings.hrmsSubtitle,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 7.5,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.muted,
-                    letterSpacing: 0.6,
-                  ),
-                ),
-              ],
+            child: const NovoraLogo(
+              width: 200,
+              alignment: Alignment.centerLeft,
             ),
           ),
           Expanded(
@@ -102,13 +84,6 @@ class AppSidebar extends StatelessWidget {
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            Icon(
-                              Icons.chevron_right_rounded,
-                              size: 20,
-                              color: isActive
-                                  ? Colors.white.withValues(alpha: 0.85)
-                                  : AppColors.muted,
                             ),
                           ],
                         ),

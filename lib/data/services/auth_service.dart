@@ -28,6 +28,8 @@ class AuthService {
       }
       final user = UserModel.fromAuthJson(res.data!);
       await _persist(user);
+      // Login creates a new session; CSRF from pre-login is invalid → refresh before any POST.
+      await _ensureCsrf();
       return user;
     } on DioException catch (e) {
       throw apiExceptionFromDio(e);
@@ -52,6 +54,7 @@ class AuthService {
       }
       final user = UserModel.fromAuthJson(res.data!);
       await _persist(user);
+      await _ensureCsrf();
       return user;
     } on DioException catch (e) {
       throw apiExceptionFromDio(e);
@@ -64,6 +67,11 @@ class AuthService {
       if (res.statusCode != 200 || res.data == null) return null;
       final user = UserModel.fromAuthJson(res.data!);
       await _persist(user);
+      try {
+        await _ensureCsrf();
+      } catch (_) {
+        // Session may still work for GETs; punch will retry CSRF.
+      }
       return user;
     } on DioException {
       return null;

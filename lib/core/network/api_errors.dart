@@ -78,13 +78,18 @@ ApiException apiExceptionFromDio(DioException e) {
       return ApiException('Invalid email or password.', status);
     }
     final crossOrigin = _isBrowserTarget() && _webApiHostDiffersFromPage();
+    final genericForbidden = bodyMsg == null ||
+        bodyMsg.toLowerCase() == 'forbidden' ||
+        bodyMsg.toLowerCase() == 'access denied';
     return ApiException(
       crossOrigin
           ? 'Request blocked (403). The app and API are on different sites, so login cookies '
               'cannot be sent. Production must use API_BASE_URL=same-origin with Vercel API rewrites.'
-          : bodyMsg ??
-              'Request blocked (403). Missing or invalid CSRF/session cookies. '
-                  'Hard-refresh, clear cookies for this site, then sign in again.',
+          : genericForbidden
+              ? 'Request blocked (403). Your login session or CSRF cookie did not reach the API. '
+                  'Sign out, hard-refresh, then sign in again. Local dev: run the backend with profile '
+                  'local and use the same host in the browser and API_BASE_URL (localhost vs 127.0.0.1).'
+              : bodyMsg,
       status,
     );
   }

@@ -9,6 +9,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/error/exceptions.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
+import '../../../shared/widgets/novora_logo.dart';
 import '../auth_controller.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/auth_text_field.dart';
@@ -232,29 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
 class _BrandWordmark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          AppStrings.brandName,
-          style: GoogleFonts.sora(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: AppColors.navy,
-            height: 1.1,
-          ),
-        ),
-        Text(
-          AppStrings.hrmsSubtitle,
-          style: GoogleFonts.dmSans(
-            fontSize: 8,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textMuted,
-            letterSpacing: 1.0,
-          ),
-        ),
-      ],
-    );
+    return const NovoraLogo(width: 220);
   }
 }
 
