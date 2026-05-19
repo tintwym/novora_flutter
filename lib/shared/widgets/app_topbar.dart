@@ -15,12 +15,16 @@ class AppTopBar extends StatelessWidget {
     this.subtitle,
     this.showSearch = true,
     this.trailingDateLabel,
+    this.onOpenSettings,
+    this.onLogout,
   });
 
   final String title;
   final String? subtitle;
   final bool showSearch;
   final String? trailingDateLabel;
+  final VoidCallback? onOpenSettings;
+  final VoidCallback? onLogout;
 
   UserModel? _readUser() {
     final raw = LocalStorage.instance.userJson;
@@ -39,6 +43,14 @@ class AppTopBar extends StatelessWidget {
     final email = user.email.trim();
     if (email.isNotEmpty) return email;
     return 'Signed in';
+  }
+
+  String _initials(UserModel? user) {
+    final name = _usernameLabel(user);
+    final parts = name.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    if (parts.isEmpty) return '?';
+    if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();
+    return '${parts.first[0]}${parts[1][0]}'.toUpperCase();
   }
 
   @override
@@ -154,25 +166,16 @@ class AppTopBar extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(width: 8),
-          _iconButton(context, Icons.settings_outlined),
           const SizedBox(width: 12),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 200),
-            child: Text(
-              username,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.end,
-              style: GoogleFonts.dmSans(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: tc.primaryText,
-              ),
-            ),
+          TopBarUserMenu(
+            username: username,
+            email: user?.email,
+            initials: _initials(user),
+            onOpenSettings: onOpenSettings,
+            onLogout: onLogout,
           ),
-          const SizedBox(width: 12),
-          if (trailingDateLabel != null)
+          if (trailingDateLabel != null) ...[
+            const SizedBox(width: 12),
             Row(
               children: [
                 const Icon(
@@ -190,6 +193,7 @@ class AppTopBar extends StatelessWidget {
                 ),
               ],
             ),
+          ],
         ],
       ),
     );
@@ -206,6 +210,149 @@ class AppTopBar extends StatelessWidget {
         border: Border.all(color: tc.borderColor, width: 1.5),
       ),
       child: Icon(icon, color: tc.primaryText, size: 20),
+    );
+  }
+}
+
+/// Account menu: Settings + Log out (replaces standalone settings icon).
+class TopBarUserMenu extends StatelessWidget {
+  const TopBarUserMenu({
+    super.key,
+    required this.username,
+    required this.initials,
+    this.email,
+    this.onOpenSettings,
+    this.onLogout,
+  });
+
+  final String username;
+  final String initials;
+  final String? email;
+  final VoidCallback? onOpenSettings;
+  final VoidCallback? onLogout;
+
+  @override
+  Widget build(BuildContext context) {
+    final tc = context;
+    return PopupMenuButton<String>(
+      offset: const Offset(0, 44),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      onSelected: (value) {
+        switch (value) {
+          case 'settings':
+            onOpenSettings?.call();
+          case 'logout':
+            onLogout?.call();
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem<String>(
+          enabled: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                username,
+                style: GoogleFonts.dmSans(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: tc.primaryText,
+                ),
+              ),
+              if (email != null && email!.isNotEmpty)
+                Text(
+                  email!,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 11,
+                    color: tc.secondaryText,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem<String>(
+          value: 'settings',
+          child: Row(
+            children: [
+              Icon(Icons.settings_outlined, size: 20, color: tc.primaryText),
+              const SizedBox(width: 10),
+              Text(
+                'Settings',
+                style: GoogleFonts.dmSans(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: tc.primaryText,
+                ),
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'logout',
+          child: Row(
+            children: [
+              const Icon(Icons.logout_rounded, size: 20, color: AppColors.danger),
+              const SizedBox(width: 10),
+              Text(
+                'Log out',
+                style: GoogleFonts.dmSans(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.danger,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: tc.subtleFill,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: tc.borderColor),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircleAvatar(
+                radius: 14,
+                backgroundColor: AppColors.brandBlue.withValues(alpha: 0.12),
+                child: Text(
+                  initials,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.brandBlueDeep,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 140),
+                child: Text(
+                  username,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: tc.primaryText,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 20,
+                color: tc.secondaryText,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

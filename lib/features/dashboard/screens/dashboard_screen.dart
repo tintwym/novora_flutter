@@ -8,6 +8,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/navigation/app_navigation.dart';
 import '../../../core/session/session_notifier.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/repositories/auth_repository.dart';
@@ -89,6 +90,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _onSidebarSubnav(String parent, String subId) {
     _popShellToRoot();
     _controller.selectSubnav(parent, subId);
+  }
+
+  void _openSettings() {
+    _popShellToRoot();
+    _controller.setActiveNav('Settings');
+  }
+
+  Future<void> _confirmLogout() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Log out?', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
+        content: Text(
+          'You will be signed out of Novora.',
+          style: GoogleFonts.dmSans(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: FilledButton.styleFrom(backgroundColor: AppColors.danger),
+            child: const Text('Log out'),
+          ),
+        ],
+      ),
+    );
+    if (ok == true && mounted) {
+      await AuthRepository().logout();
+      if (!mounted) return;
+      navigateToLogin(context);
+    }
+  }
+
+  TopBarUserMenu _userMenu() {
+    final user = _currentUser();
+    final name = user?.displayName.trim();
+    final username = (name != null && name.isNotEmpty)
+        ? name
+        : (user?.email ?? 'Signed in');
+    String initials = '?';
+    final parts = username.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    if (parts.length >= 2) {
+      initials = '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    } else if (parts.isNotEmpty) {
+      initials = parts.first[0].toUpperCase();
+    }
+    return TopBarUserMenu(
+      username: username,
+      email: user?.email,
+      initials: initials,
+      onOpenSettings: _openSettings,
+      onLogout: _confirmLogout,
+    );
   }
 
   Widget _buildSidebar(BuildContext context, {bool popDrawer = false}) {
@@ -248,6 +305,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     trailingDateLabel: _controller.activeNavLabel == 'Dashboard'
                         ? DateFormat.yMMMd().format(DateTime.now())
                         : null,
+                    onOpenSettings: _openSettings,
+                    onLogout: _confirmLogout,
                   ),
                   body: _shellNavigatorHost(),
                 );
@@ -276,7 +335,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       onPressed: () {},
                     ),
-                    const SizedBox(width: 8),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: _userMenu(),
+                    ),
                   ],
                 ),
                 body: _shellNavigatorHost(),

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_strings.dart';
 
-/// Official Novora wordmark (icon + NOVORA + HRMS SOFTWARE) from [AppAssets.logoSvg].
+/// Official Novora wordmark (icon + NOVORA + HRMS SOFTWARE).
 class NovoraLogo extends StatelessWidget {
   const NovoraLogo({
     super.key,
@@ -14,8 +13,8 @@ class NovoraLogo extends StatelessWidget {
     this.alignment = Alignment.centerLeft,
   });
 
-  /// Natural asset ratio (511×273).
-  static const double aspectRatio = 511 / 273;
+  /// Natural asset ratio (790×356).
+  static const double aspectRatio = 790 / 356;
 
   final double? height;
   final double? width;
@@ -26,13 +25,14 @@ class NovoraLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: alignment,
-      child: SvgPicture.asset(
-        AppAssets.logoSvg,
+      child: Image.asset(
+        AppAssets.logoFull,
         height: height,
         width: width,
         fit: fit,
         alignment: alignment,
-        semanticsLabel: AppStrings.appTitle,
+        filterQuality: FilterQuality.high,
+        semanticLabel: AppStrings.appTitle,
       ),
     );
   }
