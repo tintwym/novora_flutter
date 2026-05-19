@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/theme_colors.dart';
+import '../../../shared/layouts/module_secondary_nav_layout.dart';
 import '../../../shared/widgets/module_shell_background.dart';
 import '../models/reports_nav.dart';
 import '../panels/reports_panels.dart';
@@ -36,31 +37,33 @@ class _ReportsScreenState extends State<ReportsScreen> {
         .where((s) => s.items.isNotEmpty);
   }
 
-  void _navigate(String id) => setState(() => _selectedId = id);
+  void _navigate(String id) {
+    setState(() => _selectedId = id);
+    closeModuleSectionsDrawerIfOpen(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final body = Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _ReportsSidebar(
-          search: _search,
-          onSearchChanged: (v) => setState(() => _search = v),
-          selectedId: _selectedId,
-          onSelect: _navigate,
-          sections: _filteredSections,
+    final sectionLabel =
+        ReportsNav.findById(_selectedId)?.label ?? 'Report centre';
+
+    final body = ModuleSecondaryNavLayout(
+      currentSectionLabel: sectionLabel,
+      secondaryNav: _ReportsSidebar(
+        search: _search,
+        onSearchChanged: (v) => setState(() => _search = v),
+        selectedId: _selectedId,
+        onSelect: _navigate,
+        sections: _filteredSections,
+      ),
+      content: ColoredBox(
+        color: context.pageBackground,
+        child: buildReportsPanel(
+          _selectedId,
+          context,
+          onNavigate: _navigate,
         ),
-        Expanded(
-          child: ColoredBox(
-            color: context.pageBackground,
-            child: buildReportsPanel(
-              _selectedId,
-              context,
-              onNavigate: _navigate,
-            ),
-          ),
-        ),
-      ],
+      ),
     );
 
     if (widget.embeddedInShell) {
@@ -100,8 +103,7 @@ class _ReportsSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tc = context;
-    return Container(
-      width: 260,
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: tc.surfaceCard,
         border: Border(right: BorderSide(color: tc.borderColor)),

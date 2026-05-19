@@ -22,9 +22,9 @@ void main() {
     expect(find.text('Monthly payroll summary'), findsWidgets);
   });
 
-  testWidgets('Reports sidebar navigates to scheduled panel', (tester) async {
+  testWidgets('narrow layout shows Sections drawer control', (tester) async {
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    await tester.binding.setSurfaceSize(const Size(1200, 800));
+    await tester.binding.setSurfaceSize(const Size(900, 800));
 
     await tester.pumpWidget(
       const MaterialApp(
@@ -33,19 +33,66 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Custom builder'));
-    await tester.pumpAndSettle();
-    expect(find.text('Step 1 — Data source'), findsOneWidget);
+    expect(find.text('Sections'), findsOneWidget);
+  });
 
-    await tester.tap(
-      find.descendant(
-        of: find.byType(ListView),
-        matching: find.text('Scheduled reports'),
+  testWidgets('wide content area shows pinned secondary sidebar', (tester) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.binding.setSurfaceSize(const Size(1600, 800));
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(body: ReportsScreen(embeddedInShell: true)),
       ),
     );
     await tester.pumpAndSettle();
 
+    expect(find.text('Sections'), findsNothing);
+
+    await tester.tap(find.text('+ Schedule'));
+    await tester.pumpAndSettle();
+
     expect(find.text('New scheduled report'), findsOneWidget);
-    expect(find.text('Active scheduled reports'), findsOneWidget);
+  });
+
+  testWidgets('embedded beside main nav collapses secondary sidebar', (tester) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.binding.setSurfaceSize(const Size(1400, 800));
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: Row(
+            children: [
+              SizedBox(width: 242),
+              Expanded(child: ReportsScreen(embeddedInShell: true)),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sections'), findsOneWidget);
+  });
+
+  testWidgets('Sections drawer navigates on narrow layout', (tester) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.binding.setSurfaceSize(const Size(900, 800));
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(body: ReportsScreen(embeddedInShell: true)),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Sections'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Custom builder'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Step 1 — Data source'), findsOneWidget);
   });
 }

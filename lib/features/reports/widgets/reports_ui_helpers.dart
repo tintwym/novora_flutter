@@ -391,7 +391,7 @@ class ReportListTile extends StatelessWidget {
               ],
             ),
           ),
-          if (trailing != null) trailing!,
+          ?trailing,
           if (onRun != null || onPdf != null) ...[
             const SizedBox(width: 12),
             if (onRun != null)

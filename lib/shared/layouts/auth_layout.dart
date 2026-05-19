@@ -54,20 +54,23 @@ class _BrandPanel extends StatelessWidget {
             _ring(220, top: 180, right: -50),
             _ring(160, bottom: 40, left: 40),
           ],
-          Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 32,
-                vertical: compact ? 20 : 48,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final tight = compact && constraints.maxHeight < 168;
+              return SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: compact ? (tight ? 8 : 16) : 48,
+                ),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                   Text.rich(
                     TextSpan(
                       style: GoogleFonts.sora(
-                        fontSize: compact ? 22 : 30,
+                        fontSize: compact ? (tight ? 18 : 22) : 30,
                         fontWeight: FontWeight.w800,
                         height: 1.25,
                       ),
@@ -107,16 +110,20 @@ class _BrandPanel extends StatelessWidget {
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  SizedBox(height: compact ? 12 : 18),
-                  Text(
-                    'Novora HRMS empowers organizations to streamline processes, enhance productivity, and drive growth.',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.dmSans(
-                      fontSize: compact ? 12 : 14,
-                      color: const Color(0xFF94A3B8),
-                      height: 1.6,
+                  if (!tight) ...[
+                    SizedBox(height: compact ? 12 : 18),
+                    Text(
+                      'Novora HRMS empowers organizations to streamline processes, enhance productivity, and drive growth.',
+                      textAlign: TextAlign.center,
+                      maxLines: compact ? 2 : null,
+                      overflow: compact ? TextOverflow.ellipsis : null,
+                      style: GoogleFonts.dmSans(
+                        fontSize: compact ? 12 : 14,
+                        color: const Color(0xFF94A3B8),
+                        height: 1.6,
+                      ),
                     ),
-                  ),
+                  ],
                   if (!compact) ...[
                     const SizedBox(height: 40),
                     Row(
@@ -139,9 +146,11 @@ class _BrandPanel extends StatelessWidget {
                       ],
                     ),
                   ],
-                ],
-              ),
-            ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

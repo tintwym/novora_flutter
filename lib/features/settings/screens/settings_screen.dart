@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/layouts/module_secondary_nav_layout.dart';
 import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -108,28 +109,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void _selectSection(String id) {
+    setState(() => _selectedId = id);
+    closeModuleSectionsDrawerIfOpen(context);
+  }
+
+  String get _sectionLabel {
+    for (final section in SettingsNav.sections) {
+      for (final item in section.items) {
+        if (item.id == _selectedId) return item.label;
+      }
+    }
+    return 'Settings';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final body = Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _SettingsSidebar(
-          search: _search,
-          onSearchChanged: (v) => setState(() => _search = v),
-          selectedId: _selectedId,
-          onSelect: (id) => setState(() => _selectedId = id),
-          sections: _filteredSections,
-          onRefreshAccount: _refreshing ? null : _refreshAccount,
-          onLogout: _onLogoutPressed,
-          refreshing: _refreshing,
-        ),
-        Expanded(
-          child: ColoredBox(
-            color: context.pageBackground,
-            child: buildSettingsPanel(_selectedId, context),
-          ),
-        ),
-      ],
+    final body = ModuleSecondaryNavLayout(
+      currentSectionLabel: _sectionLabel,
+      secondaryNav: _SettingsSidebar(
+        search: _search,
+        onSearchChanged: (v) => setState(() => _search = v),
+        selectedId: _selectedId,
+        onSelect: _selectSection,
+        sections: _filteredSections,
+        onRefreshAccount: _refreshing ? null : _refreshAccount,
+        onLogout: _onLogoutPressed,
+        refreshing: _refreshing,
+      ),
+      content: ColoredBox(
+        color: context.pageBackground,
+        child: buildSettingsPanel(_selectedId, context),
+      ),
     );
 
     if (widget.embeddedInShell) {
@@ -172,8 +183,7 @@ class _SettingsSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tc = context;
-    return Container(
-      width: 260,
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: tc.surfaceCard,
         border: Border(right: BorderSide(color: tc.borderColor)),
