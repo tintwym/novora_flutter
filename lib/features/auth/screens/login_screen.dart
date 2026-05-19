@@ -9,6 +9,7 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/error/exceptions.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
+import '../../../shared/widgets/auth_form_header.dart';
 import '../auth_controller.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/auth_text_field.dart';
@@ -81,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const AuthFormHeader(),
             Text(
               'Sign in',
               style: GoogleFonts.sora(

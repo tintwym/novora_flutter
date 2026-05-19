@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../widgets/novora_logo.dart';
 import 'responsive_layout.dart';
 
 /// Split-screen layout for login / register / forgot-password flows.
+///
+/// Wide: form (left, white) + brand hero (right, navy). Logo lives on the form side
+/// because the wordmark PNG has a white background.
 class AuthLayout extends StatelessWidget {
   const AuthLayout({super.key, required this.form});
 
@@ -27,8 +29,8 @@ class AuthLayout extends StatelessWidget {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(
-                  height: MediaQuery.sizeOf(context).height * 0.28,
+                const SizedBox(
+                  height: 220,
                   child: _BrandPanel(compact: true),
                 ),
                 Expanded(child: form),
@@ -50,120 +52,105 @@ class _BrandPanel extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
-          ...[
-            _ring(300, top: -100, right: -100),
-            _ring(220, top: 180, right: -50),
-            _ring(160, bottom: 40, left: 40),
-          ],
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final tight = compact && constraints.maxHeight < 168;
-              return SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: compact ? (tight ? 8 : 16) : 48,
-                ),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+          _ring(300, top: -100, right: -100),
+          _ring(220, top: 180, right: -50),
+          _ring(160, bottom: 40, left: 40),
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: compact ? 24 : 48,
+                vertical: compact ? 20 : 48,
+              ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final tight = compact && constraints.maxHeight < 140;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: NovoraLogo(width: compact ? 160 : 220),
-                  ),
-                  SizedBox(height: compact ? 16 : 32),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                  Text.rich(
-                    TextSpan(
-                      style: GoogleFonts.sora(
-                        fontSize: compact ? (tight ? 18 : 22) : 30,
-                        fontWeight: FontWeight.w800,
-                        height: 1.25,
-                      ),
-                      children: const [
+                      Text.rich(
                         TextSpan(
-                          text: 'Manage Your\n',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        TextSpan(
-                          text: 'Workforce',
-                          style: TextStyle(
-                            color: AppColors.brandBlueSoft,
+                          style: GoogleFonts.sora(
+                            fontSize: compact ? (tight ? 20 : 24) : 32,
                             fontWeight: FontWeight.w800,
+                            height: 1.2,
+                          ),
+                          children: const [
+                            TextSpan(
+                              text: 'Manage Your\n',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            TextSpan(
+                              text: 'Workforce',
+                              style: TextStyle(
+                                color: AppColors.brandBlueSoft,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' with\n',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            TextSpan(
+                              text: 'Precision.',
+                              style: TextStyle(
+                                color: Color(0xFFE2E8F0),
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: compact ? 12 : 16),
+                      Container(
+                        width: 56,
+                        height: 3,
+                        decoration: BoxDecoration(
+                          gradient: AppColors.primaryGrad,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      if (!tight) ...[
+                        SizedBox(height: compact ? 12 : 20),
+                        Text(
+                          'Novora HRMS empowers organizations to streamline processes, enhance productivity, and drive growth.',
+                          textAlign: TextAlign.center,
+                          maxLines: compact ? 3 : 4,
+                          style: GoogleFonts.dmSans(
+                            fontSize: compact ? 13 : 15,
+                            color: const Color(0xFF94A3B8),
+                            height: 1.6,
                           ),
                         ),
-                        TextSpan(
-                          text: ' with\n',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        TextSpan(
-                          text: 'Precision.',
-                          style: TextStyle(
-                            color: Color(0xFFE2E8F0),
-                            fontWeight: FontWeight.w800,
-                          ),
+                      ],
+                      if (!compact) ...[
+                        const SizedBox(height: 48),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _feature(
+                              Icons.verified_user_outlined,
+                              'Secure &\nReliable',
+                            ),
+                            const SizedBox(width: 28),
+                            _feature(
+                              Icons.insights_rounded,
+                              'Data-Driven\nInsights',
+                            ),
+                            const SizedBox(width: 28),
+                            _feature(
+                              Icons.groups_outlined,
+                              'Workforce\nExcellence',
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: compact ? 10 : 14),
-                  Container(
-                    width: 56,
-                    height: 3,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGrad,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  if (!tight) ...[
-                    SizedBox(height: compact ? 12 : 18),
-                    Text(
-                      'Novora HRMS empowers organizations to streamline processes, enhance productivity, and drive growth.',
-                      textAlign: TextAlign.center,
-                      maxLines: compact ? 2 : null,
-                      overflow: compact ? TextOverflow.ellipsis : null,
-                      style: GoogleFonts.dmSans(
-                        fontSize: compact ? 12 : 14,
-                        color: const Color(0xFF94A3B8),
-                        height: 1.6,
-                      ),
-                    ),
-                  ],
-                  if (!compact) ...[
-                    const SizedBox(height: 40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _feature(
-                          Icons.verified_user_outlined,
-                          'Secure &\nReliable',
-                        ),
-                        const SizedBox(width: 28),
-                        _feature(
-                          Icons.insights_rounded,
-                          'Data-Driven\nInsights',
-                        ),
-                        const SizedBox(width: 28),
-                        _feature(
-                          Icons.groups_outlined,
-                          'Workforce\nExcellence',
-                        ),
-                      ],
-                    ),
-                  ],
-                      ],
-                    ),
-                  ),
                     ],
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+            ),
           ),
         ],
       ),
