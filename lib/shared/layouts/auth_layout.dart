@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../widgets/novora_logo.dart';
 import 'responsive_layout.dart';
 
 /// Split-screen layout for login / register / forgot-password flows.
@@ -65,8 +66,17 @@ class _BrandPanel extends StatelessWidget {
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: NovoraLogo(width: compact ? 160 : 220),
+                  ),
+                  SizedBox(height: compact ? 16 : 32),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                   Text.rich(
                     TextSpan(
                       style: GoogleFonts.sora(
@@ -146,6 +156,9 @@ class _BrandPanel extends StatelessWidget {
                       ],
                     ),
                   ],
+                      ],
+                    ),
+                  ),
                     ],
                   ),
                 ),

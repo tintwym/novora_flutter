@@ -9,7 +9,6 @@ import '../../../core/constants/app_strings.dart';
 import '../../../core/error/exceptions.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
-import '../../../shared/widgets/novora_logo.dart';
 import '../auth_controller.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/auth_text_field.dart';
@@ -82,8 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _BrandWordmark(),
-            const SizedBox(height: 36),
             Text(
               'Sign in',
               style: GoogleFonts.sora(
@@ -227,13 +224,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-}
-
-class _BrandWordmark extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const NovoraLogo(width: 220);
   }
 }
 

@@ -9,7 +9,6 @@ import '../../../core/error/exceptions.dart';
 import '../../../core/utils/validators.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
-import '../../../shared/widgets/novora_logo.dart';
 import '../auth_controller.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/auth_text_field.dart';
@@ -101,8 +100,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const NovoraLogo(width: 220),
-            const SizedBox(height: 24),
             Text(
               'Create Account',
               style: GoogleFonts.sora(
