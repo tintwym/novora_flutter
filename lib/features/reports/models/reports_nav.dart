@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../shared/models/sidebar_subnav.dart';
+
 class ReportsNavItem {
   const ReportsNavItem({
     required this.id,
@@ -98,6 +100,23 @@ abstract final class ReportsNav {
   );
 
   static List<ReportsNavSection> get sections => [overview, modules];
+
+  static List<SidebarSubnavSection> get sidebarSections => sections
+      .map(
+        (s) => SidebarSubnavSection(
+          title: s.title,
+          entries: s.items
+              .map(
+                (i) => SidebarSubnavEntry(
+                  id: i.id,
+                  label: i.label,
+                  icon: i.icon,
+                ),
+              )
+              .toList(),
+        ),
+      )
+      .toList();
 
   static ReportsNavItem? findById(String id) {
     for (final s in sections) {

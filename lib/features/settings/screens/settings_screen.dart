@@ -14,17 +14,35 @@ import '../models/settings_nav_item.dart';
 import '../panels/settings_panels.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key, this.embeddedInShell = false});
+  const SettingsScreen({
+    super.key,
+    this.embeddedInShell = false,
+    this.showSecondaryNav = true,
+    this.selectedId,
+    this.onSelectedIdChanged,
+  });
 
   final bool embeddedInShell;
+  final bool showSecondaryNav;
+  final String? selectedId;
+  final ValueChanged<String>? onSelectedIdChanged;
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  String _selectedId = 'company_profile';
+  late String _selectedId = widget.selectedId ?? 'company_profile';
   String _search = '';
+
+  @override
+  void didUpdateWidget(SettingsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final external = widget.selectedId;
+    if (external != null && external != _selectedId) {
+      _selectedId = external;
+    }
+  }
   bool _refreshing = false;
 
   Iterable<SettingsNavSection> get _filteredSections {
@@ -111,6 +129,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void _selectSection(String id) {
     setState(() => _selectedId = id);
+    widget.onSelectedIdChanged?.call(id);
     closeModuleSectionsDrawerIfOpen(context);
   }
 
@@ -125,23 +144,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final body = ModuleSecondaryNavLayout(
-      currentSectionLabel: _sectionLabel,
-      secondaryNav: _SettingsSidebar(
-        search: _search,
-        onSearchChanged: (v) => setState(() => _search = v),
-        selectedId: _selectedId,
-        onSelect: _selectSection,
-        sections: _filteredSections,
-        onRefreshAccount: _refreshing ? null : _refreshAccount,
-        onLogout: _onLogoutPressed,
-        refreshing: _refreshing,
-      ),
-      content: ColoredBox(
-        color: context.pageBackground,
-        child: buildSettingsPanel(_selectedId, context),
-      ),
+    final content = ColoredBox(
+      color: context.pageBackground,
+      child: buildSettingsPanel(_selectedId, context),
     );
+
+    final Widget body;
+    if (widget.showSecondaryNav) {
+      body = ModuleSecondaryNavLayout(
+        currentSectionLabel: _sectionLabel,
+        secondaryNav: _SettingsSidebar(
+          search: _search,
+          onSearchChanged: (v) => setState(() => _search = v),
+          selectedId: _selectedId,
+          onSelect: _selectSection,
+          sections: _filteredSections,
+          onRefreshAccount: _refreshing ? null : _refreshAccount,
+          onLogout: _onLogoutPressed,
+          refreshing: _refreshing,
+        ),
+        content: content,
+      );
+    } else {
+      body = content;
+    }
 
     if (widget.embeddedInShell) {
       return ModuleShellBackground(child: body);

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../data/models/user_model.dart';
 import '../../data/repositories/dashboard_repository.dart';
 import '../../data/services/dashboard_service.dart';
+import '../../features/reports/models/reports_nav.dart';
+import '../../features/settings/models/settings_nav_item.dart';
 import '../../shared/widgets/app_sidebar.dart';
 
 class DashboardController extends ChangeNotifier {
@@ -14,6 +16,9 @@ class DashboardController extends ChangeNotifier {
   DashboardRepository get repository => _repository;
 
   String activeNavLabel = 'Dashboard';
+  String reportsSectionId = 'report_centre';
+  String settingsSectionId = 'company_profile';
+  final Set<String> expandedNavLabels = {};
 
   static const _allNavItems = [
     NavMenuItem(icon: Icons.dashboard_outlined, label: 'Dashboard'),
@@ -40,8 +45,28 @@ class DashboardController extends ChangeNotifier {
   ];
 
   /// Full HR menu for admins/managers; trimmed menu for [EMPLOYEE].
-  static List<NavMenuItem> navItemsFor(UserModel? user) =>
-      user != null && user.canAccessHrAdmin ? _allNavItems : _employeeNavItems;
+  static List<NavMenuItem> navItemsFor(UserModel? user) {
+    final base = user != null && user.canAccessHrAdmin ? _allNavItems : _employeeNavItems;
+    return base
+        .map(
+          (item) => NavMenuItem(
+            icon: item.icon,
+            label: item.label,
+            subnavSections: switch (item.label) {
+              'Reports' => ReportsNav.sidebarSections,
+              'Settings' => SettingsNav.sidebarSections,
+              _ => null,
+            },
+          ),
+        )
+        .toList();
+  }
+
+  String? get activeSubnavId => switch (activeNavLabel) {
+        'Reports' => reportsSectionId,
+        'Settings' => settingsSectionId,
+        _ => null,
+      };
 
   @Deprecated('Use navItemsFor(user)')
   static List<NavMenuItem> get navItems => _allNavItems;
@@ -49,8 +74,34 @@ class DashboardController extends ChangeNotifier {
   void setActiveNav(String label, {bool forceNotify = false}) {
     if (!forceNotify && activeNavLabel == label) return;
     activeNavLabel = label;
+    if (_hasSubnav(label)) {
+      expandedNavLabels.add(label);
+    }
     notifyListeners();
   }
+
+  void toggleNavExpanded(String label) {
+    if (expandedNavLabels.contains(label)) {
+      expandedNavLabels.remove(label);
+    } else {
+      expandedNavLabels.add(label);
+    }
+    notifyListeners();
+  }
+
+  void selectSubnav(String parentLabel, String subId) {
+    activeNavLabel = parentLabel;
+    expandedNavLabels.add(parentLabel);
+    if (parentLabel == 'Reports') {
+      reportsSectionId = subId;
+    } else if (parentLabel == 'Settings') {
+      settingsSectionId = subId;
+    }
+    notifyListeners();
+  }
+
+  static bool _hasSubnav(String label) =>
+      label == 'Reports' || label == 'Settings';
 
   /// Loads live KPIs from Spring when a session cookie is present; keeps mocks on failure.
   Future<void> refreshFromApi() async {

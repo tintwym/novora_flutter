@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../shared/models/sidebar_subnav.dart';
+
 class SettingsNavItem {
   const SettingsNavItem({
     required this.id,
@@ -112,6 +114,23 @@ abstract final class SettingsNav {
       ],
     ),
   ];
+
+  static List<SidebarSubnavSection> get sidebarSections => sections
+      .map(
+        (s) => SidebarSubnavSection(
+          title: s.title,
+          entries: s.items
+              .map(
+                (i) => SidebarSubnavEntry(
+                  id: i.id,
+                  label: i.label,
+                  icon: i.icon,
+                ),
+              )
+              .toList(),
+        ),
+      )
+      .toList();
 
   static SettingsNavItem? findById(String id) {
     for (final section in sections) {

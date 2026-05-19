@@ -3,12 +3,24 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/theme_colors.dart';
+import '../models/sidebar_subnav.dart';
 import 'novora_logo.dart';
+import 'sidebar_subnav_tiles.dart';
 
 class NavMenuItem {
-  const NavMenuItem({required this.icon, required this.label});
+  const NavMenuItem({
+    required this.icon,
+    required this.label,
+    this.subnavSections,
+  });
+
   final IconData icon;
   final String label;
+
+  /// When set, this item expands in the sidebar (Reports, Settings, …).
+  final List<SidebarSubnavSection>? subnavSections;
+
+  bool get hasSubnav => subnavSections != null && subnavSections!.isNotEmpty;
 }
 
 class AppSidebar extends StatelessWidget {
@@ -17,11 +29,23 @@ class AppSidebar extends StatelessWidget {
     required this.items,
     required this.activeLabel,
     required this.onSelect,
+    this.expandedLabels = const {},
+    this.onToggleExpand,
+    this.activeSubnavId,
+    this.onSelectSubnav,
   });
 
   final List<NavMenuItem> items;
   final String activeLabel;
   final ValueChanged<String> onSelect;
+
+  /// Parent labels with dropdown open (e.g. Reports).
+  final Set<String> expandedLabels;
+  final ValueChanged<String>? onToggleExpand;
+
+  /// Selected sub-item id for the active module.
+  final String? activeSubnavId;
+  final void Function(String parentLabel, String subId)? onSelectSubnav;
 
   @override
   Widget build(BuildContext context) {
@@ -44,54 +68,29 @@ class AppSidebar extends StatelessWidget {
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-              children: items.map((item) {
-                final isActive = activeLabel == item.label;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () => onSelect(item.label),
-                      borderRadius: BorderRadius.circular(10),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 11,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: isActive
-                              ? AppColors.primaryGrad
-                              : null,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              item.icon,
-                              color: isActive ? Colors.white : tc.secondaryText,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                item.label,
-                                style: GoogleFonts.dmSans(
-                                  fontSize: 14,
-                                  fontWeight:
-                                      isActive ? FontWeight.w600 : FontWeight.w400,
-                                  color: isActive ? Colors.white : tc.secondaryText,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+              children: [
+                for (final item in items) ...[
+                  _ParentTile(
+                    item: item,
+                    isActive: activeLabel == item.label,
+                    isExpanded: expandedLabels.contains(item.label),
+                    onTap: () {
+                      if (item.hasSubnav) {
+                        onToggleExpand?.call(item.label);
+                      }
+                      onSelect(item.label);
+                    },
                   ),
-                );
-              }).toList(),
+                  if (item.hasSubnav && expandedLabels.contains(item.label))
+                    SidebarSubnavTiles(
+                      sections: item.subnavSections!,
+                      selectedId: activeLabel == item.label
+                          ? (activeSubnavId ?? item.subnavSections!.first.entries.first.id)
+                          : '',
+                      onSelect: (id) => onSelectSubnav?.call(item.label, id),
+                    ),
+                ],
+              ],
             ),
           ),
           Padding(
@@ -149,6 +148,74 @@ class AppSidebar extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ParentTile extends StatelessWidget {
+  const _ParentTile({
+    required this.item,
+    required this.isActive,
+    required this.isExpanded,
+    required this.onTap,
+  });
+
+  final NavMenuItem item;
+  final bool isActive;
+  final bool isExpanded;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final tc = context;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 2),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+            decoration: BoxDecoration(
+              gradient: isActive ? AppColors.primaryGrad : null,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  item.icon,
+                  color: isActive ? Colors.white : tc.secondaryText,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    item.label,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 14,
+                      fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                      color: isActive ? Colors.white : tc.secondaryText,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (item.hasSubnav)
+                  Icon(
+                    isExpanded
+                        ? Icons.keyboard_arrow_down_rounded
+                        : Icons.keyboard_arrow_right_rounded,
+                    size: 20,
+                    color: isActive
+                        ? Colors.white.withValues(alpha: 0.9)
+                        : AppColors.muted,
+                  ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

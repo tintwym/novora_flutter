@@ -5,22 +5,44 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../shared/layouts/module_secondary_nav_layout.dart';
+import '../../../shared/models/sidebar_subnav.dart';
 import '../../../shared/widgets/module_shell_background.dart';
+import '../../../shared/widgets/sidebar_subnav_tiles.dart';
 import '../models/reports_nav.dart';
 import '../panels/reports_panels.dart';
 
 class ReportsScreen extends StatefulWidget {
-  const ReportsScreen({super.key, this.embeddedInShell = false});
+  const ReportsScreen({
+    super.key,
+    this.embeddedInShell = false,
+    this.showSecondaryNav = true,
+    this.selectedId,
+    this.onSelectedIdChanged,
+  });
 
   final bool embeddedInShell;
+
+  /// When false, sub-nav lives in the main app sidebar dropdown (shell mode).
+  final bool showSecondaryNav;
+  final String? selectedId;
+  final ValueChanged<String>? onSelectedIdChanged;
 
   @override
   State<ReportsScreen> createState() => _ReportsScreenState();
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
-  String _selectedId = 'report_centre';
+  late String _selectedId = widget.selectedId ?? 'report_centre';
   String _search = '';
+
+  @override
+  void didUpdateWidget(ReportsScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final external = widget.selectedId;
+    if (external != null && external != _selectedId) {
+      _selectedId = external;
+    }
+  }
 
   Iterable<ReportsNavSection> get _filteredSections {
     if (_search.trim().isEmpty) return ReportsNav.sections;
@@ -39,6 +61,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   void _navigate(String id) {
     setState(() => _selectedId = id);
+    widget.onSelectedIdChanged?.call(id);
     closeModuleSectionsDrawerIfOpen(context);
   }
 
@@ -47,24 +70,31 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final sectionLabel =
         ReportsNav.findById(_selectedId)?.label ?? 'Report centre';
 
-    final body = ModuleSecondaryNavLayout(
-      currentSectionLabel: sectionLabel,
-      secondaryNav: _ReportsSidebar(
-        search: _search,
-        onSearchChanged: (v) => setState(() => _search = v),
-        selectedId: _selectedId,
-        onSelect: _navigate,
-        sections: _filteredSections,
-      ),
-      content: ColoredBox(
-        color: context.pageBackground,
-        child: buildReportsPanel(
-          _selectedId,
-          context,
-          onNavigate: _navigate,
-        ),
+    final content = ColoredBox(
+      color: context.pageBackground,
+      child: buildReportsPanel(
+        _selectedId,
+        context,
+        onNavigate: _navigate,
       ),
     );
+
+    final Widget body;
+    if (widget.showSecondaryNav) {
+      body = ModuleSecondaryNavLayout(
+        currentSectionLabel: sectionLabel,
+        secondaryNav: _ReportsSidebar(
+          search: _search,
+          onSearchChanged: (v) => setState(() => _search = v),
+          selectedId: _selectedId,
+          onSelect: _navigate,
+          sections: _filteredSections,
+        ),
+        content: content,
+      );
+    } else {
+      body = content;
+    }
 
     if (widget.embeddedInShell) {
       return ModuleShellBackground(child: body);
@@ -172,87 +202,30 @@ class _ReportsSidebar extends StatelessWidget {
           ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+              padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
               children: [
-                for (final section in sections) ...[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
-                    child: Text(
-                      section.title,
-                      style: GoogleFonts.dmSans(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.8,
-                        color: AppColors.muted,
-                      ),
+                SidebarSubnavTiles(
+                  sections: sections.map(
+                    (s) => SidebarSubnavSection(
+                      title: s.title,
+                      entries: s.items
+                          .map(
+                            (i) => SidebarSubnavEntry(
+                              id: i.id,
+                              label: i.label,
+                              icon: i.icon,
+                            ),
+                          )
+                          .toList(),
                     ),
                   ),
-                  for (final item in section.items)
-                    _NavTile(
-                      item: item,
-                      selected: item.id == selectedId,
-                      onTap: () => onSelect(item.id),
-                    ),
-                ],
+                  selectedId: selectedId,
+                  onSelect: onSelect,
+                ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _NavTile extends StatelessWidget {
-  const _NavTile({
-    required this.item,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final ReportsNavItem item;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final tc = context;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 2),
-      child: Material(
-        color: selected
-            ? (tc.isDarkMode
-                  ? AppColors.brandBlue.withValues(alpha: 0.25)
-                  : const Color(0xFFEFF6FF))
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(8),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-            child: Row(
-              children: [
-                Icon(
-                  item.icon,
-                  size: 18,
-                  color: selected ? tc.filterChipText : tc.secondaryText,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    item.label,
-                    style: GoogleFonts.dmSans(
-                      fontSize: 13,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                      color: selected ? tc.filterChipText : tc.primaryText,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

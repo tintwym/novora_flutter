@@ -86,6 +86,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  void _onSidebarSubnav(String parent, String subId) {
+    _popShellToRoot();
+    _controller.selectSubnav(parent, subId);
+  }
+
+  Widget _buildSidebar(BuildContext context, {bool popDrawer = false}) {
+    void maybePop() {
+      if (popDrawer) Navigator.pop(context);
+    }
+
+    return AppSidebar(
+      items: _navItems(),
+      activeLabel: _controller.activeNavLabel,
+      expandedLabels: _controller.expandedNavLabels,
+      activeSubnavId: _controller.activeSubnavId,
+      onSelect: (l) {
+        maybePop();
+        _onSidebarTap(context, l);
+      },
+      onToggleExpand: _controller.toggleNavExpanded,
+      onSelectSubnav: (parent, subId) {
+        maybePop();
+        _onSidebarSubnav(parent, subId);
+      },
+    );
+  }
+
   /// Module area only — nested routes (e.g. employee profile) keep shell chrome.
   Widget _shellNavigatorHost() {
     return Navigator(
@@ -160,9 +187,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'Assets':
         return const AssetManagementScreen(embeddedInShell: true);
       case 'Reports':
-        return const ReportsScreen(embeddedInShell: true);
+        return ReportsScreen(
+          embeddedInShell: true,
+          showSecondaryNav: false,
+          selectedId: _controller.reportsSectionId,
+          onSelectedIdChanged: (id) => _controller.selectSubnav('Reports', id),
+        );
       case 'Settings':
-        return const SettingsScreen(embeddedInShell: true);
+        return SettingsScreen(
+          embeddedInShell: true,
+          showSecondaryNav: false,
+          selectedId: _controller.settingsSectionId,
+          onSelectedIdChanged: (id) => _controller.selectSubnav('Settings', id),
+        );
       default:
         return _buildScrollBody();
     }
@@ -204,11 +241,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             builder: (context, constraints) {
               if (ResponsiveLayout.isWide(context)) {
                 return MainLayout(
-                  sidebar: AppSidebar(
-                    items: _navItems(),
-                    activeLabel: _controller.activeNavLabel,
-                    onSelect: (l) => _onSidebarTap(context, l),
-                  ),
+                  sidebar: _buildSidebar(context),
                   topBar: AppTopBar(
                     title: _shellTitle(),
                     subtitle: _shellSubtitle(),
@@ -222,14 +255,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               return Scaffold(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 drawer: Drawer(
-                  child: AppSidebar(
-                    items: _navItems(),
-                    activeLabel: _controller.activeNavLabel,
-                    onSelect: (l) {
-                      Navigator.pop(context);
-                      _onSidebarTap(context, l);
-                    },
-                  ),
+                  child: _buildSidebar(context, popDrawer: true),
                 ),
                 appBar: AppBar(
                   backgroundColor: context.surfaceCard,

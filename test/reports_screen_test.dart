@@ -55,7 +55,7 @@ void main() {
     expect(find.text('New scheduled report'), findsOneWidget);
   });
 
-  testWidgets('embedded beside main nav collapses secondary sidebar', (tester) async {
+  testWidgets('shell mode uses main sidebar subnav only', (tester) async {
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.binding.setSurfaceSize(const Size(1400, 800));
 
@@ -65,7 +65,12 @@ void main() {
           body: Row(
             children: [
               SizedBox(width: 242),
-              Expanded(child: ReportsScreen(embeddedInShell: true)),
+              Expanded(
+                child: ReportsScreen(
+                  embeddedInShell: true,
+                  showSecondaryNav: false,
+                ),
+              ),
             ],
           ),
         ),
@@ -73,7 +78,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Sections'), findsOneWidget);
+    expect(find.text('Sections'), findsNothing);
+    expect(find.text('OVERVIEW'), findsNothing);
   });
 
   testWidgets('Sections drawer navigates on narrow layout', (tester) async {
