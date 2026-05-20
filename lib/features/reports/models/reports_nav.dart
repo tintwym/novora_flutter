@@ -43,63 +43,7 @@ abstract final class ReportsNav {
     ],
   );
 
-  static const modules = ReportsNavSection(
-    title: 'BY MODULE',
-    items: [
-      ReportsNavItem(
-        id: 'employee',
-        label: 'Employee',
-        icon: Icons.person_outline_rounded,
-      ),
-      ReportsNavItem(
-        id: 'attendance',
-        label: 'Attendance',
-        icon: Icons.schedule_rounded,
-      ),
-      ReportsNavItem(
-        id: 'leave',
-        label: 'Leave',
-        icon: Icons.beach_access_outlined,
-      ),
-      ReportsNavItem(
-        id: 'payroll',
-        label: 'Payroll',
-        icon: Icons.payments_outlined,
-      ),
-      ReportsNavItem(
-        id: 'performance',
-        label: 'Performance',
-        icon: Icons.insights_outlined,
-      ),
-      ReportsNavItem(
-        id: 'training',
-        label: 'Training',
-        icon: Icons.school_outlined,
-      ),
-      ReportsNavItem(
-        id: 'claims',
-        label: 'Claims',
-        icon: Icons.receipt_long_outlined,
-      ),
-      ReportsNavItem(
-        id: 'recruitment',
-        label: 'Recruitment',
-        icon: Icons.group_add_outlined,
-      ),
-      ReportsNavItem(
-        id: 'asset',
-        label: 'Asset',
-        icon: Icons.inventory_2_outlined,
-      ),
-      ReportsNavItem(
-        id: 'disciplinary',
-        label: 'Disciplinary',
-        icon: Icons.gavel_outlined,
-      ),
-    ],
-  );
-
-  static List<ReportsNavSection> get sections => [overview, modules];
+  static List<ReportsNavSection> get sections => [overview];
 
   static List<SidebarSubnavSection> get sidebarSections => sections
       .map(

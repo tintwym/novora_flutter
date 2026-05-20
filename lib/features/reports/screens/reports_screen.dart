@@ -68,7 +68,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
   @override
   Widget build(BuildContext context) {
     final sectionLabel =
-        ReportsNav.findById(_selectedId)?.label ?? 'Report centre';
+        ReportsNav.findById(_selectedId)?.label ?? 'Reports Hub';
 
     final content = ColoredBox(
       color: context.pageBackground,

@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/theme_colors.dart';
 import '../../../shared/widgets/themed_surface_card.dart';
-import '../models/reports_nav.dart';
 import '../widgets/reports_ui_helpers.dart';
 
 typedef ReportsNavigate = void Function(String panelId);
@@ -15,532 +14,234 @@ Widget buildReportsPanel(
   ReportsNavigate? onNavigate,
 }) {
   return switch (id) {
-    'report_centre' => _ReportCentrePanel(onNavigate: onNavigate),
+    'report_centre' => const _ReportsCenterPanel(),
     'scheduled' => const _ScheduledReportsPanel(),
     'custom_builder' => const _CustomBuilderPanel(),
-    'employee' => _modulePanel(
-      context,
-      title: 'Employee reports',
-      subtitle: 'Headcount, movement, profile and contract reports',
-      snapshotTitle: 'Headcount snapshot — May 2026',
-      reports: const [
-        (
-          'Employee headcount report',
-          'Active, new joiners, resigned — by dept & branch',
-        ),
-        (
-          'Employee movement report',
-          'Transfers, promotions, demotions this period',
-        ),
-        ('Contract expiry report', 'Contracts expiring in 30 / 60 / 90 days'),
-        ('Probation due report', 'Employees completing probation this month'),
-        (
-          'Employee profile export',
-          'Full profile data export for all active employees',
-        ),
-        ('Work anniversary report', 'Service milestones by month'),
-      ],
-      snapshot: _employeeSnapshot(context),
-    ),
-    'attendance' => _modulePanel(
-      context,
-      title: 'Attendance reports',
-      subtitle: 'Detail, summary, OT, missing swipe and roll call reports',
-      snapshotTitle: 'Attendance snapshot — May 2026',
-      reports: const [
-        (
-          'Attendance detail report',
-          'Daily clock-in/out, work hours, OT per employee',
-        ),
-        (
-          'Attendance summary report',
-          'Monthly totals: present, absent, leave, late per emp.',
-        ),
-        ('Overtime report', 'OT hours and amount by employee and department'),
-        (
-          'Missing swipe report',
-          'Employees with unresolved missing clock-in/out',
-        ),
-        ('Roll call report', 'Daily present/absent/leave status snapshot'),
-        (
-          'Late arrival report',
-          'Employees with repeated late arrivals this period',
-        ),
-      ],
-      snapshot: _attendanceSnapshot(context),
-    ),
-    'leave' => _modulePanel(
-      context,
-      title: 'Leave reports',
-      subtitle: 'Balance, history, pending and entitlement reports',
-      snapshotTitle: 'Leave snapshot — 2026 YTD',
-      reports: const [
-        (
-          'Leave balance report',
-          'Entitlement vs used vs remaining per leave type',
-        ),
-        (
-          'Leave history report',
-          'All leave requests with status, dates and approver',
-        ),
-        ('Leave pending report', 'All leave requests awaiting approval'),
-        (
-          'Leave card report',
-          'Individual employee leave card — printable format',
-        ),
-        (
-          'Annual leave encashment',
-          'Unused leave eligible for encashment at year-end',
-        ),
-      ],
-      snapshot: _leaveSnapshot(context),
-    ),
-    'payroll' => _modulePanel(
-      context,
-      title: 'Payroll reports',
-      subtitle: 'Pay summary, payslip, statutory and cost reports',
-      snapshotTitle: 'Payroll snapshot — May 2026',
-      reports: const [
-        (
-          'Monthly payroll summary',
-          'Total earnings, deductions, net pay by department',
-        ),
-        (
-          'Payroll detail report',
-          'Individual breakdown per employee per pay component',
-        ),
-        (
-          'EPF / SOCSO contribution',
-          'Employer & employee statutory contribution report',
-        ),
-        (
-          'Income tax (PCB) report',
-          'Monthly PCB deduction per employee for LHDN',
-        ),
-        (
-          'Payroll cost by department',
-          'Total cost including allowances and bonuses',
-        ),
-        ('Bank payment file', 'Export bank-ready file for salary disbursement'),
-      ],
-      snapshot: _payrollSnapshot(context),
-    ),
-    'performance' => _modulePanel(
-      context,
-      title: 'Performance reports',
-      subtitle: 'Appraisal results, KPI scores and grade distribution',
-      snapshotTitle: 'Grade distribution — Year-end 2025',
-      reports: const [
-        (
-          'Appraisal result report',
-          'Scores, grades and CEP ratings by department',
-        ),
-        (
-          'KPI achievement report',
-          'KPI target vs actual achievement per employee',
-        ),
-        ('Grade distribution report', 'Grade A/B/C/D breakdown by department'),
-        ('Performance review history', 'All past evaluations per employee'),
-        (
-          'CEP / high potential list',
-          'Employees flagged for succession planning',
-        ),
-      ],
-      snapshot: _performanceSnapshot(context),
-    ),
-    'training' => _modulePanel(
-      context,
-      title: 'Training reports',
-      subtitle: 'Course completion, attendance and budget reports',
-      snapshotTitle: 'Training snapshot — 2026 YTD',
-      reports: const [
-        (
-          'Training history report',
-          'All training records per employee with status',
-        ),
-        ('Training attendance report', 'Present/absent per course session'),
-        (
-          'Course completion report',
-          'Completion rate per course and department',
-        ),
-        ('Training cost report', 'Fees paid per course and per employee'),
-        (
-          'Training needs analysis',
-          'Employees with overdue or pending training',
-        ),
-      ],
-      snapshot: _trainingSnapshot(context),
-    ),
-    'claims' => _modulePanel(
-      context,
-      title: 'Claims reports',
-      subtitle: 'Spending, approval status and policy compliance reports',
-      snapshotTitle: 'Claims snapshot — May 2026',
-      reports: const [
-        (
-          'Claims summary report',
-          'Total claims by employee, category and month',
-        ),
-        ('Claims detail report', 'Individual claim items with receipt status'),
-        (
-          'Pending claims report',
-          'All claims awaiting approval by approver level',
-        ),
-        (
-          'Policy violation report',
-          'Claims flagged — over limit, duplicate, late',
-        ),
-        (
-          'Claims payroll push report',
-          'Claims pushed to payroll per pay cycle',
-        ),
-      ],
-      snapshot: _claimsSnapshot(context),
-    ),
-    'recruitment' => _modulePanel(
-      context,
-      title: 'Recruitment reports',
-      subtitle: 'Pipeline, time-to-hire, cost and offer reports',
-      snapshotTitle: 'Recruitment snapshot — Q2 2026',
-      reports: const [
-        ('Requisition status report', 'Open, filled, on hold — by department'),
-        (
-          'Candidate pipeline report',
-          'Applicants at each stage per open position',
-        ),
-        (
-          'Time to hire report',
-          'Days from requisition open to filled by dept.',
-        ),
-        ('Recruitment cost report', 'Ad spend, agency fees, cost per hire'),
-        (
-          'Offer & acceptance report',
-          'Offers extended, accepted, declined — by role',
-        ),
-      ],
-      snapshot: _recruitmentSnapshot(context),
-    ),
-    'asset' => _modulePanel(
-      context,
-      title: 'Asset reports',
-      subtitle: 'Registry, depreciation, maintenance and disposal reports',
-      snapshotTitle: 'Asset snapshot — 2026',
-      reports: const [
-        (
-          'Asset register report',
-          'Full asset list with tag, category, value, status',
-        ),
-        (
-          'Asset assignment report',
-          'Assets assigned by employee and department',
-        ),
-        (
-          'Depreciation schedule',
-          'Acquisition cost, depreciation rate, book value',
-        ),
-        (
-          'Maintenance history report',
-          'All service records with cost and vendor',
-        ),
-        ('Disposal report', 'Disposed assets with method, value, gain/loss'),
-      ],
-      snapshot: _assetSnapshot(context),
-    ),
-    'disciplinary' => _modulePanel(
-      context,
-      title: 'Disciplinary reports',
-      subtitle: 'Case history, warning levels and trend reports',
-      snapshotTitle: 'Disciplinary snapshot — 2026 YTD',
-      reports: const [
-        (
-          'Disciplinary case history',
-          'All cases by employee, reason, action, status',
-        ),
-        ('Warning level distribution', 'Count of L1–L6 warnings by department'),
-        (
-          'Repeat offence report',
-          'Employees with more than one disciplinary case',
-        ),
-        (
-          'Disciplinary trend report',
-          'Monthly case count trend by offence type',
-        ),
-      ],
-      snapshot: _disciplinarySnapshot(context),
-    ),
-    _ => _ReportCentrePanel(onNavigate: onNavigate),
+    _ => const _ReportsCenterPanel(),
   };
 }
 
-// --- Report centre ---
+// =============================================================================
+// Reports Center (with module tabs)
+// =============================================================================
 
-class _ReportCentrePanel extends StatelessWidget {
-  const _ReportCentrePanel({this.onNavigate});
+class _ReportsCenterPanel extends StatefulWidget {
+  const _ReportsCenterPanel();
 
-  final ReportsNavigate? onNavigate;
+  @override
+  State<_ReportsCenterPanel> createState() => _ReportsCenterPanelState();
+}
+
+class _ReportsCenterPanelState extends State<_ReportsCenterPanel> {
+  String _selectedTab = 'overview';
+  String _perfSubTab = 'level';
 
   @override
   Widget build(BuildContext context) {
-    void snack(String m) => showReportSnack(context, m);
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+    return _ReportsScaffold(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _PageHeader(
-            title: 'Report centre',
-            subtitle: 'All reports across every HRMS module in one place.',
-            actions: [
-              OutlinedButton(
-                onPressed: () => onNavigate?.call('scheduled'),
-                child: const Text('+ Schedule'),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(
-                onPressed: () => onNavigate?.call('custom_builder'),
-                child: const Text('+ Custom report'),
-              ),
-            ],
+          const _ReportsHeader(),
+          const SizedBox(height: 18),
+          _ReportsTopTabs(
+            tabs: _reportTabs,
+            selectedId: _selectedTab,
+            onSelect: (id) => setState(() => _selectedTab = id),
           ),
-          const SizedBox(height: 20),
-          ThemedSurfaceCard(
-            child: Row(
-              children: const [
-                ReportKpiTile(
-                  value: '48',
-                  label: 'Total reports',
-                  sub: '10 modules',
-                ),
-                VerticalDivider(width: 1),
-                ReportKpiTile(
-                  value: '12',
-                  label: 'Scheduled reports',
-                  sub: 'Next: tomorrow 06:00',
-                ),
-                VerticalDivider(width: 1),
-                ReportKpiTile(
-                  value: '7',
-                  label: 'Custom reports saved',
-                  sub: 'By HR team',
-                ),
-              ],
+          if (_selectedTab == 'performance') ...[
+            const SizedBox(height: 18),
+            _PerformanceSubTabs(
+              selectedId: _perfSubTab,
+              onSelect: (id) => setState(() => _perfSubTab = id),
             ),
-          ),
-          const SizedBox(height: 20),
-          LayoutBuilder(
-            builder: (context, c) {
-              final wide = c.maxWidth >= 900;
-              final left = ThemedSurfaceCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const ReportSectionTitle('Most used reports'),
-                    _centreReportRow(
-                      context,
-                      'Monthly payroll summary',
-                      'Earnings, deductions, net pay by department',
-                      ReportModule.payroll,
-                      () => snack('Running Monthly payroll summary…'),
-                    ),
-                    Divider(height: 1, color: context.borderColor),
-                    _centreReportRow(
-                      context,
-                      'Attendance detail report',
-                      'Clock-in, clock-out, OT, absent per employee',
-                      ReportModule.attendance,
-                      () => snack('Running Attendance detail report…'),
-                    ),
-                    Divider(height: 1, color: context.borderColor),
-                    _centreReportRow(
-                      context,
-                      'Leave balance summary',
-                      'Entitlement, used, balance per leave type',
-                      ReportModule.leave,
-                      () => snack('Running Leave balance summary…'),
-                    ),
-                    Divider(height: 1, color: context.borderColor),
-                    _centreReportRow(
-                      context,
-                      'Performance appraisal results',
-                      'Scores, grades, CEP ratings by department',
-                      ReportModule.performance,
-                      () => snack('Running Performance appraisal results…'),
-                    ),
-                    Divider(height: 1, color: context.borderColor),
-                    _centreReportRow(
-                      context,
-                      'Employee headcount report',
-                      'Active, new, resigned by dept and branch',
-                      ReportModule.employee,
-                      () => snack('Running Employee headcount report…'),
-                    ),
-                  ],
-                ),
-              );
-              final right = Column(
-                children: [
-                  ThemedSurfaceCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const ReportSectionTitle('Recent activity'),
-                        _activityRow(
-                          context,
-                          'Monthly payroll summary',
-                          'HR Admin • 6 May 10:30',
-                          () => snack('Downloading…'),
-                        ),
-                        Divider(height: 1, color: context.borderColor),
-                        _activityRow(
-                          context,
-                          'Leave balance report',
-                          'Auto-scheduled • 1 May 06:00',
-                          () => snack('Downloading…'),
-                        ),
-                        Divider(height: 1, color: context.borderColor),
-                        _activityRow(
-                          context,
-                          'Attendance summary — Apr',
-                          'Nina Reza • 30 Apr 18:00',
-                          () => snack('Downloading…'),
-                        ),
-                        Divider(height: 1, color: context.borderColor),
-                        _activityRow(
-                          context,
-                          'Training history export',
-                          'HR Admin • 28 Apr 14:22',
-                          () => snack('Downloading…'),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ThemedSurfaceCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const ReportSectionTitle('Export formats'),
-                        for (final f in [
-                          'Excel (.xlsx)',
-                          'PDF',
-                          'CSV',
-                          'On-screen preview',
-                        ])
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    f,
-                                    style: GoogleFonts.dmSans(
-                                      fontSize: 13,
-                                      color: context.primaryText,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 3,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFD1FAE5),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    'All reports',
-                                    style: GoogleFonts.dmSans(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF065F46),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-              if (wide) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 3, child: left),
-                    const SizedBox(width: 16),
-                    Expanded(flex: 2, child: right),
-                  ],
-                );
-              }
-              return Column(
-                children: [left, const SizedBox(height: 16), right],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _centreReportRow(
-    BuildContext context,
-    String title,
-    String sub,
-    ReportModule module,
-    VoidCallback onRun,
-  ) {
-    return ReportListTile(
-      title: title,
-      subtitle: sub,
-      trailing: ReportModulePill(module),
-      onRun: onRun,
-    );
-  }
-
-  Widget _activityRow(
-    BuildContext context,
-    String title,
-    String meta,
-    VoidCallback onDownload,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: context.primaryText,
-                  ),
-                ),
-                Text(
-                  meta,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 11,
-                    color: context.secondaryText,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TextButton(onPressed: onDownload, child: const Text('Download')),
+          ],
+          const SizedBox(height: 28),
+          if (_selectedTab == 'overview')
+            const _AllOverviewBody()
+          else
+            _ModuleTabBody(config: _moduleConfigById[_selectedTab]!),
         ],
       ),
     );
   }
 }
 
-// --- Scheduled ---
+// --- All Overview ---
+
+class _AllOverviewBody extends StatelessWidget {
+  const _AllOverviewBody();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        LayoutBuilder(
+          builder: (context, c) {
+            final wide = c.maxWidth >= 700;
+            final kpis = [
+              const _OverviewKpi(
+                value: '48',
+                valueColor: AppColors.primary,
+                label: 'TOTAL REPORTS',
+                sub: '10 modules',
+              ),
+              const _OverviewKpi(
+                value: '12',
+                valueColor: Color(0xFF059669),
+                label: 'SCHEDULED REPORTS',
+                sub: 'Next: tomorrow 06:00',
+              ),
+              const _OverviewKpi(
+                value: '7',
+                valueColor: AppColors.navy,
+                label: 'CUSTOM REPORTS SAVED',
+                sub: 'By HR team',
+              ),
+            ];
+            if (!wide) {
+              return Column(
+                children: [
+                  for (final k in kpis)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: k,
+                    ),
+                ],
+              );
+            }
+            return Row(
+              children: [
+                for (var i = 0; i < kpis.length; i++) ...[
+                  if (i > 0) const SizedBox(width: 16),
+                  Expanded(child: kpis[i]),
+                ],
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 24),
+        LayoutBuilder(
+          builder: (context, c) {
+            final wide = c.maxWidth >= 900;
+            final left = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const _SectionCaption('Most Used Reports'),
+                const SizedBox(height: 10),
+                _OverviewListCard(
+                  rows: [
+                    (
+                      'Monthly payroll summary',
+                      'Earnings, deductions, net pay by department',
+                      _PillSpec(label: 'PAYROLL', bg: const Color(0xFFD1FAE5), fg: const Color(0xFF065F46)),
+                    ),
+                    (
+                      'Attendance detail report',
+                      'Clock-in, clock-out, OT, absent per employee',
+                      _PillSpec(label: 'ATTENDANCE', bg: const Color(0xFFDBEAFE), fg: AppColors.primary),
+                    ),
+                    (
+                      'Leave balance summary',
+                      'Entitlement, used, balance per leave type',
+                      _PillSpec(label: 'LEAVE', bg: const Color(0xFFFFEDD5), fg: const Color(0xFFC2410C)),
+                    ),
+                    (
+                      'Performance appraisal results',
+                      'Scores, grades, CEP ratings',
+                      _PillSpec(label: 'PERFORMANCE', bg: const Color(0xFFEDE9FE), fg: const Color(0xFF5B21B6)),
+                    ),
+                  ],
+                ),
+              ],
+            );
+            final right = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const _SectionCaption('Recent Activity'),
+                const SizedBox(height: 10),
+                const _RecentActivityCard(),
+                const SizedBox(height: 18),
+                const _SectionCaption('Export Formats'),
+                const SizedBox(height: 10),
+                const _ExportFormatsCard(),
+              ],
+            );
+            if (wide) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 3, child: left),
+                  const SizedBox(width: 24),
+                  Expanded(flex: 2, child: right),
+                ],
+              );
+            }
+            return Column(
+              children: [left, const SizedBox(height: 20), right],
+            );
+          },
+        ),
+        const SizedBox(height: 28),
+        const _ReportsFooterActions(),
+      ],
+    );
+  }
+}
+
+// --- Module tab body ---
+
+class _ModuleTabBody extends StatelessWidget {
+  const _ModuleTabBody({required this.config});
+
+  final _ModuleConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        LayoutBuilder(
+          builder: (context, c) {
+            final wide = c.maxWidth >= 760;
+            final left = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _SectionCaption('${config.code} Reports Available'),
+                const SizedBox(height: 10),
+                _ModuleReportsCard(config: config),
+              ],
+            );
+            final right = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: const [
+                _SectionCaption('Quick Snapshot'),
+                SizedBox(height: 10),
+                _QuickSnapshotCard(),
+              ],
+            );
+            if (wide) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: left),
+                  const SizedBox(width: 24),
+                  Expanded(child: right),
+                ],
+              );
+            }
+            return Column(children: [left, const SizedBox(height: 20), right]);
+          },
+        ),
+        const SizedBox(height: 28),
+        const _ReportsFooterActions(),
+      ],
+    );
+  }
+}
+
+// --- Scheduled reports ---
 
 class _ScheduledReportsPanel extends StatefulWidget {
   const _ScheduledReportsPanel();
@@ -554,7 +255,6 @@ class _ScheduledReportsPanelState extends State<_ScheduledReportsPanel> {
   String _frequency = 'Daily';
   String _deliveryTime = '06:00 AM';
   String _format = 'Excel (.xlsx)';
-  String _department = 'All departments';
   final _emailCtrl = TextEditingController(
     text: 'hr@novora.com, cfo@novora.com',
   );
@@ -567,213 +267,70 @@ class _ScheduledReportsPanelState extends State<_ScheduledReportsPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+    return _ReportsScaffold(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _PageHeader(
-            title: 'Scheduled reports',
-            subtitle: 'Auto-generated and emailed on a set schedule.',
-            actions: [
-              FilledButton(
-                onPressed: () {},
-                child: const Text('+ Schedule new'),
-              ),
-            ],
+          const _ReportsHeader(),
+          const SizedBox(height: 18),
+          _ReportsTopTabs(
+            tabs: _reportTabs,
+            selectedId: 'overview',
+            onSelect: (_) {},
           ),
-          const SizedBox(height: 20),
-          ThemedSurfaceCard(
+          const SizedBox(height: 28),
+          const _SectionCaption('Schedule New Report'),
+          const SizedBox(height: 10),
+          _OutlinedFormCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  'New scheduled report',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: context.primaryText,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _formGrid(context, [
-                  _dropdown(
-                    'Report type',
-                    _reportType,
-                    const [
+                _twoColForm([
+                  _FormDropdown(
+                    label: 'REPORT TYPE',
+                    value: _reportType,
+                    items: const [
                       'Monthly payroll summary',
                       'Leave balance report',
                       'Attendance summary',
                     ],
-                    (v) => setState(() => _reportType = v!),
+                    onChanged: (v) => setState(() => _reportType = v),
                   ),
-                  _dropdown('Frequency', _frequency, const [
-                    'Daily',
-                    'Weekly',
-                    'Monthly',
-                    'Quarterly',
-                  ], (v) => setState(() => _frequency = v!)),
-                  _dropdown(
-                    'Delivery time',
-                    _deliveryTime,
-                    const ['06:00 AM', '08:00 AM', '18:00 PM'],
-                    (v) => setState(() => _deliveryTime = v!),
+                  _FormDropdown(
+                    label: 'FREQUENCY',
+                    value: _frequency,
+                    items: const ['Daily', 'Weekly', 'Monthly', 'Quarterly'],
+                    onChanged: (v) => setState(() => _frequency = v),
                   ),
-                  _textField('Send to (email)', _emailCtrl),
-                  _dropdown('Format', _format, const [
-                    'Excel (.xlsx)',
-                    'PDF',
-                    'CSV',
-                  ], (v) => setState(() => _format = v!)),
-                  _dropdown(
-                    'Department filter',
-                    _department,
-                    const ['All departments', 'Engineering', 'Finance', 'HR'],
-                    (v) => setState(() => _department = v!),
+                  _FormDropdown(
+                    label: 'DELIVERY TIME',
+                    value: _deliveryTime,
+                    items: const ['06:00 AM', '08:00 AM', '18:00 PM'],
+                    onChanged: (v) => setState(() => _deliveryTime = v),
                   ),
-                  _dateField(context, 'Start from', '01/06/2026'),
+                  _FormDropdown(
+                    label: 'FORMAT',
+                    value: _format,
+                    items: const ['Excel (.xlsx)', 'PDF', 'CSV'],
+                    onChanged: (v) => setState(() => _format = v),
+                  ),
                 ]),
-                const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: () => showReportSnack(context, 'Schedule saved.'),
-                  child: const Text('Save schedule'),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          ThemedSurfaceCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Active scheduled reports',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: context.primaryText,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFD1FAE5),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        '12 active',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF065F46),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 12),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    headingTextStyle: GoogleFonts.dmSans(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.muted,
-                    ),
-                    dataTextStyle: GoogleFonts.dmSans(
-                      fontSize: 12,
-                      color: context.primaryText,
-                    ),
-                    columns: const [
-                      DataColumn(label: Text('Report name')),
-                      DataColumn(label: Text('Module')),
-                      DataColumn(label: Text('Frequency')),
-                      DataColumn(label: Text('Next run')),
-                      DataColumn(label: Text('Recipients')),
-                      DataColumn(label: Text('Format')),
-                      DataColumn(label: Text('Status')),
-                      DataColumn(label: Text('')),
-                    ],
-                    rows: [
-                      _scheduleRow(
-                        context,
-                        'Monthly payroll summary',
-                        ReportModule.payroll,
-                        'Monthly',
-                        '1 Jun 06:00',
-                        'HR Admin, CFO',
-                        'Excel',
-                      ),
-                      _scheduleRow(
-                        context,
-                        'Attendance summary',
-                        ReportModule.attendance,
-                        'Weekly',
-                        'Tomorrow 08:00',
-                        'HR Admin',
-                        'PDF',
-                      ),
-                      _scheduleRow(
-                        context,
-                        'Leave balance',
-                        ReportModule.leave,
-                        'Monthly',
-                        '1 Jun 06:00',
-                        'HR Admin',
-                        'Excel',
-                      ),
-                      _scheduleRow(
-                        context,
-                        'Headcount report',
-                        ReportModule.employee,
-                        'Quarterly',
-                        '1 Jul 06:00',
-                        'CFO',
-                        'PDF',
-                      ),
-                    ],
-                  ),
+                _FormText(
+                  label: 'RECIPIENTS (EMAIL)',
+                  controller: _emailCtrl,
                 ),
               ],
             ),
           ),
+          const SizedBox(height: 22),
+          const _SectionCaption('Active Schedules'),
+          const SizedBox(height: 10),
+          const _ActiveSchedulesCard(),
+          const SizedBox(height: 28),
+          const _ReportsFooterActions(),
         ],
       ),
-    );
-  }
-
-  DataRow _scheduleRow(
-    BuildContext context,
-    String name,
-    ReportModule module,
-    String freq,
-    String next,
-    String recipients,
-    String format,
-  ) {
-    return DataRow(
-      cells: [
-        DataCell(Text(name)),
-        DataCell(ReportModulePill(module)),
-        DataCell(Text(freq)),
-        DataCell(Text(next)),
-        DataCell(Text(recipients)),
-        DataCell(ReportFormatPill(format)),
-        const DataCell(ReportStatusPill('Active')),
-        DataCell(
-          TextButton(
-            onPressed: () => showReportSnack(context, 'Edit $name'),
-            child: const Text('Edit'),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -789,862 +346,1440 @@ class _CustomBuilderPanel extends StatefulWidget {
 
 class _CustomBuilderPanelState extends State<_CustomBuilderPanel> {
   String _primaryModule = 'Employee management';
-  bool _attendance = true;
-  bool _payroll = true;
-  String _sortBy = 'Employee no.';
-  String _groupBy = 'None';
-  String _exportFormat = 'Excel (.xlsx)';
+  bool _combineAttendance = true;
+  bool _combineLeave = false;
+  String _dateFrom = '2026-01-01';
+  String _dateTo = '2026-05-31';
+  String _department = 'All departments';
+  String _employmentStatus = 'Active only';
+  String _sortBy = 'Employee No.';
+  String _format = 'Excel (.xlsx)';
+  final Map<String, bool> _employeeFields = {
+    'Employee No.': true,
+    'Full Name': true,
+    'Department': true,
+    'Position': true,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return _ReportsScaffold(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const _ReportsHeader(),
+          const SizedBox(height: 18),
+          _ReportsTopTabs(
+            tabs: _reportTabs,
+            selectedId: 'overview',
+            onSelect: (_) {},
+          ),
+          const SizedBox(height: 28),
+          LayoutBuilder(
+            builder: (context, c) {
+              final wide = c.maxWidth >= 880;
+              final left = Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const _SectionCaption('1. Data Source'),
+                  const SizedBox(height: 10),
+                  _OutlinedFormCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _FormDropdown(
+                          label: 'PRIMARY MODULE',
+                          value: _primaryModule,
+                          items: const [
+                            'Employee management',
+                            'Payroll',
+                            'Attendance',
+                          ],
+                          onChanged: (v) => setState(() => _primaryModule = v),
+                        ),
+                        const SizedBox(height: 14),
+                        _MiniLabel('Combine with'),
+                        const SizedBox(height: 6),
+                        _CheckRow(
+                          label: 'Attendance data',
+                          value: _combineAttendance,
+                          onChanged: (v) =>
+                              setState(() => _combineAttendance = v),
+                        ),
+                        _CheckRow(
+                          label: 'Leave data',
+                          value: _combineLeave,
+                          onChanged: (v) => setState(() => _combineLeave = v),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                  const _SectionCaption('2. Select Fields'),
+                  const SizedBox(height: 10),
+                  _OutlinedFormCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFDBEAFE),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              'EMPLOYEE FIELDS',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primary,
+                                letterSpacing: 0.6,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        for (final entry in _employeeFields.entries)
+                          _CheckRow(
+                            label: entry.key,
+                            value: entry.value,
+                            onChanged: (v) =>
+                                setState(() => _employeeFields[entry.key] = v),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+              final right = Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const _SectionCaption('3. Filters'),
+                  const SizedBox(height: 10),
+                  _OutlinedFormCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _FormText(
+                                label: 'FROM',
+                                controller: TextEditingController(
+                                  text: _dateFrom,
+                                ),
+                                onChanged: (v) => _dateFrom = v,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _FormText(
+                                label: 'TO',
+                                controller: TextEditingController(
+                                  text: _dateTo,
+                                ),
+                                onChanged: (v) => _dateTo = v,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        _FormDropdown(
+                          label: 'DEPARTMENT',
+                          value: _department,
+                          items: const [
+                            'All departments',
+                            'Engineering',
+                            'Finance',
+                            'HR',
+                          ],
+                          onChanged: (v) => setState(() => _department = v),
+                        ),
+                        const SizedBox(height: 12),
+                        _FormDropdown(
+                          label: 'EMPLOYMENT STATUS',
+                          value: _employmentStatus,
+                          items: const ['Active only', 'All', 'Resigned'],
+                          onChanged: (v) =>
+                              setState(() => _employmentStatus = v),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                  const _SectionCaption('4. Output'),
+                  const SizedBox(height: 10),
+                  _OutlinedFormCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _FormDropdown(
+                          label: 'SORT BY',
+                          value: _sortBy,
+                          items: const [
+                            'Employee No.',
+                            'Department',
+                            'Name',
+                          ],
+                          onChanged: (v) => setState(() => _sortBy = v),
+                        ),
+                        const SizedBox(height: 12),
+                        _FormDropdown(
+                          label: 'FORMAT',
+                          value: _format,
+                          items: const ['Excel (.xlsx)', 'PDF', 'CSV'],
+                          onChanged: (v) => setState(() => _format = v),
+                        ),
+                        const SizedBox(height: 18),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton(
+                            onPressed: () => showReportSnack(
+                              context,
+                              'Running custom report…',
+                            ),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Text(
+                              'Run & Export Report',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+              if (wide) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: left),
+                    const SizedBox(width: 24),
+                    Expanded(child: right),
+                  ],
+                );
+              }
+              return Column(
+                children: [left, const SizedBox(height: 20), right],
+              );
+            },
+          ),
+          const SizedBox(height: 28),
+          const _ReportsFooterActions(),
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Shared layout primitives
+// =============================================================================
+
+class _ReportsScaffold extends StatelessWidget {
+  const _ReportsScaffold({required this.child});
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.fromLTRB(40, 32, 40, 32),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 980),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _ReportsHeader extends StatelessWidget {
+  const _ReportsHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Novora Reports Center',
+          style: GoogleFonts.sora(
+            fontSize: 26,
+            fontWeight: FontWeight.w800,
+            color: context.primaryText,
+            height: 1.15,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Insights, analytics, and auto-generated data exports across all modules.',
+          style: GoogleFonts.dmSans(
+            fontSize: 14,
+            color: context.secondaryText,
+            height: 1.4,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ReportsTopTabs extends StatelessWidget {
+  const _ReportsTopTabs({
+    required this.tabs,
+    required this.selectedId,
+    required this.onSelect,
+  });
+
+  final List<({String id, String label})> tabs;
+  final String selectedId;
+  final ValueChanged<String> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: context.borderColor)),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            for (final tab in tabs)
+              _TabItem(
+                label: tab.label,
+                selected: tab.id == selectedId,
+                onTap: () => onSelect(tab.id),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TabItem extends StatelessWidget {
+  const _TabItem({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: selected ? AppColors.primary : Colors.transparent,
+                width: 2,
+              ),
+            ),
+          ),
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Text(
+            label,
+            style: GoogleFonts.dmSans(
+              fontSize: 13,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              color: selected ? AppColors.primary : context.secondaryText,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PerformanceSubTabs extends StatelessWidget {
+  const _PerformanceSubTabs({
+    required this.selectedId,
+    required this.onSelect,
+  });
+
+  final String selectedId;
+  final ValueChanged<String> onSelect;
+
+  static const _items = <({String id, String label})>[
+    (id: 'level', label: 'Perf. level'),
+    (id: 'grade', label: 'Perf. grade'),
+    (id: 'kpi', label: 'KPI setting'),
+    (id: 'eval_type', label: 'Eval. type'),
+    (id: 'eval_category', label: 'Eval. category'),
+    (id: 'eval_setup', label: 'Eval. setup'),
+    (id: 'grant', label: 'Grant permissions'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final i in _items)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: InkWell(
+                onTap: () => onSelect(i.id),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: selectedId == i.id
+                            ? AppColors.primary
+                            : Colors.transparent,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 8,
+                  ),
+                  child: Text(
+                    i.label,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      fontWeight: selectedId == i.id
+                          ? FontWeight.w700
+                          : FontWeight.w500,
+                      color: selectedId == i.id
+                          ? AppColors.primary
+                          : context.secondaryText,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionCaption extends StatelessWidget {
+  const _SectionCaption(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label.toUpperCase(),
+      style: GoogleFonts.dmSans(
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.8,
+        color: AppColors.muted,
+      ),
+    );
+  }
+}
+
+class _OutlinedFormCard extends StatelessWidget {
+  const _OutlinedFormCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: context.surfaceCard,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.borderColor),
+      ),
+      child: child,
+    );
+  }
+}
+
+class _MiniLabel extends StatelessWidget {
+  const _MiniLabel(this.label);
+  final String label;
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: GoogleFonts.dmSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: context.secondaryText,
+      ),
+    );
+  }
+}
+
+class _FormDropdown extends StatelessWidget {
+  const _FormDropdown({
+    required this.label,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+  });
+
+  final String label;
+  final String value;
+  final List<String> items;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: GoogleFonts.dmSans(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.6,
+            color: AppColors.muted,
+          ),
+        ),
+        const SizedBox(height: 6),
+        DropdownButtonFormField<String>(
+          initialValue: items.contains(value) ? value : items.first,
+          items: items
+              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
+          onChanged: (v) {
+            if (v != null) onChanged(v);
+          },
+          style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.navy),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: const Color(0xFFFAFAFA),
+            isDense: true,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FormText extends StatelessWidget {
+  const _FormText({
+    required this.label,
+    required this.controller,
+    this.onChanged,
+  });
+
+  final String label;
+  final TextEditingController controller;
+  final ValueChanged<String>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: GoogleFonts.dmSans(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.6,
+            color: AppColors.muted,
+          ),
+        ),
+        const SizedBox(height: 6),
+        TextField(
+          controller: controller,
+          onChanged: onChanged,
+          style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.navy),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: const Color(0xFFFAFAFA),
+            isDense: true,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: AppColors.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CheckRow extends StatelessWidget {
+  const _CheckRow({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String label;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => onChanged(!value),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 22,
+              height: 22,
+              child: Checkbox(
+                value: value,
+                onChanged: (v) => onChanged(v ?? false),
+                activeColor: AppColors.primary,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              label,
+              style: GoogleFonts.dmSans(
+                fontSize: 13,
+                color: AppColors.navy,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget _twoColForm(List<Widget> fields) {
+  return LayoutBuilder(
+    builder: (context, c) {
+      final wide = c.maxWidth > 520;
+      if (!wide) {
+        return Column(
+          children: fields
+              .map(
+                (f) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: f,
+                ),
+              )
+              .toList(),
+        );
+      }
+      final rows = <Widget>[];
+      for (var i = 0; i < fields.length; i += 2) {
+        rows.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: fields[i]),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: i + 1 < fields.length
+                      ? fields[i + 1]
+                      : const SizedBox(),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+      return Column(children: rows);
+    },
+  );
+}
+
+class _ReportsFooterActions extends StatelessWidget {
+  const _ReportsFooterActions();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(top: 16),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: context.borderColor)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextButton(
+            onPressed: () {},
+            child: Text(
+              'Reset to Default',
+              style: GoogleFonts.dmSans(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.muted,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          FilledButton.icon(
+            onPressed: () => showReportSnack(context, 'Changes saved.'),
+            icon: const Icon(Icons.save_outlined, size: 18),
+            label: const Text('Save Changes'),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.navy,
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// All Overview cards
+// =============================================================================
+
+class _OverviewKpi extends StatelessWidget {
+  const _OverviewKpi({
+    required this.value,
+    required this.label,
+    required this.sub,
+    required this.valueColor,
+  });
+
+  final String value;
+  final String label;
+  final String sub;
+  final Color valueColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: context.surfaceCard,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.borderColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            style: GoogleFonts.sora(
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              color: valueColor,
+              height: 1.05,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: GoogleFonts.dmSans(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.6,
+              color: context.primaryText,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            sub,
+            style: GoogleFonts.dmSans(
+              fontSize: 11,
+              color: AppColors.muted,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PillSpec {
+  const _PillSpec({required this.label, required this.bg, required this.fg});
+  final String label;
+  final Color bg;
+  final Color fg;
+}
+
+class _OverviewListCard extends StatelessWidget {
+  const _OverviewListCard({required this.rows});
+
+  final List<(String, String, _PillSpec)> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    return ThemedSurfaceCard(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _PageHeader(
-            title: 'Custom report builder',
-            subtitle:
-                'Build your own report by selecting modules, fields and filters',
-            actions: [
-              TextButton(onPressed: () {}, child: const Text('Load saved')),
-              const SizedBox(width: 8),
-              FilledButton(
-                onPressed: () =>
-                    showReportSnack(context, 'Running custom report…'),
-                child: const Text('Run report'),
+          for (var i = 0; i < rows.length; i++) ...[
+            if (i > 0) Divider(height: 1, color: context.borderColor),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          rows[i].$1,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: context.primaryText,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          rows[i].$2,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 12,
+                            color: context.secondaryText,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  _Pill(spec: rows[i].$3),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _Pill extends StatelessWidget {
+  const _Pill({required this.spec});
+  final _PillSpec spec;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: spec.bg,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        spec.label,
+        style: GoogleFonts.dmSans(
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.4,
+          color: spec.fg,
+        ),
+      ),
+    );
+  }
+}
+
+class _RecentActivityCard extends StatelessWidget {
+  const _RecentActivityCard();
+
+  static const _entries = <(String, String)>[
+    ('Monthly payroll summary', 'HR Admin · 6 May 10:30'),
+    ('Leave balance report', 'Auto-scheduled · 1 May 06:00'),
+    ('Attendance summary — Apr', 'Nina Reza · 30 Apr 18:00'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ThemedSurfaceCard(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < _entries.length; i++) ...[
+            if (i > 0) Divider(height: 1, color: context.borderColor),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _entries[i].$1,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: context.primaryText,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _entries[i].$2,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 11,
+                            color: context.secondaryText,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () =>
+                        showReportSnack(context, 'Downloading…'),
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      'Download',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ExportFormatsCard extends StatelessWidget {
+  const _ExportFormatsCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return ThemedSurfaceCard(
+      child: Row(
+        children: const [
+          _ExportPill(label: 'EXCEL', fg: Color(0xFF059669)),
+          SizedBox(width: 8),
+          _ExportPill(label: 'PDF', fg: Color(0xFFDC2626)),
+          SizedBox(width: 8),
+          _ExportPill(label: 'CSV', fg: Color(0xFF7C3AED)),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExportPill extends StatelessWidget {
+  const _ExportPill({required this.label, required this.fg});
+  final String label;
+  final Color fg;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      decoration: BoxDecoration(
+        color: fg.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.dmSans(
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          color: fg,
+          letterSpacing: 0.6,
+        ),
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Module tab content
+// =============================================================================
+
+class _ModuleReportsCard extends StatelessWidget {
+  const _ModuleReportsCard({required this.config});
+
+  final _ModuleConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <(String, String)>[
+      ('${config.titleNoun} Summary', 'Aggregated ${config.lowerCode} data for the selected period.'),
+      ('${config.titleNoun} Detail Log', 'Individual transaction and activity logs for ${config.lowerCode}.'),
+      ('Historical Trend', 'Year-on-year comparisons and growth tracking analytics.'),
+    ];
+    return ThemedSurfaceCard(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < rows.length; i++) ...[
+            if (i > 0) Divider(height: 1, color: context.borderColor),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          rows[i].$1,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: context.primaryText,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          rows[i].$2,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 12,
+                            color: context.secondaryText,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  _Pill(
+                    spec: _PillSpec(
+                      label: config.code,
+                      bg: config.pillBg,
+                      fg: config.pillFg,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickSnapshotCard extends StatelessWidget {
+  const _QuickSnapshotCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return ThemedSurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _kv(context, 'Total Records', '1,284', valueBold: true),
+          const SizedBox(height: 14),
+          _kv(
+            context,
+            'Last Updated',
+            '6 May 10:42',
+            valueColor: const Color(0xFF059669),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Auto-Run Status',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 13,
+                    color: context.secondaryText,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFDBEAFE),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  'ACTIVE',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primary,
+                    letterSpacing: 0.6,
+                  ),
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          LayoutBuilder(
-            builder: (context, c) {
-              final wide = c.maxWidth >= 900;
-              final step1 = _builderStep(context, 'Step 1 — Data source', [
-                _dropdown(
-                  'Primary module',
-                  _primaryModule,
-                  const ['Employee management', 'Payroll', 'Attendance'],
-                  (v) => setState(() => _primaryModule = v!),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Combine with (optional)',
+          const SizedBox(height: 18),
+          _DeptBar(label: 'Engineering', value: 342, color: AppColors.primary),
+          _DeptBar(label: 'Operations', value: 261, color: const Color(0xFF059669)),
+          _DeptBar(label: 'Finance', value: 180, color: const Color(0xFF7C3AED)),
+        ],
+      ),
+    );
+  }
+
+  Widget _kv(
+    BuildContext context,
+    String k,
+    String v, {
+    Color? valueColor,
+    bool valueBold = false,
+  }) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            k,
+            style: GoogleFonts.dmSans(
+              fontSize: 13,
+              color: context.secondaryText,
+            ),
+          ),
+        ),
+        Text(
+          v,
+          style: GoogleFonts.dmSans(
+            fontSize: 13,
+            fontWeight: valueBold ? FontWeight.w800 : FontWeight.w700,
+            color: valueColor ?? context.primaryText,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DeptBar extends StatelessWidget {
+  const _DeptBar({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final int value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    const max = 400;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
                     color: context.secondaryText,
                   ),
                 ),
-                CheckboxListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Attendance data'),
-                  value: _attendance,
-                  onChanged: (v) => setState(() => _attendance = v ?? false),
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-                CheckboxListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Payroll data'),
-                  value: _payroll,
-                  onChanged: (v) => setState(() => _payroll = v ?? false),
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-                CheckboxListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Leave data'),
-                  value: false,
-                  onChanged: null,
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-              ]);
-              final step2 = _builderStep(context, 'Step 2 — Select fields', [
-                _fieldGroup(context, 'Employee fields', const [
-                  ('Employee no.', true),
-                  ('Full name', true),
-                  ('Department', true),
-                  ('Position', true),
-                  ('Job grade', false),
-                ]),
-                _fieldGroup(context, 'Payroll fields', const [
-                  ('Basic salary', true),
-                  ('Net pay', true),
-                  ('Total deductions', false),
-                ]),
-                _fieldGroup(context, 'Attendance fields', const [
-                  ('Work days', true),
-                  ('Present days', true),
-                  ('OT hours', false),
-                ]),
-              ]);
-              final step3 = _builderStep(
-                context,
-                'Step 3 — Filters & date range',
-                [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _dateField(context, 'Date from', '01/01/2026'),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _dateField(context, 'Date to', '31/05/2026'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _dropdown('Department', 'All departments', const [
-                    'All departments',
-                    'Engineering',
-                    'Finance',
-                  ], (_) {}),
-                  const SizedBox(height: 8),
-                  _dropdown('Branch / location', 'All branches', const [
-                    'All branches',
-                  ], (_) {}),
-                  const SizedBox(height: 8),
-                  _dropdown('Employment status', 'Active only', const [
-                    'Active only',
-                    'All',
-                  ], (_) {}),
-                ],
-              );
-              final step4 = _builderStep(context, 'Step 4 — Output settings', [
-                Row(
-                  children: [
-                    Expanded(
-                      child: _dropdown('Sort by', _sortBy, const [
-                        'Employee no.',
-                        'Department',
-                        'Name',
-                      ], (v) => setState(() => _sortBy = v!)),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _dropdown('Group by', _groupBy, const [
-                        'None',
-                        'Department',
-                      ], (v) => setState(() => _groupBy = v!)),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                _dropdown(
-                  'Export format',
-                  _exportFormat,
-                  const ['Excel (.xlsx)', 'PDF', 'CSV'],
-                  (v) => setState(() => _exportFormat = v!),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Report name',
-                    hintText: 'e.g. Employee payroll + attendance May 2026',
-                  ),
-                ),
-                CheckboxListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Save as custom template'),
-                  value: false,
-                  onChanged: null,
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-                CheckboxListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Schedule this report'),
-                  value: false,
-                  onChanged: null,
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-              ]);
-              if (wide) {
-                return Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(child: step1),
-                        const SizedBox(width: 16),
-                        Expanded(child: step2),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(child: step3),
-                        const SizedBox(width: 16),
-                        Expanded(child: step4),
-                      ],
-                    ),
-                  ],
-                );
-              }
-              return Column(
-                children: [
-                  step1,
-                  const SizedBox(height: 16),
-                  step2,
-                  const SizedBox(height: 16),
-                  step3,
-                  const SizedBox(height: 16),
-                  step4,
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(onPressed: () {}, child: const Text('Preview')),
-              const SizedBox(width: 8),
-              FilledButton(
-                onPressed: () => showReportSnack(context, 'Export started.'),
-                child: const Text('Run & export'),
               ),
-              const SizedBox(width: 16),
               Text(
-                'Saved custom reports',
-                style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.muted),
-              ),
-              const SizedBox(width: 6),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '7 saved',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _builderStep(
-    BuildContext context,
-    String title,
-    List<Widget> children,
-  ) {
-    return ThemedSurfaceCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.dmSans(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: context.primaryText,
-            ),
-          ),
-          const SizedBox(height: 12),
-          ...children,
-        ],
-      ),
-    );
-  }
-
-  Widget _fieldGroup(
-    BuildContext context,
-    String title,
-    List<(String, bool)> fields,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.dmSans(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: AppColors.primary,
-            ),
-          ),
-          for (final (label, checked) in fields)
-            CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(label, style: const TextStyle(fontSize: 13)),
-              value: checked,
-              onChanged: (_) {},
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-// --- Module template ---
-
-Widget _modulePanel(
-  BuildContext context, {
-  required String title,
-  required String subtitle,
-  required String snapshotTitle,
-  required List<(String, String)> reports,
-  required Widget snapshot,
-}) {
-  void run(String name) => showReportSnack(context, 'Running $name…');
-  void pdf(String name) => showReportSnack(context, 'Exporting $name as PDF…');
-
-  return SingleChildScrollView(
-    padding: const EdgeInsets.all(24),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _PageHeader(
-          title: title,
-          subtitle: subtitle,
-          actions: [
-            OutlinedButton(onPressed: () {}, child: const Text('Schedule')),
-            const SizedBox(width: 8),
-            FilledButton(
-              onPressed: () => showReportSnack(context, 'Generate report'),
-              child: const Text('Generate report'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        LayoutBuilder(
-          builder: (context, c) {
-            final wide = c.maxWidth >= 800;
-            final listCard = ThemedSurfaceCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const ReportSectionTitle('Available reports'),
-                  for (var i = 0; i < reports.length; i++) ...[
-                    if (i > 0) Divider(height: 1, color: context.borderColor),
-                    ReportListTile(
-                      title: reports[i].$1,
-                      subtitle: reports[i].$2,
-                      onRun: () => run(reports[i].$1),
-                      onPdf: () => pdf(reports[i].$1),
-                    ),
-                  ],
-                ],
-              ),
-            );
-            final snapCard = ThemedSurfaceCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    snapshotTitle,
-                    style: GoogleFonts.dmSans(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: context.primaryText,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  snapshot,
-                ],
-              ),
-            );
-            if (wide) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(flex: 3, child: listCard),
-                  const SizedBox(width: 16),
-                  Expanded(flex: 2, child: snapCard),
-                ],
-              );
-            }
-            return Column(
-              children: [listCard, const SizedBox(height: 16), snapCard],
-            );
-          },
-        ),
-      ],
-    ),
-  );
-}
-
-// --- Snapshots ---
-
-Widget _employeeSnapshot(BuildContext context) {
-  return Column(
-    children: [
-      const ReportSnapshotRow(label: 'Total employees', value: '1,284'),
-      const ReportSnapshotRow(
-        label: 'Active',
-        value: '1,201',
-        valueColor: Color(0xFF059669),
-      ),
-      const ReportSnapshotRow(
-        label: 'On probation',
-        value: '48',
-        valueColor: Color(0xFFD97706),
-      ),
-      const ReportSnapshotRow(
-        label: 'New joiners this month',
-        value: '12',
-        valueColor: AppColors.primary,
-      ),
-      const ReportSnapshotRow(
-        label: 'Resigned this month',
-        value: '4',
-        valueColor: AppColors.danger,
-      ),
-      const ReportSnapshotRow(label: 'Contracts expiring 30d', value: '7'),
-      const ReportSnapshotRow(label: 'Turnover rate YTD', value: '3.2%'),
-      const SizedBox(height: 12),
-      _headcountBar(context, 'Engineering', 342, AppColors.primary),
-      _headcountBar(context, 'Operations', 261, const Color(0xFF0D9488)),
-      _headcountBar(context, 'Finance', 180, const Color(0xFF7C3AED)),
-      _headcountBar(context, 'Marketing', 142, const Color(0xFFD97706)),
-      _headcountBar(context, 'HR', 88, const Color(0xFFDB2777)),
-    ],
-  );
-}
-
-Widget _attendanceSnapshot(BuildContext context) {
-  return Column(
-    children: const [
-      ReportSnapshotRow(
-        label: 'Avg. attendance rate',
-        value: '93.2%',
-        valueColor: Color(0xFF059669),
-      ),
-      ReportSnapshotRow(label: 'Total OT hours (month)', value: '1,248h'),
-      ReportSnapshotRow(
-        label: 'Missing swipes (unresolved)',
-        value: '7',
-        valueColor: AppColors.danger,
-      ),
-      ReportSnapshotRow(
-        label: 'Employees with 3+ lates',
-        value: '18',
-        valueColor: AppColors.danger,
-      ),
-      ReportSnapshotRow(
-        label: 'Absent (no-show) today',
-        value: '23',
-        valueColor: AppColors.danger,
-      ),
-      SizedBox(height: 12),
-      ReportDeptBar(label: 'Engineering', pct: 94, color: AppColors.primary),
-      ReportDeptBar(label: 'Finance', pct: 96, color: Color(0xFF059669)),
-      ReportDeptBar(label: 'HR', pct: 89, color: Color(0xFF7C3AED)),
-      ReportDeptBar(label: 'Operations', pct: 91, color: Color(0xFFD97706)),
-    ],
-  );
-}
-
-Widget _leaveSnapshot(BuildContext context) {
-  return const Column(
-    children: [
-      ReportSnapshotRow(label: 'Total leave days taken', value: '4,821 days'),
-      ReportSnapshotRow(
-        label: 'Annual leave utilisation',
-        value: '64%',
-        valueColor: AppColors.primary,
-      ),
-      ReportSnapshotRow(label: 'Medical leave days', value: '1,244 days'),
-      ReportSnapshotRow(
-        label: 'Pending approval',
-        value: '6',
-        valueColor: AppColors.danger,
-      ),
-      ReportSnapshotRow(
-        label: 'Employees with 0 leave taken',
-        value: '42',
-        valueColor: AppColors.danger,
-      ),
-      ReportSnapshotRow(label: 'Unpaid leave days', value: '18 days'),
-    ],
-  );
-}
-
-Widget _payrollSnapshot(BuildContext context) {
-  return Column(
-    children: [
-      const ReportSnapshotRow(
-        label: 'Total gross payroll',
-        value: 'MYR 4,820,000',
-        valueColor: AppColors.primary,
-      ),
-      const ReportSnapshotRow(
-        label: 'Total deductions',
-        value: 'MYR 842,000',
-        valueColor: AppColors.danger,
-      ),
-      const ReportSnapshotRow(
-        label: 'Total net payroll',
-        value: 'MYR 3,978,000',
-        valueColor: Color(0xFF059669),
-      ),
-      const ReportSnapshotRow(
-        label: 'EPF employer total',
-        value: 'MYR 578,400',
-      ),
-      const ReportSnapshotRow(label: 'SOCSO total', value: 'MYR 24,100'),
-      const ReportSnapshotRow(
-        label: 'PCB / income tax total',
-        value: 'MYR 239,500',
-      ),
-      const SizedBox(height: 8),
-      Row(
-        children: [
-          Text(
-            'Payroll status',
-            style: GoogleFonts.dmSans(
-              fontSize: 13,
-              color: context.secondaryText,
-            ),
-          ),
-          const Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFEDD5),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              'Pending confirmation',
-              style: GoogleFonts.dmSans(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFFC2410C),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ],
-  );
-}
-
-Widget _performanceSnapshot(BuildContext context) {
-  return const Column(
-    children: [
-      ReportGradeBar(
-        label: 'Grade A — Excellent',
-        count: 186,
-        color: AppColors.primary,
-        max: 542,
-      ),
-      ReportGradeBar(
-        label: 'Grade B — Good',
-        count: 542,
-        color: Color(0xFF059669),
-        max: 542,
-      ),
-      ReportGradeBar(
-        label: 'Grade C — Satisfactory',
-        count: 398,
-        color: Color(0xFFD97706),
-        max: 542,
-      ),
-      ReportGradeBar(
-        label: 'Grade D — Needs impr.',
-        count: 158,
-        color: AppColors.danger,
-        max: 542,
-      ),
-    ],
-  );
-}
-
-Widget _trainingSnapshot(BuildContext context) {
-  return const Column(
-    children: [
-      ReportSnapshotRow(label: 'Total sessions', value: '48'),
-      ReportSnapshotRow(
-        label: 'Employees trained',
-        value: '312',
-        valueColor: Color(0xFF059669),
-      ),
-      ReportSnapshotRow(
-        label: 'Completion rate',
-        value: '87%',
-        valueColor: AppColors.primary,
-      ),
-      ReportSnapshotRow(label: 'Total training cost', value: 'MYR 48,200'),
-      ReportSnapshotRow(
-        label: 'Mandatory training overdue',
-        value: '14 employees',
-        valueColor: AppColors.danger,
-      ),
-    ],
-  );
-}
-
-Widget _claimsSnapshot(BuildContext context) {
-  return const Column(
-    children: [
-      ReportSnapshotRow(
-        label: 'Total claimed',
-        value: 'MYR 14,820',
-        valueColor: AppColors.primary,
-      ),
-      ReportSnapshotRow(
-        label: 'Approved & pushed',
-        value: 'MYR 9,340',
-        valueColor: Color(0xFF059669),
-      ),
-      ReportSnapshotRow(
-        label: 'Pending approval',
-        value: 'MYR 5,480',
-        valueColor: Color(0xFFD97706),
-      ),
-      ReportSnapshotRow(
-        label: 'Policy flags this month',
-        value: '8 flags',
-        valueColor: AppColors.danger,
-      ),
-      ReportSnapshotRow(label: 'Rejected claims value', value: 'MYR 1,240'),
-    ],
-  );
-}
-
-Widget _recruitmentSnapshot(BuildContext context) {
-  return const Column(
-    children: [
-      ReportSnapshotRow(
-        label: 'Open requisitions',
-        value: '12',
-        valueColor: AppColors.primary,
-      ),
-      ReportSnapshotRow(
-        label: 'Filled this quarter',
-        value: '5',
-        valueColor: Color(0xFF059669),
-      ),
-      ReportSnapshotRow(label: 'Avg. time to hire', value: '28 days'),
-      ReportSnapshotRow(
-        label: 'Offer acceptance rate',
-        value: '82%',
-        valueColor: Color(0xFF059669),
-      ),
-      ReportSnapshotRow(
-        label: 'Total recruitment cost',
-        value: 'MYR 8,400',
-        bold: true,
-      ),
-    ],
-  );
-}
-
-Widget _assetSnapshot(BuildContext context) {
-  return const Column(
-    children: [
-      ReportSnapshotRow(label: 'Total assets', value: '1,847'),
-      ReportSnapshotRow(
-        label: 'Total acquisition cost',
-        value: 'MYR 4.2M',
-        valueColor: AppColors.primary,
-      ),
-      ReportSnapshotRow(
-        label: 'Current book value',
-        value: 'MYR 2.8M',
-        valueColor: Color(0xFF059669),
-      ),
-      ReportSnapshotRow(label: 'Maintenance cost YTD', value: 'MYR 38,400'),
-      ReportSnapshotRow(
-        label: 'Assets disposed YTD',
-        value: '23',
-        valueColor: AppColors.danger,
-      ),
-      ReportSnapshotRow(
-        label: 'Net disposal gain/loss',
-        value: '-MYR 1,830',
-        valueColor: AppColors.danger,
-      ),
-    ],
-  );
-}
-
-Widget _disciplinarySnapshot(BuildContext context) {
-  return const Column(
-    children: [
-      ReportSnapshotRow(label: 'Total cases opened', value: '14'),
-      ReportSnapshotRow(
-        label: 'Open / pending',
-        value: '3',
-        valueColor: Color(0xFFD97706),
-      ),
-      ReportSnapshotRow(
-        label: 'Acknowledged',
-        value: '6',
-        valueColor: Color(0xFF059669),
-      ),
-      ReportSnapshotRow(label: 'Closed', value: '5'),
-      ReportSnapshotRow(
-        label: 'Most common offence',
-        value: 'Unauthorised absence',
-      ),
-      ReportSnapshotRow(label: 'Most warnings dept', value: 'Operations'),
-      ReportSnapshotRow(
-        label: 'Repeat offenders',
-        value: '2 employees',
-        valueColor: AppColors.danger,
-      ),
-    ],
-  );
-}
-
-// --- Shared form helpers ---
-
-class _PageHeader extends StatelessWidget {
-  const _PageHeader({
-    required this.title,
-    required this.subtitle,
-    this.actions = const [],
-  });
-
-  final String title;
-  final String subtitle;
-  final List<Widget> actions;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.sora(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w800,
-                  color: context.primaryText,
-                  height: 1.15,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
+                '$value',
                 style: GoogleFonts.dmSans(
-                  fontSize: 14,
-                  color: context.secondaryText,
-                  height: 1.4,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: context.primaryText,
                 ),
               ),
             ],
           ),
-        ),
-        ...actions,
-      ],
-    );
-  }
-}
-
-Widget _formGrid(BuildContext context, List<Widget> children) {
-  return LayoutBuilder(
-    builder: (context, c) {
-      final cols = c.maxWidth >= 700 ? 2 : 1;
-      return Wrap(
-        spacing: 16,
-        runSpacing: 12,
-        children: children
-            .map(
-              (w) => SizedBox(
-                width: cols == 2 ? (c.maxWidth - 16) / 2 : c.maxWidth,
-                child: w,
-              ),
-            )
-            .toList(),
-      );
-    },
-  );
-}
-
-Widget _headcountBar(
-  BuildContext context,
-  String label,
-  int count,
-  Color color,
-) {
-  const max = 342;
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: Row(
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(
-            label,
-            style: GoogleFonts.dmSans(
-              fontSize: 12,
-              color: context.secondaryText,
-            ),
-          ),
-        ),
-        Expanded(
-          child: ClipRRect(
+          const SizedBox(height: 6),
+          ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
-              value: count / max,
-              minHeight: 8,
+              value: value / max,
+              minHeight: 6,
               backgroundColor: context.subtleFill,
               color: color,
             ),
           ),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          '$count',
-          style: GoogleFonts.dmSans(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: context.primaryText,
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// Active schedules table
+// =============================================================================
+
+class _ActiveSchedulesCard extends StatelessWidget {
+  const _ActiveSchedulesCard();
+
+  static const _rows = <(String, String, String)>[
+    ('Monthly payroll summary', 'Monthly', '1 Jun 06:00'),
+    ('Attendance summary', 'Monthly', '1 Jun 06:00'),
+    ('Leave balance report', 'Monthly', '1 Jun 06:00'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ThemedSurfaceCard(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: _ColHead('Report Name'),
+                ),
+                Expanded(flex: 2, child: _ColHead('Frequency')),
+                Expanded(flex: 2, child: _ColHead('Next Run')),
+                SizedBox(
+                  width: 60,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: _ColHead('Action'),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+          Divider(height: 1, color: context.borderColor),
+          for (var i = 0; i < _rows.length; i++) ...[
+            if (i > 0) Divider(height: 1, color: context.borderColor),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: Text(
+                      _rows[i].$1,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: context.primaryText,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      _rows[i].$2,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 13,
+                        color: context.secondaryText,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      _rows[i].$3,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 13,
+                        color: context.secondaryText,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 60,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () => showReportSnack(
+                          context,
+                          'Edit ${_rows[i].$1}',
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          'Edit',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 }
 
-Widget _dropdown(
-  String label,
-  String value,
-  List<String> items,
-  ValueChanged<String?> onChanged,
-) {
-  return DropdownButtonFormField<String>(
-    initialValue: value,
-    decoration: InputDecoration(labelText: label, isDense: true),
-    items: items
-        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-        .toList(),
-    onChanged: onChanged,
-  );
+class _ColHead extends StatelessWidget {
+  const _ColHead(this.label);
+  final String label;
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label.toUpperCase(),
+      style: GoogleFonts.dmSans(
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.6,
+        color: AppColors.muted,
+      ),
+    );
+  }
 }
 
-Widget _textField(String label, TextEditingController controller) {
-  return TextField(
-    controller: controller,
-    decoration: InputDecoration(labelText: label, isDense: true),
-  );
+// =============================================================================
+// Tabs + module config data
+// =============================================================================
+
+const _reportTabs = <({String id, String label})>[
+  (id: 'overview', label: 'All Overview'),
+  (id: 'employee', label: 'Employee'),
+  (id: 'attendance', label: 'Attendance'),
+  (id: 'leave', label: 'Leave'),
+  (id: 'payroll', label: 'Payroll'),
+  (id: 'performance', label: 'Performance'),
+  (id: 'training', label: 'Training'),
+  (id: 'claims', label: 'Claims'),
+  (id: 'recruitment', label: 'Recruitment'),
+  (id: 'asset', label: 'Asset'),
+  (id: 'disciplinary', label: 'Disciplinary'),
+];
+
+class _ModuleConfig {
+  const _ModuleConfig({
+    required this.titleNoun,
+    required this.code,
+    required this.pillBg,
+    required this.pillFg,
+  });
+
+  final String titleNoun;
+  final String code;
+  final Color pillBg;
+  final Color pillFg;
+
+  String get lowerCode => code.toLowerCase();
 }
 
-Widget _dateField(BuildContext context, String label, String hint) {
-  return TextField(
-    readOnly: true,
-    decoration: InputDecoration(
-      labelText: label,
-      hintText: hint,
-      isDense: true,
-      suffixIcon: const Icon(Icons.calendar_today_outlined, size: 18),
-    ),
-    onTap: () => showReportSnack(context, 'Date picker — $label'),
-  );
-}
+final _moduleConfigById = <String, _ModuleConfig>{
+  'employee': _ModuleConfig(
+    titleNoun: 'Emp',
+    code: 'EMP',
+    pillBg: const Color(0xFFE2E8F0),
+    pillFg: const Color(0xFF475569),
+  ),
+  'attendance': _ModuleConfig(
+    titleNoun: 'Att',
+    code: 'ATT',
+    pillBg: const Color(0xFFDBEAFE),
+    pillFg: AppColors.primary,
+  ),
+  'leave': _ModuleConfig(
+    titleNoun: 'Lv',
+    code: 'LV',
+    pillBg: const Color(0xFFFFEDD5),
+    pillFg: const Color(0xFFC2410C),
+  ),
+  'payroll': _ModuleConfig(
+    titleNoun: 'Pay',
+    code: 'PAY',
+    pillBg: const Color(0xFFD1FAE5),
+    pillFg: const Color(0xFF065F46),
+  ),
+  'performance': _ModuleConfig(
+    titleNoun: 'Perf',
+    code: 'PERF',
+    pillBg: const Color(0xFFEDE9FE),
+    pillFg: const Color(0xFF5B21B6),
+  ),
+  'training': _ModuleConfig(
+    titleNoun: 'Trn',
+    code: 'TRN',
+    pillBg: const Color(0xFFE0F2FE),
+    pillFg: const Color(0xFF0369A1),
+  ),
+  'claims': _ModuleConfig(
+    titleNoun: 'Clm',
+    code: 'CLM',
+    pillBg: const Color(0xFFFCE7F3),
+    pillFg: const Color(0xFF9D174D),
+  ),
+  'recruitment': _ModuleConfig(
+    titleNoun: 'Rec',
+    code: 'REC',
+    pillBg: const Color(0xFFFEF3C7),
+    pillFg: const Color(0xFFB45309),
+  ),
+  'asset': _ModuleConfig(
+    titleNoun: 'Ast',
+    code: 'AST',
+    pillBg: const Color(0xFFE2E8F0),
+    pillFg: const Color(0xFF475569),
+  ),
+  'disciplinary': _ModuleConfig(
+    titleNoun: 'Dis',
+    code: 'DIS',
+    pillBg: const Color(0xFFFEE2E2),
+    pillFg: const Color(0xFF991B1B),
+  ),
+};

@@ -19,7 +19,7 @@ Widget buildSettingsPanel(String id, BuildContext context) {
     'integrations' => const _IntegrationsPanel(),
     'security' => const _SecurityPanel(),
     'audit_log' => const _AuditLogPanel(),
-    'localisation' => const _LocalisationPanel(),
+    'language' => const _LanguagePanel(),
     'email_templates' => const _EmailTemplatesPanel(),
     'backup_data' => const _BackupDataPanel(),
     _ => const _CompanyProfilePanel(),
@@ -1153,8 +1153,22 @@ class _AuditLogPanel extends StatelessWidget {
 
 // --- Preferences ---
 
-class _LocalisationPanel extends StatelessWidget {
-  const _LocalisationPanel();
+class _LanguagePanel extends StatefulWidget {
+  const _LanguagePanel();
+
+  @override
+  State<_LanguagePanel> createState() => _LanguagePanelState();
+}
+
+class _LanguagePanelState extends State<_LanguagePanel> {
+  String _selectedLanguage = 'english';
+  bool _autoTranslate = true;
+
+  static const _languages = [
+    ('english', 'English', 'Default system language'),
+    ('burmese', 'Burmese (မြန်မာဘာသာ)', 'Burmese (Myanmar)'),
+    ('chinese', 'Chinese (简体中文)', 'Simplified Chinese'),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -1162,41 +1176,222 @@ class _LocalisationPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SettingsPageHeader(
-            title: 'Localisation',
-            subtitle: 'Language, timezone, date format and currency',
-            trailing: FilledButton(onPressed: () {}, child: const Text('Save')),
+          const SettingsPageHeader(
+            title: 'Language & Interface',
+            subtitle:
+                'Manage your primary language and display preferences for the platform.',
           ),
-          const SizedBox(height: 20),
-          SettingsCard(
-            title: 'Regional preferences',
+          const SizedBox(height: 24),
+          _SectionLabel('System Language'),
+          const SizedBox(height: 10),
+          Column(
+            children: [
+              for (final (id, name, desc) in _languages)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _LanguageOptionTile(
+                    title: name,
+                    subtitle: desc,
+                    selected: _selectedLanguage == id,
+                    onTap: () => setState(() => _selectedLanguage = id),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          SettingsToggleRow(
+            title: 'Auto-translate Content',
+            subtitle:
+                'Automatically translate user comments into your selected language',
+            value: _autoTranslate,
+            onChanged: (v) => setState(() => _autoTranslate = v),
+          ),
+          const Divider(height: 24, color: AppColors.border),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Character Encoding',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.navy,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Unicode (Recommended for Burmese support)',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  'Change',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          _SectionLabel('Regional Preferences'),
+          const SizedBox(height: 6),
+          Text(
+            'Configure timezone and date formatting based on your main operations.',
+            style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.textMuted),
+          ),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFAFAFA),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.border),
+            ),
             child: _twoCol(const [
-              _MockDropdown(value: 'English (US)', label: 'System language'),
-              _MockDropdown(value: 'Asia/Kuala_Lumpur (UTC+8)', label: 'Timezone'),
-              _MockDropdown(value: 'DD/MM/YYYY', label: 'Date format'),
-              _MockDropdown(value: '12-hour (AM/PM)', label: 'Time format'),
-              _MockDropdown(value: 'MYR — Malaysian Ringgit', label: 'Primary currency'),
-              _MockDropdown(value: 'Monday', label: 'First day of week'),
+              _MockDropdown(value: 'Asia/Kuala_Lumpur (UTC+8)', label: 'TIMEZONE'),
+              _MockDropdown(value: 'DD/MM/YYYY', label: 'DATE FORMAT'),
+              _MockDropdown(value: '12-hour (AM/PM)', label: 'TIME FORMAT'),
+              _MockDropdown(value: 'MYR — Malaysian Ringgit', label: 'PRIMARY CURRENCY'),
             ]),
           ),
-          const SizedBox(height: 16),
-          SettingsCard(
-            title: 'Public holidays',
-            trailing: TextButton(onPressed: () {}, child: const Text('Manage holidays')),
-            child: const Column(
-              children: [
-                SettingsKvRow(label: 'Country', value: 'Malaysia'),
-                SettingsKvRow(
-                  label: 'State-specific holidays',
-                  value: '',
-                  valueWidget: SettingsPill('Enabled', tone: SettingsPillTone.success),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _selectedLanguage = 'english';
+                    _autoTranslate = true;
+                  });
+                },
+                child: Text(
+                  'Reset to Default',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textMuted,
+                  ),
                 ),
-                SettingsKvRow(label: 'Custom holidays defined', value: '4 added'),
-                SettingsKvRow(label: 'Next public holiday', value: 'Hari Raya Aidilfitri — 31 Mar'),
-              ],
-            ),
+              ),
+              const SizedBox(width: 12),
+              FilledButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.save_outlined, size: 18),
+                label: const Text('Save Changes'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.navy,
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                ),
+              ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label.toUpperCase(),
+      style: GoogleFonts.dmSans(
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.8,
+        color: AppColors.textMuted,
+      ),
+    );
+  }
+}
+
+class _LanguageOptionTile extends StatelessWidget {
+  const _LanguageOptionTile({
+    required this.title,
+    required this.subtitle,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected ? AppColors.primary : AppColors.border,
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.navy,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: selected ? AppColors.primary : AppColors.border,
+                  width: selected ? 6 : 1.5,
+                ),
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

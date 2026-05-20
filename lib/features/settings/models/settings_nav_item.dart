@@ -97,8 +97,8 @@ abstract final class SettingsNav {
       title: 'PREFERENCES',
       items: [
         SettingsNavItem(
-          id: 'localisation',
-          label: 'Localisation',
+          id: 'language',
+          label: 'Language',
           icon: Icons.language_outlined,
         ),
         SettingsNavItem(
