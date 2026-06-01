@@ -135,22 +135,38 @@ class _AllOverviewBody extends StatelessWidget {
                     (
                       'Monthly payroll summary',
                       'Earnings, deductions, net pay by department',
-                      _PillSpec(label: 'PAYROLL', bg: const Color(0xFFD1FAE5), fg: const Color(0xFF065F46)),
+                      _PillSpec(
+                        label: 'PAYROLL',
+                        bg: const Color(0xFFD1FAE5),
+                        fg: const Color(0xFF065F46),
+                      ),
                     ),
                     (
                       'Attendance detail report',
                       'Clock-in, clock-out, OT, absent per employee',
-                      _PillSpec(label: 'ATTENDANCE', bg: const Color(0xFFDBEAFE), fg: AppColors.primary),
+                      _PillSpec(
+                        label: 'ATTENDANCE',
+                        bg: const Color(0xFFDBEAFE),
+                        fg: AppColors.primary,
+                      ),
                     ),
                     (
                       'Leave balance summary',
                       'Entitlement, used, balance per leave type',
-                      _PillSpec(label: 'LEAVE', bg: const Color(0xFFFFEDD5), fg: const Color(0xFFC2410C)),
+                      _PillSpec(
+                        label: 'LEAVE',
+                        bg: const Color(0xFFFFEDD5),
+                        fg: const Color(0xFFC2410C),
+                      ),
                     ),
                     (
                       'Performance appraisal results',
                       'Scores, grades, CEP ratings',
-                      _PillSpec(label: 'PERFORMANCE', bg: const Color(0xFFEDE9FE), fg: const Color(0xFF5B21B6)),
+                      _PillSpec(
+                        label: 'PERFORMANCE',
+                        bg: const Color(0xFFEDE9FE),
+                        fg: const Color(0xFF5B21B6),
+                      ),
                     ),
                   ],
                 ),
@@ -178,9 +194,7 @@ class _AllOverviewBody extends StatelessWidget {
                 ],
               );
             }
-            return Column(
-              children: [left, const SizedBox(height: 20), right],
-            );
+            return Column(children: [left, const SizedBox(height: 20), right]);
           },
         ),
         const SizedBox(height: 28),
@@ -316,10 +330,7 @@ class _ScheduledReportsPanelState extends State<_ScheduledReportsPanel> {
                   ),
                 ]),
                 const SizedBox(height: 12),
-                _FormText(
-                  label: 'RECIPIENTS (EMAIL)',
-                  controller: _emailCtrl,
-                ),
+                _FormText(label: 'RECIPIENTS (EMAIL)', controller: _emailCtrl),
               ],
             ),
           ),
@@ -348,8 +359,6 @@ class _CustomBuilderPanelState extends State<_CustomBuilderPanel> {
   String _primaryModule = 'Employee management';
   bool _combineAttendance = true;
   bool _combineLeave = false;
-  String _dateFrom = '2026-01-01';
-  String _dateTo = '2026-05-31';
   String _department = 'All departments';
   String _employmentStatus = 'Active only';
   String _sortBy = 'Employee No.';
@@ -360,6 +369,22 @@ class _CustomBuilderPanelState extends State<_CustomBuilderPanel> {
     'Department': true,
     'Position': true,
   };
+  late final TextEditingController _dateFromCtrl;
+  late final TextEditingController _dateToCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _dateFromCtrl = TextEditingController(text: '2026-01-01');
+    _dateToCtrl = TextEditingController(text: '2026-05-31');
+  }
+
+  @override
+  void dispose() {
+    _dateFromCtrl.dispose();
+    _dateToCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -470,20 +495,14 @@ class _CustomBuilderPanelState extends State<_CustomBuilderPanel> {
                             Expanded(
                               child: _FormText(
                                 label: 'FROM',
-                                controller: TextEditingController(
-                                  text: _dateFrom,
-                                ),
-                                onChanged: (v) => _dateFrom = v,
+                                controller: _dateFromCtrl,
                               ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: _FormText(
                                 label: 'TO',
-                                controller: TextEditingController(
-                                  text: _dateTo,
-                                ),
-                                onChanged: (v) => _dateTo = v,
+                                controller: _dateToCtrl,
                               ),
                             ),
                           ],
@@ -521,11 +540,7 @@ class _CustomBuilderPanelState extends State<_CustomBuilderPanel> {
                         _FormDropdown(
                           label: 'SORT BY',
                           value: _sortBy,
-                          items: const [
-                            'Employee No.',
-                            'Department',
-                            'Name',
-                          ],
+                          items: const ['Employee No.', 'Department', 'Name'],
                           onChanged: (v) => setState(() => _sortBy = v),
                         ),
                         const SizedBox(height: 12),
@@ -716,10 +731,7 @@ class _TabItem extends StatelessWidget {
 }
 
 class _PerformanceSubTabs extends StatelessWidget {
-  const _PerformanceSubTabs({
-    required this.selectedId,
-    required this.onSelect,
-  });
+  const _PerformanceSubTabs({required this.selectedId, required this.onSelect});
 
   final String selectedId;
   final ValueChanged<String> onSelect;
@@ -876,8 +888,10 @@ class _FormDropdown extends StatelessWidget {
             filled: true,
             fillColor: const Color(0xFFFAFAFA),
             isDense: true,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 12,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(color: AppColors.border),
@@ -894,11 +908,7 @@ class _FormDropdown extends StatelessWidget {
 }
 
 class _FormText extends StatelessWidget {
-  const _FormText({
-    required this.label,
-    required this.controller,
-    this.onChanged,
-  });
+  const _FormText({required this.label, required this.controller});
 
   final String label;
   final TextEditingController controller;
@@ -927,8 +937,10 @@ class _FormText extends StatelessWidget {
             filled: true,
             fillColor: const Color(0xFFFAFAFA),
             isDense: true,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 12,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(color: AppColors.border),
@@ -939,7 +951,10 @@ class _FormText extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+              borderSide: const BorderSide(
+                color: AppColors.primary,
+                width: 1.5,
+              ),
             ),
           ),
         ),
@@ -984,10 +999,7 @@ class _CheckRow extends StatelessWidget {
             const SizedBox(width: 10),
             Text(
               label,
-              style: GoogleFonts.dmSans(
-                fontSize: 13,
-                color: AppColors.navy,
-              ),
+              style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.navy),
             ),
           ],
         ),
@@ -1128,10 +1140,7 @@ class _OverviewKpi extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             sub,
-            style: GoogleFonts.dmSans(
-              fontSize: 11,
-              color: AppColors.muted,
-            ),
+            style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.muted),
           ),
         ],
       ),
@@ -1271,8 +1280,7 @@ class _RecentActivityCard extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () =>
-                        showReportSnack(context, 'Downloading…'),
+                    onPressed: () => showReportSnack(context, 'Downloading…'),
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
                       minimumSize: Size.zero,
@@ -1353,9 +1361,18 @@ class _ModuleReportsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rows = <(String, String)>[
-      ('${config.titleNoun} Summary', 'Aggregated ${config.lowerCode} data for the selected period.'),
-      ('${config.titleNoun} Detail Log', 'Individual transaction and activity logs for ${config.lowerCode}.'),
-      ('Historical Trend', 'Year-on-year comparisons and growth tracking analytics.'),
+      (
+        '${config.titleNoun} Summary',
+        'Aggregated ${config.lowerCode} data for the selected period.',
+      ),
+      (
+        '${config.titleNoun} Detail Log',
+        'Individual transaction and activity logs for ${config.lowerCode}.',
+      ),
+      (
+        'Historical Trend',
+        'Year-on-year comparisons and growth tracking analytics.',
+      ),
     ];
     return ThemedSurfaceCard(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -1463,8 +1480,16 @@ class _QuickSnapshotCard extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           _DeptBar(label: 'Engineering', value: 342, color: AppColors.primary),
-          _DeptBar(label: 'Operations', value: 261, color: const Color(0xFF059669)),
-          _DeptBar(label: 'Finance', value: 180, color: const Color(0xFF7C3AED)),
+          _DeptBar(
+            label: 'Operations',
+            value: 261,
+            color: const Color(0xFF059669),
+          ),
+          _DeptBar(
+            label: 'Finance',
+            value: 180,
+            color: const Color(0xFF7C3AED),
+          ),
         ],
       ),
     );
@@ -1581,10 +1606,7 @@ class _ActiveSchedulesCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
               children: [
-                Expanded(
-                  flex: 4,
-                  child: _ColHead('Report Name'),
-                ),
+                Expanded(flex: 4, child: _ColHead('Report Name')),
                 Expanded(flex: 2, child: _ColHead('Frequency')),
                 Expanded(flex: 2, child: _ColHead('Next Run')),
                 SizedBox(
@@ -1640,10 +1662,8 @@ class _ActiveSchedulesCard extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () => showReportSnack(
-                          context,
-                          'Edit ${_rows[i].$1}',
-                        ),
+                        onPressed: () =>
+                            showReportSnack(context, 'Edit ${_rows[i].$1}'),
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
                           minimumSize: Size.zero,

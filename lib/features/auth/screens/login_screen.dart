@@ -150,17 +150,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  'Remember me',
-                  style: GoogleFonts.dmSans(
-                    fontSize: 14,
-                    color: AppColors.textMuted,
+                Expanded(
+                  child: Text(
+                    'Remember me',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 14,
+                      color: AppColors.textMuted,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Spacer(),
                 TextButton(
                   onPressed: () =>
                       Navigator.pushNamed(context, AppRoutes.forgotPassword),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   child: Text(
                     'Forgot password?',
                     style: GoogleFonts.dmSans(
