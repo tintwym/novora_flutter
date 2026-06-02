@@ -26,21 +26,14 @@ class _PayrollManagementScreenState extends State<PayrollManagementScreen>
     super.dispose();
   }
 
-  void _toast(String m) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m)));
-  }
-
   @override
   Widget build(BuildContext context) {
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HrModuleHeader(
+        const HrModuleHeader(
           moduleSubtitle: 'PAYROLL MANAGEMENT',
           showPeriodFilter: true,
-          navyPrimaryButton: true,
-          primaryActionLabel: 'Run payroll',
-          onPrimaryAction: () => _toast('Run payroll'),
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,

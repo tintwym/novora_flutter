@@ -21,6 +21,8 @@ class LocalStorage {
 
   static const _kToken = 'auth_token';
   static const _kUser = 'auth_user_json';
+  static const _kRememberMe = 'auth_remember_me';
+  static const _kRememberedEmail = 'auth_remembered_email';
   String? get authToken => _prefs.getString(_kToken);
   set authToken(String? v) {
     if (v == null) {
@@ -37,6 +39,20 @@ class LocalStorage {
       _prefs.remove(_kUser);
     } else {
       _prefs.setString(_kUser, v);
+    }
+  }
+
+  /// When false, session is treated as transient — next app launch returns to login.
+  bool get rememberMe => _prefs.getBool(_kRememberMe) ?? false;
+  set rememberMe(bool v) => _prefs.setBool(_kRememberMe, v);
+
+  /// Prefills the email field on the login screen.
+  String? get rememberedEmail => _prefs.getString(_kRememberedEmail);
+  set rememberedEmail(String? v) {
+    if (v == null || v.isEmpty) {
+      _prefs.remove(_kRememberedEmail);
+    } else {
+      _prefs.setString(_kRememberedEmail, v);
     }
   }
 

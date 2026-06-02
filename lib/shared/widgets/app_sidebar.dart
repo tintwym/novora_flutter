@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/theme_colors.dart';
 import '../models/sidebar_subnav.dart';
-import 'novora_logo.dart';
 import 'sidebar_subnav_tiles.dart';
 
 class NavMenuItem {
@@ -55,19 +54,9 @@ class AppSidebar extends StatelessWidget {
       color: tc.surfaceCard,
       child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: tc.borderColor)),
-            ),
-            child: const NovoraLogo(
-              width: 200,
-              alignment: Alignment.centerLeft,
-            ),
-          ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
               children: [
                 for (final item in items) ...[
                   _ParentTile(

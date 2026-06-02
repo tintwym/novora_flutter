@@ -7,6 +7,7 @@ import '../../../core/constants/app_routes.dart';
 import '../../../core/ui/app_snackbar.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/error/exceptions.dart';
+import '../../../core/storage/local_storage.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
 import '../../../shared/widgets/auth_form_header.dart';
@@ -34,6 +35,20 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _registerRecognizer = TapGestureRecognizer();
+    // Restore "Remember me" preference + prefilled email so returning users can sign in faster.
+    LocalStorage? storage;
+    try {
+      storage = LocalStorage.instance;
+    } catch (_) {
+      storage = null;
+    }
+    if (storage != null) {
+      _rememberMe = storage.rememberMe;
+      final saved = storage.rememberedEmail;
+      if (saved != null && saved.isNotEmpty) {
+        _emailCtrl.text = saved;
+      }
+    }
   }
 
   @override
@@ -62,6 +77,15 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _loading = true);
     try {
       await _auth.login(email, pass);
+      // Persist "Remember me" only after a successful login so a failed attempt
+      // doesn't change the user's previous preference.
+      final storage = LocalStorage.instance;
+      storage.rememberMe = _rememberMe;
+      storage.rememberedEmail = _rememberMe ? email : null;
+      if (!_rememberMe) {
+        // Drop any cached user JSON so closing the app forces a fresh login.
+        storage.userJson = null;
+      }
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
     } on ApiException catch (e) {

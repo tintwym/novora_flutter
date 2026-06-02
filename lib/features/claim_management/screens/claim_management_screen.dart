@@ -54,12 +54,9 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HrModuleHeader(
+        const HrModuleHeader(
           moduleSubtitle: 'CLAIM MANAGEMENT',
           showPeriodFilter: true,
-          navyPrimaryButton: true,
-          primaryActionLabel: '+ New claim',
-          onPrimaryAction: () => _toast('New claim'),
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,

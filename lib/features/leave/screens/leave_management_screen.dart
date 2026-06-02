@@ -73,10 +73,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
         HrModuleHeader(
           moduleSubtitle: _employeeView ? 'MY LEAVE' : 'LEAVE MANAGEMENT',
           showYearFilter: !_employeeView,
-          navyPrimaryButton: true,
           showMoreMenu: !_employeeView,
-          primaryActionLabel: '+ New leave request',
-          onPrimaryAction: () => _toast('New leave request'),
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,

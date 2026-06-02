@@ -40,12 +40,9 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HrModuleHeader(
+        const HrModuleHeader(
           moduleSubtitle: 'TRAINING MANAGEMENT',
-          navyPrimaryButton: true,
           showMoreMenu: true,
-          primaryActionLabel: '+ New request',
-          onPrimaryAction: () => _toast('New request'),
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,

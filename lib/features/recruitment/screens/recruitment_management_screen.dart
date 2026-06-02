@@ -47,12 +47,9 @@ class _RecruitmentManagementScreenState extends State<RecruitmentManagementScree
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HrModuleHeader(
+        const HrModuleHeader(
           moduleSubtitle: 'RECRUITMENT MANAGEMENT',
           showPeriodFilter: false,
-          navyPrimaryButton: true,
-          primaryActionLabel: '+ New requisition',
-          onPrimaryAction: () => _toast('New requisition'),
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,

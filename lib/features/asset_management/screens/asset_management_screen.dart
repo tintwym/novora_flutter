@@ -61,13 +61,10 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HrModuleHeader(
+        const HrModuleHeader(
           moduleSubtitle: 'ASSET MANAGEMENT',
           showPeriodFilter: false,
           showDepartmentFilter: true,
-          navyPrimaryButton: true,
-          primaryActionLabel: 'Register asset',
-          onPrimaryAction: _openRegisterAsset,
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,

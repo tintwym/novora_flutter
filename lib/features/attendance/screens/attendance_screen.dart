@@ -49,13 +49,10 @@ class _AttendanceScreenState extends State<AttendanceScreen>
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HrModuleHeader(
+        const HrModuleHeader(
           moduleSubtitle: 'TIME & ATTENDANCE',
           showPeriodFilter: true,
-          navyPrimaryButton: true,
           showMoreMenu: true,
-          primaryActionLabel: '+ Manual punch',
-          onPrimaryAction: () => _toast('Manual punch'),
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,

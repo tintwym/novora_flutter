@@ -37,11 +37,8 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HrModuleHeader(
+        const HrModuleHeader(
           moduleSubtitle: 'DISCIPLINARY MANAGEMENT',
-          navyPrimaryButton: true,
-          primaryActionLabel: '+ New disciplinary case',
-          onPrimaryAction: () => _toast('New disciplinary case'),
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,

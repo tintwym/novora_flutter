@@ -56,7 +56,7 @@ class HrModuleHeader extends StatelessWidget {
                 Text(
                   AppStrings.brandName,
                   style: GoogleFonts.sora(
-                    fontSize: 18,
+                    fontSize: 15,
                     fontWeight: FontWeight.w800,
                     color: tc.primaryText,
                   ),
@@ -65,7 +65,7 @@ class HrModuleHeader extends StatelessWidget {
                 Text(
                   moduleSubtitle,
                   style: GoogleFonts.dmSans(
-                    fontSize: 10,
+                    fontSize: 9,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.1,
                     color: AppColors.textMuted,

@@ -35,11 +35,18 @@ Future<void> main() async {
   await ThemeNotifier.instance.load();
   await ApiClient.initPersistence();
   var initialRoute = AppRoutes.login;
-  try {
-    final user = await AuthRepository().tryRestoreSession();
-    if (user != null) initialRoute = AppRoutes.dashboard;
-  } catch (_) {
-    // Stay on login if `/me` fails (no session, server down, etc.).
+  // Only restore session when the user opted in via "Remember me".
+  if (LocalStorage.instance.rememberMe) {
+    try {
+      final user = await AuthRepository().tryRestoreSession();
+      if (user != null) initialRoute = AppRoutes.dashboard;
+    } catch (_) {
+      // Stay on login if `/me` fails (no session, server down, etc.).
+    }
+  } else {
+    // Drop any stale persisted user from a previous transient session.
+    LocalStorage.instance.userJson = null;
+    LocalStorage.instance.authToken = null;
   }
   runApp(NovoraApp(initialRoute: initialRoute));
 }

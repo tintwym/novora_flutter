@@ -24,6 +24,11 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Excellent'), findsOneWidget);
 
+    final evalTab = find.text('Evaluation');
+    await tester.ensureVisible(evalTab);
+    await tester.pumpAndSettle();
+    await tester.tap(evalTab);
+    await tester.pumpAndSettle();
     await tester.tap(find.text('+ New evaluation').first);
     await tester.pumpAndSettle();
     expect(find.textContaining('Evaluation entry'), findsOneWidget);

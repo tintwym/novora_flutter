@@ -75,7 +75,7 @@ class AppTopBar extends StatelessWidget {
               Text(
                 title,
                 style: GoogleFonts.sora(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: tc.primaryText,
                 ),
@@ -84,7 +84,7 @@ class AppTopBar extends StatelessWidget {
                 Text(
                   subtitle!,
                   style: GoogleFonts.dmSans(
-                    fontSize: 12,
+                    fontSize: 11,
                     color: tc.secondaryText,
                   ),
                 ),

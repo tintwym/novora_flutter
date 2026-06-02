@@ -14,7 +14,7 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tc = context;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: tc.surfaceCard,
         borderRadius: BorderRadius.circular(14),
@@ -32,13 +32,13 @@ class StatCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            width: 38,
-            height: 38,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               color: item.color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(9),
             ),
-            child: Icon(item.icon, color: item.color, size: 20),
+            child: Icon(item.icon, color: item.color, size: 18),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +46,7 @@ class StatCard extends StatelessWidget {
               Text(
                 item.value,
                 style: GoogleFonts.sora(
-                  fontSize: 22,
+                  fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: tc.primaryText,
                 ),
@@ -55,7 +55,7 @@ class StatCard extends StatelessWidget {
               Text(
                 item.label.toUpperCase(),
                 style: GoogleFonts.dmSans(
-                  fontSize: 10,
+                  fontSize: 9,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.4,
                   color: tc.secondaryText,
@@ -80,7 +80,7 @@ class StatCard extends StatelessWidget {
                     Text(
                       item.change,
                       style: GoogleFonts.dmSans(
-                        fontSize: 11,
+                        fontSize: 10,
                         fontWeight: FontWeight.w600,
                         color: item.isPositive
                             ? AppColors.success
@@ -92,7 +92,7 @@ class StatCard extends StatelessWidget {
                       child: Text(
                         'vs last month',
                         style: GoogleFonts.dmSans(
-                          fontSize: 10,
+                          fontSize: 9,
                           color: AppColors.muted,
                         ),
                         overflow: TextOverflow.ellipsis,

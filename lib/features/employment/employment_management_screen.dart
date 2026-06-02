@@ -35,10 +35,8 @@ class _EmploymentManagementScreenState extends State<EmploymentManagementScreen>
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HrModuleHeader(
+        const HrModuleHeader(
           moduleSubtitle: 'EMPLOYMENT MANAGEMENT',
-          primaryActionLabel: '+ Add employee',
-          onPrimaryAction: () => Navigator.of(context, rootNavigator: true).pushNamed(AppRoutes.employeeWizard),
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,

@@ -50,8 +50,11 @@ class AuthRepository {
     }
     await ApiClient.clearSession();
     DashboardService.clearCache();
-    LocalStorage.instance.authToken = null;
-    LocalStorage.instance.userJson = null;
+    final storage = LocalStorage.instance;
+    storage.authToken = null;
+    storage.userJson = null;
+    // Explicit logout reverts the "Remember me" opt-in so the next launch shows the login screen.
+    storage.rememberMe = false;
     SessionNotifier.instance.clear();
   }
 }

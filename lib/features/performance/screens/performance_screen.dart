@@ -46,18 +46,9 @@ class _PerformanceScreenState extends State<PerformanceScreen>
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        HrModuleHeader(
+        const HrModuleHeader(
           moduleSubtitle: 'PERFORMANCE MANAGEMENT',
           showYearFilter: true,
-          navyPrimaryButton: true,
-          primaryActionLabel: '+ New evaluation',
-          onPrimaryAction: () {
-            setState(() {
-              _evaluationFormOpen = true;
-              _tab.index = 7;
-            });
-            _toast('New evaluation');
-          },
         ),
         Material(
           color: Theme.of(context).colorScheme.surface,
