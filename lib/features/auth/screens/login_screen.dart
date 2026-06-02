@@ -124,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 1.45,
               ),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 20),
             AuthTextField(
               label: 'Work Email',
               hint: 'name@novora.com',
@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
               prefixIcon: Icons.mail_outline_rounded,
               keyboardType: TextInputType.emailAddress,
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 14),
             AuthTextField(
               label: 'Password',
               hint: 'Enter your password',
@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () => setState(() => _showPass = !_showPass),
               ),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 14),
             Row(
               children: [
                 SizedBox(
@@ -201,15 +201,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 26),
+            const SizedBox(height: 18),
             AuthPrimaryButton(
               label: 'Sign In',
               isLoading: _loading,
               onPressed: _loading ? null : _submit,
             ),
-            const SizedBox(height: 22),
+            const SizedBox(height: 16),
             _OrDivider(),
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
             Center(
               child: Text.rich(
                 TextSpan(
@@ -233,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 14),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

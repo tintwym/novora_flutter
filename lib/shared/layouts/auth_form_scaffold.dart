@@ -24,13 +24,13 @@ class AuthFormScaffold extends StatelessWidget {
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: EdgeInsets.fromLTRB(
                 horizontal,
-                wide ? 48 : 24,
+                wide ? 32 : 24,
                 horizontal,
-                32 + bottomInset,
+                24 + bottomInset,
               ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - (wide ? 48 : 24) - bottomInset,
+                  minHeight: constraints.maxHeight - (wide ? 32 : 24) - bottomInset,
                 ),
                 child: Align(
                   alignment: wide ? Alignment.center : Alignment.topCenter,
