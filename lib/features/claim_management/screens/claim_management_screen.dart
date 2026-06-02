@@ -6,7 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 
-/// Claim Management — expense / reimbursement mock UI (reference: AperioOccasio CLAIM MANAGEMENT).
+/// Claim Management — expense / reimbursement mock UI (reference: Novora CLAIM MANAGEMENT).
 class ClaimManagementScreen extends StatefulWidget {
   const ClaimManagementScreen({
     super.key,

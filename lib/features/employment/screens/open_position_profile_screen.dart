@@ -153,7 +153,7 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
                       spacing: 8,
                       runSpacing: 6,
                       children: [
-                        _tagChip('AperioOccasio Sdn Bhd'),
+                        _tagChip('Novora HRMS PTE Ltd'),
                         _tagChip('HR'),
                         OutlinedButton(
                           onPressed: () {},

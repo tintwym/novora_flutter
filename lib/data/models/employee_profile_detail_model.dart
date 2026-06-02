@@ -40,7 +40,7 @@ class EmployeeProfileDetailModel {
         summary: ProfileSummary(
           employment: [
             MapEntry('Employee No.', 'EMP-0021'),
-            MapEntry('Company', 'AperioOccasio Sdn Bhd'),
+            MapEntry('Company', 'Novora HRMS PTE Ltd'),
             MapEntry('Department', 'Engineering'),
             MapEntry('Position', 'Senior Developer'),
             MapEntry('Job Type', 'Permanent'),

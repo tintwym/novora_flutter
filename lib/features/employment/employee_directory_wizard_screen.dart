@@ -30,7 +30,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
 
   // —— Step 0: Details ——
   final _empNo = TextEditingController(text: 'EMP-0285');
-  final _company = TextEditingController(text: 'AperioOccasio Sdn Bhd');
+  final _company = TextEditingController(text: 'Novora HRMS PTE Ltd');
   final _location = TextEditingController(text: 'Kuala Lumpur HQ');
   final _branch = TextEditingController(text: 'Main Branch');
   final _joinDate = TextEditingController();
@@ -866,7 +866,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
                       ),
                       SizedBox(width: colW, child: _labeled('Personal email', _outlineField(controller: _personalEmail, hint: 'name@email.com'))),
                       SizedBox(width: colW, child: _labeled('Mobile no.', _outlineField(controller: _mobile, hint: '+60 12-345 6789'))),
-                      SizedBox(width: colW, child: _labeled('Work email', _outlineField(controller: _workEmail, hint: 'name@aperiooccasio.com'))),
+                      SizedBox(width: colW, child: _labeled('Work email', _outlineField(controller: _workEmail, hint: 'name@novorahrms.com'))),
                     ],
                   );
                 },

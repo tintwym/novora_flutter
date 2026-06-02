@@ -50,22 +50,22 @@ class _CompanyProfilePanel extends StatefulWidget {
 }
 
 class _CompanyProfilePanelState extends State<_CompanyProfilePanel> {
-  final _name = TextEditingController(text: 'AperioOccasio Sdn Bhd');
+  final _name = TextEditingController(text: 'Novora HRMS PTE Ltd');
   final _reg = TextEditingController(text: '1234567-A');
   final _industry = TextEditingController(text: 'Technology & Software');
   final _size = TextEditingController(text: '1,001 – 5,000 employees');
   final _founded = TextEditingController(text: '2010');
-  final _website = TextEditingController(text: 'www.aperiooccasio.com');
+  final _website = TextEditingController(text: 'www.novorahrms.com');
   final _addr1 = TextEditingController(
-    text: 'Level 18, Menara AperioOccasio, Jalan Sultan Ismail',
+    text: 'Level 18, Novora Tower, Jalan Sultan Ismail',
   );
   final _city = TextEditingController(text: 'Kuala Lumpur');
   final _state = TextEditingController(text: 'Wilayah Persekutuan');
   final _postcode = TextEditingController(text: '50250');
   final _country = TextEditingController(text: 'Malaysia');
   final _phone = TextEditingController(text: '+60 3-2100 0000');
-  final _hrEmail = TextEditingController(text: 'hr@aperiooccasio.com');
-  final _payrollEmail = TextEditingController(text: 'payroll@aperiooccasio.com');
+  final _hrEmail = TextEditingController(text: 'hr@novorahrms.com');
+  final _payrollEmail = TextEditingController(text: 'payroll@novorahrms.com');
   final _epf = TextEditingController(text: 'EPF-1234567');
   final _socso = TextEditingController(text: 'SSB-1234567');
   final _tax = TextEditingController(text: 'PCB-1234567');
@@ -115,7 +115,7 @@ class _CompanyProfilePanelState extends State<_CompanyProfilePanel> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'AperioOccasio Sdn Bhd',
+                            'Novora HRMS PTE Ltd',
                             style: GoogleFonts.dmSans(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
@@ -501,9 +501,9 @@ class _UsersAccountsPanel extends StatelessWidget {
             child: SettingsSimpleTable(
               columns: const ['User', 'Email', 'Role', 'Last login', 'Status', ''],
               rows: [
-                _userRow('SA', 'Sarah Ahmad', 'sarah@aperiooccasio.com', 'Super admin', SettingsPillTone.info, 'Just now'),
-                _userRow('NR', 'Nina Reza', 'nina@aperiooccasio.com', 'HR manager', SettingsPillTone.purple, '2 hrs ago'),
-                _userRow('DN', 'David Ng', 'david@aperiooccasio.com', 'Department head', SettingsPillTone.orange, 'Yesterday'),
+                _userRow('SA', 'Sarah Ahmad', 'sarah@novorahrms.com', 'Super admin', SettingsPillTone.info, 'Just now'),
+                _userRow('NR', 'Nina Reza', 'nina@novorahrms.com', 'HR manager', SettingsPillTone.purple, '2 hrs ago'),
+                _userRow('DN', 'David Ng', 'david@novorahrms.com', 'Department head', SettingsPillTone.orange, 'Yesterday'),
               ],
             ),
           ),
@@ -801,7 +801,7 @@ class _NotificationsPanelState extends State<_NotificationsPanel> {
                 ),
                 const SettingsToggleRow(
                   title: 'Mobile push (app)',
-                  subtitle: 'Push alerts to the AperioOccasio mobile app',
+                  subtitle: 'Push alerts to the Novora mobile app',
                   value: false,
                   onChanged: _noop,
                 ),
@@ -843,7 +843,7 @@ class _IntegrationsPanel extends StatelessWidget {
         children: [
           const SettingsPageHeader(
             title: 'Integrations',
-            subtitle: 'Connect external services to AperioOccasio HRMS',
+            subtitle: 'Connect external services to Novora HRMS',
           ),
           const SizedBox(height: 20),
           SettingsCard(
@@ -853,7 +853,7 @@ class _IntegrationsPanel extends StatelessWidget {
                 _integrationRow('Payroll – bank file export', 'Auto-generate bank file for salary disbursement', 'Connected', SettingsPillTone.success),
                 _integrationRow('Biometric device (TA terminal)', 'Sync attendance swipe data from all terminals', 'Connected', SettingsPillTone.success),
                 _integrationRow('Currency exchange API', 'Live FX rates for claim currency conversion', 'Connected', SettingsPillTone.success),
-                _integrationRow('SMTP – email server', 'smtp.aperiooccasio.com · Port 587', 'Connected', SettingsPillTone.success),
+                _integrationRow('SMTP – email server', 'smtp.novorahrms.com · Port 587', 'Connected', SettingsPillTone.success),
                 _integrationRow('EPF / SOCSO e-filing', 'Monthly statutory submission to KWSP & PERKESO', 'Pending setup', SettingsPillTone.warning),
                 _integrationRow('OCR engine (receipt scan)', 'Tesseract OCR · Auto-populate claim fields', 'Connected', SettingsPillTone.success),
               ],

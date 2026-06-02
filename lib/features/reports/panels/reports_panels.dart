@@ -908,11 +908,13 @@ class _FormDropdown extends StatelessWidget {
 }
 
 class _FormText extends StatelessWidget {
-  const _FormText({required this.label, required this.controller});
+  const _FormText({
+    required this.label,
+    required this.controller,
+  });
 
   final String label;
   final TextEditingController controller;
-  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -931,7 +933,6 @@ class _FormText extends StatelessWidget {
         const SizedBox(height: 6),
         TextField(
           controller: controller,
-          onChanged: onChanged,
           style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.navy),
           decoration: InputDecoration(
             filled: true,

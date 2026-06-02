@@ -33,12 +33,13 @@ class AttendanceOverviewChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final attData = repository.attendanceSlices;
     final positive = attData.where((d) => d.value > 0).toList();
+    const sliceRadius = 28.0;
     final pieSections = positive
         .map(
           (d) => PieChartSectionData(
             value: d.value,
             color: _colorForLabel(d.label, d.color),
-            radius: 54,
+            radius: sliceRadius,
             showTitle: false,
           ),
         )
@@ -48,7 +49,7 @@ class AttendanceOverviewChart extends StatelessWidget {
             PieChartSectionData(
               value: 1,
               color: AppColors.border.withValues(alpha: 0.4),
-              radius: 54,
+              radius: sliceRadius,
               showTitle: false,
             ),
           ]
@@ -105,52 +106,55 @@ class AttendanceOverviewChart extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          SizedBox(
-            height: 148,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                PieChart(
-                  PieChartData(
-                    sections: chartSections,
-                    centerSpaceRadius: 50,
-                    sectionsSpace: 1.5,
-                    startDegreeOffset: -90,
+          Center(
+            child: SizedBox(
+              height: 150,
+              width: 150,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  PieChart(
+                    PieChartData(
+                      sections: chartSections,
+                      centerSpaceRadius: 46,
+                      sectionsSpace: 1.5,
+                      startDegreeOffset: -90,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          '${centerRate.toStringAsFixed(1)}%',
-                          maxLines: 1,
-                          style: GoogleFonts.sora(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            color: tc.primaryText,
-                            height: 1.05,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '${centerRate.toStringAsFixed(1)}%',
+                            maxLines: 1,
+                            style: GoogleFonts.sora(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: tc.primaryText,
+                              height: 1.05,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Attendance rate',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: tc.secondaryText,
-                          height: 1.2,
+                        const SizedBox(height: 2),
+                        Text(
+                          'Attendance rate',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w500,
+                            color: tc.secondaryText,
+                            height: 1.2,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 16),

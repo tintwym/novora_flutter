@@ -19,7 +19,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
   String _deptFilter = 'All';
   OrgChartNodeData? _selected;
 
-  static const _company = 'AperioOccasio Sdn Bhd';
+  static const _company = 'Novora HRMS PTE Ltd';
   static const _totalEmployees = 1284;
   static const _deptCount = 5;
 
