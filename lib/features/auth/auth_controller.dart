@@ -14,7 +14,12 @@ class AuthController {
   Future<UserModel> register({
     required String email,
     required String password,
-  }) => _repository.register(email: email, password: password);
+    String? fullName,
+  }) => _repository.register(
+        email: email,
+        password: password,
+        fullName: fullName,
+      );
 
   Future<void> forgotPassword(String email) =>
       _repository.forgotPassword(email);

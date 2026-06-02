@@ -78,14 +78,12 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await _auth.login(email, pass);
       // Persist "Remember me" only after a successful login so a failed attempt
-      // doesn't change the user's previous preference.
+      // doesn't change the user's previous preference. The cached user JSON
+      // stays for the duration of this session — `main.dart` clears it on the
+      // next app launch if the user opted out of "Remember me".
       final storage = LocalStorage.instance;
       storage.rememberMe = _rememberMe;
       storage.rememberedEmail = _rememberMe ? email : null;
-      if (!_rememberMe) {
-        // Drop any cached user JSON so closing the app forces a fresh login.
-        storage.userJson = null;
-      }
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
     } on ApiException catch (e) {

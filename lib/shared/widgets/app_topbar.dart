@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../core/storage/local_storage.dart';
+import '../../core/session/session_notifier.dart';
 import '../../core/theme/theme_colors.dart';
 import '../../data/models/user_model.dart';
 
@@ -26,17 +24,7 @@ class AppTopBar extends StatelessWidget {
   final VoidCallback? onOpenSettings;
   final VoidCallback? onLogout;
 
-  UserModel? _readUser() {
-    final raw = LocalStorage.instance.userJson;
-    if (raw == null || raw.isEmpty) return null;
-    try {
-      return UserModel.fromAuthJson(jsonDecode(raw) as Map<String, dynamic>);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  String _usernameLabel(UserModel? user) {
+  static String _usernameLabel(UserModel? user) {
     if (user == null) return 'Signed in';
     final name = user.displayName.trim();
     if (name.isNotEmpty) return name;
@@ -45,7 +33,7 @@ class AppTopBar extends StatelessWidget {
     return 'Signed in';
   }
 
-  String _initials(UserModel? user) {
+  static String _initials(UserModel? user) {
     final name = _usernameLabel(user);
     final parts = name.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
     if (parts.isEmpty) return '?';
@@ -55,8 +43,14 @@ class AppTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: SessionNotifier.instance,
+      builder: (context, _) => _buildContent(context, SessionNotifier.instance.user),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, UserModel? user) {
     final tc = context;
-    final user = _readUser();
     final username = _usernameLabel(user);
 
     return Container(

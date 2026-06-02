@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../../core/constants/app_endpoints.dart';
+import '../../core/error/exceptions.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_errors.dart';
 import '../models/attendance_log_model.dart';
@@ -25,7 +26,9 @@ class MyAttendanceService {
       await ApiClient.ensureCsrfToken();
       final res = await ApiClient.dio.post<Map<String, dynamic>>(AppEndpoints.myAttendanceCheckIn);
       if (res.statusCode != 200 || res.data == null) {
-        throw Exception('Check-in failed');
+        // The dashboard card catches ApiException to show a friendly snackbar; a bare Exception
+        // here would slip past that handler and surface as an unhandled async error.
+        throw ApiException('Check-in failed', res.statusCode);
       }
       return AttendanceLogModel.fromJson(res.data!);
     } on DioException catch (e) {
@@ -38,7 +41,7 @@ class MyAttendanceService {
       await ApiClient.ensureCsrfToken();
       final res = await ApiClient.dio.post<Map<String, dynamic>>(AppEndpoints.myAttendanceCheckOut);
       if (res.statusCode != 200 || res.data == null) {
-        throw Exception('Check-out failed');
+        throw ApiException('Check-out failed', res.statusCode);
       }
       return AttendanceLogModel.fromJson(res.data!);
     } on DioException catch (e) {

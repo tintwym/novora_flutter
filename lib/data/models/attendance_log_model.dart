@@ -42,9 +42,13 @@ class AttendanceLogModel {
   static String _parseLocalDate(Object? v) {
     if (v is String) return v.split('T').first;
     if (v is List && v.length >= 3) {
-      final y = v[0] as int;
-      final m = v[1] as int;
-      final d = v[2] as int;
+      // Jackson normally emits these as ints, but a configuration change on the backend
+      // (or a switch to LocalDate as ISO string) could emit doubles or strings — defensively
+      // accept both rather than crashing the entire attendance card with a TypeError.
+      final y = _toInt(v[0]);
+      final m = _toInt(v[1]);
+      final d = _toInt(v[2]);
+      if (y == null || m == null || d == null) return '';
       return '$y-${m.toString().padLeft(2, '0')}-${d.toString().padLeft(2, '0')}';
     }
     return '';
@@ -54,11 +58,19 @@ class AttendanceLogModel {
     if (v == null) return null;
     if (v is String) return v;
     if (v is List && v.length >= 2) {
-      final h = v[0] as int;
-      final m = v[1] as int;
-      final s = v.length > 2 ? v[2] as int : 0;
+      final h = _toInt(v[0]);
+      final m = _toInt(v[1]);
+      final s = v.length > 2 ? (_toInt(v[2]) ?? 0) : 0;
+      if (h == null || m == null) return null;
       return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
     }
+    return null;
+  }
+
+  static int? _toInt(Object? raw) {
+    if (raw is int) return raw;
+    if (raw is num) return raw.toInt();
+    if (raw is String) return int.tryParse(raw);
     return null;
   }
 

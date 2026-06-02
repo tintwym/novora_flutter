@@ -80,6 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await _auth.register(
         email: _emailCtrl.text.trim(),
         password: _passCtrl.text,
+        fullName: _nameCtrl.text.trim(),
       );
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.dashboard);

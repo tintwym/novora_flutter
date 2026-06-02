@@ -208,8 +208,11 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
           style: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w500, color: context.secondaryText),
         ),
         const SizedBox(height: 6),
-        TextField(
-          controller: value != null ? TextEditingController(text: value) : null,
+        // Use TextFormField + initialValue instead of allocating a fresh TextEditingController on
+        // every rebuild. The old pattern leaked one controller per setState and wiped the user's
+        // in-progress input every time anything in the parent state changed.
+        TextFormField(
+          initialValue: value,
           decoration: InputDecoration(
             hintText: hint,
             filled: true,

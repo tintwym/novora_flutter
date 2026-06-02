@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +6,7 @@ import 'package:intl/intl.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_endpoints.dart';
 import '../../core/network/api_client.dart';
-import '../../core/storage/local_storage.dart';
-import '../models/user_model.dart';
+import '../../core/session/session_notifier.dart';
 import '../models/attendance_model.dart';
 import '../models/department_slice_model.dart';
 import '../models/employee_model.dart';
@@ -75,20 +72,12 @@ class DashboardService {
     _live = null;
   }
 
-  static UserModel? _storedUser() {
-    final raw = LocalStorage.instance.userJson;
-    if (raw == null || raw.isEmpty) return null;
-    try {
-      return UserModel.fromAuthJson(jsonDecode(raw) as Map<String, dynamic>);
-    } catch (_) {
-      return null;
-    }
-  }
-
   static Future<void> refreshFromApi() async {
     try {
       final dio = ApiClient.dio;
-      final user = _storedUser();
+      // Use the live session so role changes (and the post-login state) apply
+      // immediately without depending on the disk-persisted userJson.
+      final user = SessionNotifier.instance.user;
       if (user?.isEmployee == true) {
         await _refreshEmployeeDashboard(dio);
       } else {
@@ -178,7 +167,10 @@ class DashboardService {
     return null;
   }
 
-  bool get isEmployeeView => _live?.employeeView ?? _storedUser()?.isEmployee ?? false;
+  bool get isEmployeeView =>
+      _live?.employeeView ??
+      SessionNotifier.instance.user?.isEmployee ??
+      false;
 
   List<DashboardStatItem> fetchStatItems() {
     if (_live != null) return _live!.statItems;

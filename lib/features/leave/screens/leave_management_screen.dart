@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
-import '../../../core/storage/local_storage.dart';
-import '../../../data/models/user_model.dart';
+import '../../../core/session/session_notifier.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 import '../../../shared/widgets/hr_pill_segmented_control.dart';
@@ -41,18 +38,10 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
   @override
   void initState() {
     super.initState();
-    _employeeView = _readUser()?.isEmployee ?? true;
+    // Prefer in-memory session (set right after login) over disk; the "Remember me"
+    // opt-out path can leave LocalStorage.userJson empty during the active session.
+    _employeeView = SessionNotifier.instance.user?.isEmployee ?? true;
     _tab = TabController(length: _employeeView ? 3 : 8, vsync: this);
-  }
-
-  UserModel? _readUser() {
-    final raw = LocalStorage.instance.userJson;
-    if (raw == null || raw.isEmpty) return null;
-    try {
-      return UserModel.fromAuthJson(jsonDecode(raw) as Map<String, dynamic>);
-    } catch (_) {
-      return null;
-    }
   }
 
   @override

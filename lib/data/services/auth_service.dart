@@ -39,15 +39,21 @@ class AuthService {
   Future<UserModel> register({
     required String email,
     required String password,
+    String? fullName,
   }) async {
     try {
       await _ensureCsrf();
+      final body = <String, dynamic>{
+        'email': email.trim(),
+        'password': password,
+      };
+      final trimmedName = fullName?.trim();
+      if (trimmedName != null && trimmedName.isNotEmpty) {
+        body['fullName'] = trimmedName;
+      }
       final res = await ApiClient.dio.post<Map<String, dynamic>>(
         AppEndpoints.authRegister,
-        data: {
-          'email': email.trim(),
-          'password': password,
-        },
+        data: body,
       );
       if ((res.statusCode != 201 && res.statusCode != 200) || res.data == null) {
         throw ApiException('Registration failed', res.statusCode);

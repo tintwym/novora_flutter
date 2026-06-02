@@ -12,8 +12,25 @@ class DashboardController extends ChangeNotifier {
       : _repository = repository ?? DashboardRepository();
 
   final DashboardRepository _repository;
+  // Guard: `refreshFromApi` and `setActiveNav` are reachable from `SessionNotifier` listeners that
+  // can fire mid-logout, after the screen (and this controller) have been disposed. Calling
+  // `notifyListeners()` on a disposed `ChangeNotifier` fires a Flutter assertion in debug builds.
+  bool _isDisposed = false;
 
   DashboardRepository get repository => _repository;
+
+  bool get isDisposed => _isDisposed;
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
+  void _notify() {
+    if (_isDisposed) return;
+    notifyListeners();
+  }
 
   String activeNavLabel = 'Dashboard';
   String reportsSectionId = 'report_centre';
@@ -77,7 +94,7 @@ class DashboardController extends ChangeNotifier {
     if (_hasSubnav(label)) {
       expandedNavLabels.add(label);
     }
-    notifyListeners();
+    _notify();
   }
 
   void toggleNavExpanded(String label) {
@@ -86,7 +103,7 @@ class DashboardController extends ChangeNotifier {
     } else {
       expandedNavLabels.add(label);
     }
-    notifyListeners();
+    _notify();
   }
 
   void selectSubnav(String parentLabel, String subId) {
@@ -97,7 +114,7 @@ class DashboardController extends ChangeNotifier {
     } else if (parentLabel == 'Settings') {
       settingsSectionId = subId;
     }
-    notifyListeners();
+    _notify();
   }
 
   static bool _hasSubnav(String label) =>
@@ -106,6 +123,6 @@ class DashboardController extends ChangeNotifier {
   /// Loads live KPIs from Spring when a session cookie is present; keeps mocks on failure.
   Future<void> refreshFromApi() async {
     await DashboardService.refreshFromApi();
-    notifyListeners();
+    _notify();
   }
 }

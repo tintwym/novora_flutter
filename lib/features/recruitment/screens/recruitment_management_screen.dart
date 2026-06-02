@@ -1025,8 +1025,11 @@ class _RecruitmentManagementScreenState extends State<RecruitmentManagementScree
       children: [
         Text(label, style: GoogleFonts.dmSans(fontSize: 12, color: context.secondaryText)),
         const SizedBox(height: 6),
-        TextField(
-          controller: TextEditingController(text: hint ? '' : value),
+        // TextFormField.initialValue avoids the per-rebuild TextEditingController allocation that
+        // the previous implementation did. The old code leaked a controller every time setState
+        // fired and also wiped user input on every parent rebuild.
+        TextFormField(
+          initialValue: hint ? '' : value,
           maxLines: multiline ? 4 : 1,
           decoration: InputDecoration(
             hintText: hint ? value : null,

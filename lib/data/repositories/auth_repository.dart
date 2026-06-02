@@ -19,8 +19,13 @@ class AuthRepository {
   Future<UserModel> register({
     required String email,
     required String password,
+    String? fullName,
   }) async {
-    final user = await _service.register(email: email, password: password);
+    final user = await _service.register(
+      email: email,
+      password: password,
+      fullName: fullName,
+    );
     SessionNotifier.instance.update(user);
     return user;
   }
