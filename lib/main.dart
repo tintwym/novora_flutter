@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/constants/app_routes.dart';
 import 'core/constants/app_strings.dart';
 import 'core/network/api_client.dart';
+import 'core/session/session_notifier.dart';
 import 'core/storage/local_storage.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_notifier.dart';
@@ -56,6 +57,49 @@ class NovoraApp extends StatelessWidget {
 
   final String initialRoute;
 
+  /// Routes that don't require an authenticated session.
+  static const Set<String> _publicRoutes = {
+    AppRoutes.login,
+    AppRoutes.register,
+    AppRoutes.forgotPassword,
+  };
+
+  /// Each entry maps a route name to its builder. Going via `onGenerateRoute` (instead of the
+  /// `routes` map) lets us reject deep-links to protected screens for signed-out users — without
+  /// the guard, `https://novora-hrms.vercel.app/#/employees` would render the employee list
+  /// straight from mock data with no session check.
+  static final Map<String, WidgetBuilder> _routeBuilders = {
+    AppRoutes.login: (_) => const LoginScreen(),
+    AppRoutes.register: (_) => const RegisterScreen(),
+    AppRoutes.forgotPassword: (_) => const ForgotPasswordScreen(),
+    AppRoutes.dashboard: (_) => const DashboardScreen(),
+    AppRoutes.employees: (_) => const EmployeeListScreen(),
+    AppRoutes.employeeWizard: (_) => const AddEmployeeScreen(),
+    AppRoutes.payroll: (_) => const PayrollScreen(),
+    AppRoutes.leave: (_) => const LeaveScreen(),
+    AppRoutes.disciplinary: (_) => const DisciplinaryManagementScreen(),
+    AppRoutes.attendance: (_) => const AttendanceManagementScreen(),
+    AppRoutes.recruitment: (_) => const RecruitmentScreen(),
+    AppRoutes.performance: (_) => const PerformanceScreen(),
+    AppRoutes.training: (_) => const TrainingListScreen(),
+    AppRoutes.reports: (_) => const ReportsScreen(),
+    AppRoutes.settings: (_) => const SettingsScreen(),
+  };
+
+  Route<dynamic>? _onGenerateRoute(RouteSettings settings) {
+    final name = settings.name ?? AppRoutes.login;
+    final builder = _routeBuilders[name];
+    if (builder == null) return null;
+    final isPublic = _publicRoutes.contains(name);
+    if (!isPublic && SessionNotifier.instance.user == null) {
+      return MaterialPageRoute<void>(
+        settings: const RouteSettings(name: AppRoutes.login),
+        builder: (ctx) => const LoginScreen(),
+      );
+    }
+    return MaterialPageRoute<void>(settings: settings, builder: builder);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -68,23 +112,7 @@ class NovoraApp extends StatelessWidget {
           darkTheme: AppTheme.dark(),
           themeMode: ThemeNotifier.instance.mode,
           initialRoute: initialRoute,
-          routes: {
-        AppRoutes.login: (_) => const LoginScreen(),
-        AppRoutes.register: (_) => const RegisterScreen(),
-        AppRoutes.forgotPassword: (_) => const ForgotPasswordScreen(),
-        AppRoutes.dashboard: (_) => const DashboardScreen(),
-        AppRoutes.employees: (_) => const EmployeeListScreen(),
-        AppRoutes.employeeWizard: (_) => const AddEmployeeScreen(),
-        AppRoutes.payroll: (_) => const PayrollScreen(),
-        AppRoutes.leave: (_) => const LeaveScreen(),
-        AppRoutes.disciplinary: (_) => const DisciplinaryManagementScreen(),
-        AppRoutes.attendance: (_) => const AttendanceManagementScreen(),
-        AppRoutes.recruitment: (_) => const RecruitmentScreen(),
-        AppRoutes.performance: (_) => const PerformanceScreen(),
-        AppRoutes.training: (_) => const TrainingListScreen(),
-        AppRoutes.reports: (_) => const ReportsScreen(),
-        AppRoutes.settings: (_) => const SettingsScreen(),
-          },
+          onGenerateRoute: _onGenerateRoute,
         );
       },
     );

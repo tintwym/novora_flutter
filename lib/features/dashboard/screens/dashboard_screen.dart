@@ -281,9 +281,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _onSessionChanged() {
-    _syncNavWithRole();
     if (!mounted) return;
-    unawaited(_controller.refreshFromApi());
+    // SessionNotifier fires synchronously from inside refreshProfile() and clear() — including
+    // during logout. Three regressions to dodge:
+    //   1. Stale-data race: if `_refreshSessionAndDashboard()` is the cause of this notification,
+    //      it will call `refreshFromApi()` itself after this returns. Kicking off another fetch
+    //      here means two concurrent passes over the same DashboardService cache, and whichever
+    //      finishes last wins (often the older request, overwriting newer data).
+    //   2. Logout flicker / 401 burst: clear() fires this listener with `user == null`. Calling
+    //      `refreshFromApi()` then would hit every protected /admin/dashboard/* endpoint with no
+    //      session cookies and produce 7 401s right before the route is replaced by /login.
+    //   3. Dispose race: dashboard widget can be torn down mid-notification when navigating away.
+    _syncNavWithRole();
     setState(() {});
   }
 

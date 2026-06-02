@@ -62,6 +62,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _submit() async {
     if (_loading) return;
+    // Validate locally before round-tripping to the backend. The previous version only checked
+    // password-match + strength and that email wasn't blank, so:
+    //   • "notanemail" passed client-side and surfaced as a server-side 400.
+    //   • A blank Full Name was sent as empty fullName, and the splitFullName fallback created an
+    //     "Employee" placeholder last name without the user knowing.
+    final name = _nameCtrl.text.trim();
+    if (name.isEmpty) {
+      AppSnackBar.showError(context, 'Please enter your full name.');
+      return;
+    }
+    final emailErr = emailValidator(_emailCtrl.text);
+    if (emailErr != null) {
+      AppSnackBar.showError(context, emailErr);
+      return;
+    }
     if (_passCtrl.text != _confirmCtrl.text) {
       AppSnackBar.showError(context, 'Passwords do not match.');
       return;
@@ -71,16 +86,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       AppSnackBar.showError(context, pwdErr);
       return;
     }
-    if (_emailCtrl.text.trim().isEmpty || _passCtrl.text.isEmpty) {
-      AppSnackBar.showError(context, 'Please complete email and password.');
-      return;
-    }
     setState(() => _loading = true);
     try {
       await _auth.register(
         email: _emailCtrl.text.trim(),
         password: _passCtrl.text,
-        fullName: _nameCtrl.text.trim(),
+        fullName: name,
       );
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.dashboard);

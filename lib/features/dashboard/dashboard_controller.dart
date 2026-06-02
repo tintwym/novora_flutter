@@ -120,8 +120,27 @@ class DashboardController extends ChangeNotifier {
   static bool _hasSubnav(String label) =>
       label == 'Reports' || label == 'Settings';
 
+  Future<void>? _inFlightRefresh;
+
   /// Loads live KPIs from Spring when a session cookie is present; keeps mocks on failure.
-  Future<void> refreshFromApi() async {
+  ///
+  /// Guarded against concurrent calls: if a refresh is already running (e.g. one triggered by the
+  /// dashboard's own startup flow and a second by a `SessionNotifier` listener firing after `/me`
+  /// returns), the second caller awaits the first instead of issuing a parallel batch of HTTP
+  /// requests and racing for the cache.
+  Future<void> refreshFromApi() {
+    final existing = _inFlightRefresh;
+    if (existing != null) return existing;
+    final future = _doRefresh();
+    _inFlightRefresh = future;
+    return future.whenComplete(() {
+      if (identical(_inFlightRefresh, future)) {
+        _inFlightRefresh = null;
+      }
+    });
+  }
+
+  Future<void> _doRefresh() async {
     await DashboardService.refreshFromApi();
     _notify();
   }

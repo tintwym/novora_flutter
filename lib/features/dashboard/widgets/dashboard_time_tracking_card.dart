@@ -94,6 +94,11 @@ class _DashboardTimeTrackingCardState extends State<DashboardTimeTrackingCard> {
     } on ApiException {
       if (!mounted) return;
       setState(() => _loading = false);
+    } catch (_) {
+      // Defensive: any non-ApiException (e.g. JSON parse error) used to leave the dashboard
+      // tracking card spinning forever in a Stack widget that has no obvious "retry" affordance.
+      if (!mounted) return;
+      setState(() => _loading = false);
     }
   }
 
@@ -105,6 +110,8 @@ class _DashboardTimeTrackingCardState extends State<DashboardTimeTrackingCard> {
       await _load();
     } on ApiException catch (e) {
       if (mounted) AppSnackBar.showError(context, e.message);
+    } catch (e) {
+      if (mounted) AppSnackBar.showError(context, 'Check-in failed: $e');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -118,6 +125,8 @@ class _DashboardTimeTrackingCardState extends State<DashboardTimeTrackingCard> {
       await _load();
     } on ApiException catch (e) {
       if (mounted) AppSnackBar.showError(context, e.message);
+    } catch (e) {
+      if (mounted) AppSnackBar.showError(context, 'Check-out failed: $e');
     } finally {
       if (mounted) setState(() => _busy = false);
     }

@@ -59,6 +59,16 @@ class _MyCheckInTabState extends State<MyCheckInTab> {
         _loading = false;
         _fatalMessage = e.message;
       });
+    } catch (e) {
+      // Defensive: if AttendanceLogModel.fromJson or the underlying transport ever throws
+      // something that isn't an ApiException (TypeError on malformed JSON, FormatException,
+      // etc.), the previous one-sided catch left _loading=true and the screen permanently
+      // spun with no way for the user to retry. Reset to the same "fatal" state instead.
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _fatalMessage = 'Unable to load attendance: $e';
+      });
     }
   }
 
@@ -71,6 +81,9 @@ class _MyCheckInTabState extends State<MyCheckInTab> {
     } on ApiException catch (e) {
       if (!mounted) return;
       _snack(e.message);
+    } catch (e) {
+      if (!mounted) return;
+      _snack('Check-in failed: $e');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -85,6 +98,9 @@ class _MyCheckInTabState extends State<MyCheckInTab> {
     } on ApiException catch (e) {
       if (!mounted) return;
       _snack(e.message);
+    } catch (e) {
+      if (!mounted) return;
+      _snack('Check-out failed: $e');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
