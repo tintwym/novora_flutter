@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/theme_colors.dart';
 import '../models/sidebar_subnav.dart';
+import 'novora_logo.dart';
 import 'sidebar_subnav_tiles.dart';
 
 class NavMenuItem {
@@ -54,6 +55,20 @@ class AppSidebar extends StatelessWidget {
       color: tc.surfaceCard,
       child: Column(
         children: [
+          // Logo header — Novora wordmark above the nav items. The PNG is bundled at
+          // assets/images/novora-logo.png and was previously only shown on the login screen.
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 20, 18, 8),
+            child: SizedBox(
+              height: 36,
+              child: NovoraLogo(
+                height: 36,
+                fit: BoxFit.contain,
+                alignment: Alignment.centerLeft,
+              ),
+            ),
+          ),
+          Divider(height: 1, thickness: 1, color: tc.borderColor),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
