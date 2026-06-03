@@ -3,6 +3,7 @@ import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../core/session/session_notifier.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
@@ -120,12 +121,9 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Leave Management', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,
@@ -194,9 +192,9 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
                       hintText: 'Search leave type...',
                       prefixIcon: const Icon(Icons.search, color: AppColors.muted),
                       filled: true,
-                      fillColor: AppColors.bg,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+                      fillColor: context.subtleFill,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
                     ),
                   ),
                 ),
@@ -260,8 +258,8 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
         ),
         DataCell(_pill(paid ? 'Yes' : 'No', paid ? const Color(0xFFD1FAE5) : AppColors.errorSurface, paid ? const Color(0xFF065F46) : AppColors.danger)),
         DataCell(Text(deduct, style: GoogleFonts.dmSans(fontSize: 13))),
-        DataCell(_pill(hourBased ? 'Yes' : 'No', hourBased ? const Color(0xFFDBEAFE) : AppColors.bg, hourBased ? AppColors.primary : AppColors.textMuted)),
-        DataCell(_pill(attachReq ? 'Yes' : 'No', attachReq ? const Color(0xFFFEF3C7) : AppColors.bg, attachReq ? const Color(0xFF92400E) : AppColors.textMuted)),
+        DataCell(Builder(builder: (ctx) => _pill(hourBased ? 'Yes' : 'No', hourBased ? const Color(0xFFDBEAFE) : ctx.mutedPillBg, hourBased ? AppColors.primary : ctx.mutedPillText))),
+        DataCell(Builder(builder: (ctx) => _pill(attachReq ? 'Yes' : 'No', attachReq ? const Color(0xFFFEF3C7) : ctx.mutedPillBg, attachReq ? const Color(0xFF92400E) : ctx.mutedPillText))),
         DataCell(_pill('Active', const Color(0xFFD1FAE5), const Color(0xFF065F46))),
         DataCell(
           Row(
@@ -394,7 +392,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
           const SizedBox(height: 16),
           _whiteCard(
             child: HrFullWidthDataTable(
-              headingRowColor: const Color(0xFFF5F0E8),
+              headingRowColor: context.tableHeaderBg,
               dataRowMinHeight: 52,
               dataRowMaxHeight: 72,
               columnSpecs: const [
@@ -665,7 +663,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
               const SizedBox(width: 4),
               Text('David Ng', style: GoogleFonts.dmSans(fontSize: 12)),
               if (accepted) const Icon(Icons.check, size: 14, color: AppColors.success),
-              if (denied) const Icon(Icons.close, size: 14, color: AppColors.navy),
+              if (denied) Builder(builder: (ctx) => Icon(Icons.close, size: 14, color: ctx.primaryText)),
             ],
           ),
         ),
@@ -701,7 +699,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
                           hintText: 'Search employee...',
                           isDense: true,
                           filled: true,
-                          fillColor: AppColors.bg,
+                          fillColor: context.subtleFill,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                         ),
                       ),
@@ -738,8 +736,8 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
                 _historyRow('RK', 'Raj Kumar', 'Medical', const Color(0xFFD1FAE5), '2 May', '2 May', '1', 'Self', 'David Ng', true, false, 'Accepted', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
                 _historyRow('MT', 'Maya Tan', 'Medical', const Color(0xFFD1FAE5), '1 May', '1 May', '1', 'HR (behalf)', 'Nina Reza', false, false, 'Waiting file', const Color(0xFFDBEAFE), AppColors.primary),
                 _historyRow('NC', 'Nadia Chen', 'Annual', const Color(0xFFDBEAFE), '5 May', '6 May', '2', 'Self', 'Kevin Lim', false, true, 'Denied', AppColors.errorSurface, AppColors.danger),
-                _historyRow('AL', 'Ahmad L.', 'Unpaid', AppColors.bg, '9 May', '9 May', '1', 'Self', 'Malik Said', false, false, 'Pending', const Color(0xFFFFEDD5), const Color(0xFFC2410C)),
-                _historyRow('ZN', 'Zara Nor', 'Annual', const Color(0xFFDBEAFE), '21 Apr', '22 Apr', '2', 'Self', 'Malik Said', true, false, 'Cancelled', AppColors.bg, AppColors.textMuted),
+                _historyRow('AL', 'Ahmad L.', 'Unpaid', context.mutedPillBg, '9 May', '9 May', '1', 'Self', 'Malik Said', false, false, 'Pending', const Color(0xFFFFEDD5), const Color(0xFFC2410C)),
+                _historyRow('ZN', 'Zara Nor', 'Annual', const Color(0xFFDBEAFE), '21 Apr', '22 Apr', '2', 'Self', 'Malik Said', true, false, 'Cancelled', context.mutedPillBg, context.mutedPillText),
               ],
             ),
           ),
@@ -843,7 +841,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
                         Text('Leave entitlement & balance', style: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w700)),
                         const SizedBox(height: 12),
                         HrFullWidthDataTable(
-                          headingRowColor: const Color(0xFFF5F0E8),
+                          headingRowColor: context.tableHeaderBg,
                           columnSpecs: const [
                             ('Leave type', 2.0),
                             ('Entitled', 1.0),
@@ -879,7 +877,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
                         const SizedBox(height: 8),
                         _policyLine('Medical leave policy', 'Applied', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
                         _policyLine('Emergency leave policy', 'Applied', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
-                        _policyLine('Maternity leave', 'Not attached', AppColors.bg, AppColors.textMuted),
+                        _policyLine('Maternity leave', 'Not attached', context.mutedPillBg, context.mutedPillText),
                         _policyLine('Replacement leave', 'Manual attached', const Color(0xFFD1FAE5), const Color(0xFF166534)),
                         _policyLine('Unpaid leave', 'Applied', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
                       ],
@@ -893,7 +891,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
                         Text('Recent leave activity', style: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w700)),
                         const SizedBox(height: 12),
                         DataTable(
-                          headingRowColor: WidgetStateProperty.all(AppColors.bg),
+                          headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
                           columns: const [
                             DataColumn(label: Text('Leave type')),
                             DataColumn(label: Text('Date')),
@@ -1027,7 +1025,7 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: child,
     );
@@ -1045,9 +1043,9 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: safe,
@@ -1148,7 +1146,7 @@ extension on _LeaveManagementScreenState {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1186,12 +1184,14 @@ extension on _LeaveManagementScreenState {
                     ),
                     Expanded(
                       flex: 3,
-                      child: Text(
-                        row.$2,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: row.$3 ?? AppColors.navy,
+                      child: Builder(
+                        builder: (ctx) => Text(
+                          row.$2,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: row.$3 ?? ctx.primaryText,
+                          ),
                         ),
                       ),
                     ),
@@ -1485,7 +1485,7 @@ class _LeaveRequestTabState extends State<_LeaveRequestTab> {
       readOnly: true,
       decoration: InputDecoration(
         filled: true,
-        fillColor: AppColors.bg,
+        fillColor: context.subtleFill,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
@@ -1507,7 +1507,7 @@ class _LeaveRequestTabState extends State<_LeaveRequestTab> {
           const SizedBox(height: 6),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(value: ratio.clamp(0.0, 1.0), minHeight: 8, backgroundColor: AppColors.bg, color: color),
+            child: LinearProgressIndicator(value: ratio.clamp(0.0, 1.0), minHeight: 8, backgroundColor: context.subtleFill, color: color),
           ),
         ],
       ),
@@ -1654,7 +1654,7 @@ class _RequestForOthersTabState extends State<_RequestForOthersTab> {
                     TextFormField(
                       initialValue: 'Auto-calculated',
                       readOnly: true,
-                      decoration: InputDecoration(filled: true, fillColor: AppColors.bg, border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+                      decoration: InputDecoration(filled: true, fillColor: context.subtleFill, border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
                     ),
                     const SizedBox(height: 12),
                     Text('Session', style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
@@ -1762,7 +1762,7 @@ abstract final class _LeaveChrome {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: child,
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../core/error/exceptions.dart';
 import '../../../data/models/attendance_log_model.dart';
 import '../../../data/services/my_attendance_service.dart';
@@ -205,7 +206,7 @@ class _MyCheckInTabState extends State<MyCheckInTab> {
                 const SizedBox(height: 8),
                 Text(
                   'Status: ${today == null || today.status.isEmpty ? '—' : today.status}',
-                  style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.navy),
+                  style: GoogleFonts.dmSans(fontSize: 13, fontWeight: FontWeight.w600, color: context.primaryText),
                 ),
                 const SizedBox(height: 20),
                 Wrap(
@@ -287,7 +288,7 @@ class _MyCheckInTabState extends State<MyCheckInTab> {
           const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: AppColors.bg, borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: context.subtleFill, borderRadius: BorderRadius.circular(8)),
             child: Text(l.status, style: GoogleFonts.dmSans(fontSize: 10, fontWeight: FontWeight.w700)),
           ),
         ],
@@ -301,7 +302,7 @@ class _MyCheckInTabState extends State<MyCheckInTab> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: child,
     );

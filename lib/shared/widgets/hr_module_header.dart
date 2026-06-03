@@ -117,7 +117,7 @@ class HrModuleHeader extends StatelessWidget {
                   ),
           if (showMoreMenu)
             PopupMenuButton<String>(
-              icon: const Icon(Icons.more_horiz, color: AppColors.navy),
+              icon: Icon(Icons.more_horiz, color: context.primaryText),
               onSelected: (v) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$v (mock)')));
               },

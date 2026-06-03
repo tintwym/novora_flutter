@@ -883,10 +883,10 @@ class _FormDropdown extends StatelessWidget {
           onChanged: (v) {
             if (v != null) onChanged(v);
           },
-          style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.navy),
+          style: GoogleFonts.dmSans(fontSize: 13, color: context.primaryText),
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color(0xFFFAFAFA),
+            fillColor: context.subtleFill,
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
@@ -894,11 +894,11 @@ class _FormDropdown extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: context.borderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: context.borderColor),
             ),
           ),
         ),
@@ -933,10 +933,10 @@ class _FormText extends StatelessWidget {
         const SizedBox(height: 6),
         TextField(
           controller: controller,
-          style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.navy),
+          style: GoogleFonts.dmSans(fontSize: 13, color: context.primaryText),
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color(0xFFFAFAFA),
+            fillColor: context.subtleFill,
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,
@@ -944,11 +944,11 @@ class _FormText extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: context.borderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: context.borderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -1000,7 +1000,7 @@ class _CheckRow extends StatelessWidget {
             const SizedBox(width: 10),
             Text(
               label,
-              style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.navy),
+              style: GoogleFonts.dmSans(fontSize: 13, color: context.primaryText),
             ),
           ],
         ),

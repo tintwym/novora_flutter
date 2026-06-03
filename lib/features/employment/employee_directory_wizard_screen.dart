@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_colors.dart';
 
 /// 5-step Employee Directory wizard (Details → Personal → Off duty → Biometric → Review).
 class EmployeeDirectoryWizardScreen extends StatefulWidget {
@@ -192,12 +193,9 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Employee Directory', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         actions: [
@@ -265,7 +263,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.borderColor),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,7 +275,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
                   child: LinearProgressIndicator(
                     value: (_step + 1) / 5,
                     minHeight: 8,
-                    backgroundColor: AppColors.bg,
+                    backgroundColor: context.subtleFill,
                     color: AppColors.primary,
                   ),
                 ),
@@ -296,7 +294,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: context.borderColor),
               ),
               child: SingleChildScrollView(
                 child: Column(
@@ -348,7 +346,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        border: Border(top: BorderSide(color: AppColors.border)),
+        border: Border(top: BorderSide(color: context.borderColor)),
       ),
       child: LayoutBuilder(
         builder: (context, c) {
@@ -494,8 +492,8 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
       alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: AppColors.bg,
-        border: Border.all(color: AppColors.border),
+        color: context.subtleFill,
+        border: Border.all(color: context.borderColor),
       ),
       child: Text(
         '$index',
@@ -529,8 +527,8 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
                       height: 96,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.border),
-                        color: AppColors.bg,
+                        border: Border.all(color: context.borderColor),
+                        color: context.subtleFill,
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -573,7 +571,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
                 ],
               ),
               const SizedBox(height: 16),
-              Text('Employment', style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: AppColors.navyMid)),
+              Text('Employment', style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: context.primaryText)),
               const SizedBox(height: 10),
               LayoutBuilder(
                 builder: (context, c) {
@@ -636,7 +634,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
                         ),
                       ),
                       const SizedBox(width: double.infinity, height: 0),
-                      Text('Classification', style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: AppColors.navyMid)),
+                      Text('Classification', style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: context.primaryText)),
                       const SizedBox(height: 10),
                       SizedBox(
                         width: colW,
@@ -701,7 +699,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
                 },
               ),
               const SizedBox(height: 16),
-              Text('Notes', style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: AppColors.navyMid)),
+              Text('Notes', style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: context.primaryText)),
               const SizedBox(height: 8),
               _outlineField(
                 controller: _employerNote,
@@ -1032,11 +1030,11 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
         Color bg;
         Color border;
         if (modeRow == _DayTap.full) {
-          bg = on ? const Color(0xFFDBEAFE) : AppColors.bg;
-          border = on ? AppColors.primary : AppColors.border;
+          bg = on ? const Color(0xFFDBEAFE) : context.subtleFill;
+          border = on ? AppColors.primary : context.borderColor;
         } else {
-          bg = on ? const Color(0xFFFFEDD5) : AppColors.bg;
-          border = on ? AppColors.warning : AppColors.border;
+          bg = on ? const Color(0xFFFFEDD5) : context.subtleFill;
+          border = on ? AppColors.warning : context.borderColor;
         }
         return Expanded(
           child: Padding(
@@ -1258,12 +1256,12 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
                   children: [
                     Text(
                       'New Employee',
-                      style: GoogleFonts.sora(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.navy),
+                      style: GoogleFonts.sora(fontSize: 18, fontWeight: FontWeight.w700, color: context.primaryText),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       '${_empNo.text} · $dept · $pos',
-                      style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.textMuted),
+                      style: GoogleFonts.dmSans(fontSize: 13, color: context.secondaryText),
                     ),
                   ],
                 ),
@@ -1342,7 +1340,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
             ),
             child: Text(
               'Please review all information above. Once saved, the employee record will be active and accessible in the directory.',
-              style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.navyMid, height: 1.45),
+              style: GoogleFonts.dmSans(fontSize: 13, color: context.primaryText, height: 1.45),
             ),
           ),
         ],
@@ -1354,9 +1352,9 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.bg,
+        color: context.subtleFill,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1394,7 +1392,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: child,
     );
@@ -1404,10 +1402,10 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
     return InputDecoration(
       isDense: true,
       filled: true,
-      fillColor: Colors.white,
+      fillColor: context.surfaceCard,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
@@ -1419,7 +1417,7 @@ class _EmployeeDirectoryWizardScreenState extends State<EmployeeDirectoryWizardS
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.navyMid)),
+        Text(label, style: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w600, color: context.primaryText)),
         const SizedBox(height: 6),
         child,
       ],

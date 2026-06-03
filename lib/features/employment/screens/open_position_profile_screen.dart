@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 
 /// Full requisition profile for an open role (from org chart → View full profile).
 class OpenPositionProfileScreen extends StatefulWidget {
@@ -29,19 +30,19 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: context.pageBackground,
       appBar: AppBar(
         leading: TextButton.icon(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.chevron_left, color: AppColors.navy),
+          icon: Icon(Icons.chevron_left, color: context.primaryText),
           label: Text(
             'Organisation chart',
-            style: GoogleFonts.dmSans(fontWeight: FontWeight.w600, color: AppColors.navy),
+            style: GoogleFonts.dmSans(fontWeight: FontWeight.w600, color: context.primaryText),
           ),
         ),
         leadingWidth: 200,
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
+        foregroundColor: context.primaryText,
+        backgroundColor: context.surfaceCard,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         actions: [
@@ -107,7 +108,7 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        border: Border(bottom: BorderSide(color: AppColors.border)),
+        border: Border(bottom: BorderSide(color: context.borderColor)),
       ),
       child: LayoutBuilder(
         builder: (context, c) {
@@ -119,9 +120,9 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.bg,
+                  color: context.subtleFill,
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: context.borderColor),
                 ),
                 child: Icon(Icons.person_add_alt_1_outlined, color: AppColors.muted, size: 28),
               ),
@@ -137,7 +138,7 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
                       children: [
                         Text(
                           'HR Business Partner',
-                          style: GoogleFonts.sora(fontSize: 22, fontWeight: FontWeight.w700, color: AppColors.navy),
+                          style: GoogleFonts.sora(fontSize: 22, fontWeight: FontWeight.w700, color: context.primaryText),
                         ),
                         _pill('Open', bg: const Color(0xFFFEF3C7), fg: const Color(0xFF92400E)),
                         _pill('Urgent', bg: const Color(0xFFFEE2E2), fg: AppColors.danger),
@@ -243,7 +244,7 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
   Widget _tagChip(String t) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: AppColors.bg, borderRadius: BorderRadius.circular(6)),
+      decoration: BoxDecoration(color: context.subtleFill, borderRadius: BorderRadius.circular(6)),
       child: Text(t, style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.textMuted)),
     );
   }
@@ -522,7 +523,7 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
                 Text(
                   'We are looking for an experienced HR Business Partner to act as a strategic advisor to department heads, '
                   'drive talent initiatives, and ensure a consistent employee experience across Kuala Lumpur HQ.',
-                  style: GoogleFonts.dmSans(fontSize: 13, height: 1.5, color: AppColors.navyMid),
+                  style: GoogleFonts.dmSans(fontSize: 13, height: 1.5, color: context.primaryText),
                 ),
                 const SizedBox(height: 16),
                 Text('Key responsibilities', style: GoogleFonts.dmSans(fontWeight: FontWeight.w700)),
@@ -578,7 +579,7 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
                   spacing: 8,
                   runSpacing: 8,
                   children: ['SHRM / CIPD certified', 'OD experience', 'Payroll knowledge']
-                      .map((s) => Chip(label: Text(s, style: GoogleFonts.dmSans(fontSize: 11)), backgroundColor: AppColors.bg))
+                      .map((s) => Chip(label: Text(s, style: GoogleFonts.dmSans(fontSize: 11)), backgroundColor: context.subtleFill))
                       .toList(),
                 ),
                 const SizedBox(height: 12),
@@ -666,7 +667,7 @@ class _OpenPositionProfileScreenState extends State<OpenPositionProfileScreen>
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

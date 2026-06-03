@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_colors.dart';
 
 /// Search row + card-wrapped [DataTable] with horizontal scroll on narrow widths.
 class HrDataTableCard extends StatelessWidget {
@@ -41,16 +42,16 @@ class HrDataTableCard extends StatelessWidget {
                       minHeight: 44,
                     ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: context.surfaceCard,
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(vertical: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: AppColors.border),
+                      borderSide: BorderSide(color: context.borderColor),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: AppColors.border),
+                      borderSide: BorderSide(color: context.borderColor),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -76,7 +77,7 @@ class HrDataTableCard extends StatelessWidget {
         LayoutBuilder(
           builder: (context, c) {
             final table = DataTable(
-              headingRowColor: WidgetStateProperty.all(AppColors.bg),
+              headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
               dataRowMinHeight: 48,
               dataRowMaxHeight: 64,
               horizontalMargin: 16,

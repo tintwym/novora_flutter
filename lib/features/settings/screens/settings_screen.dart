@@ -176,8 +176,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Settings', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,

@@ -23,6 +23,7 @@ class LocalStorage {
   static const _kUser = 'auth_user_json';
   static const _kRememberMe = 'auth_remember_me';
   static const _kRememberedEmail = 'auth_remembered_email';
+  static const _kThemePreference = 'theme_preference';
   String? get authToken => _prefs.getString(_kToken);
   set authToken(String? v) {
     if (v == null) {
@@ -55,6 +56,12 @@ class LocalStorage {
       _prefs.setString(_kRememberedEmail, v);
     }
   }
+
+  /// User's theme override. Returns 'auto' | 'light' | 'dark'. Defaults to 'auto'
+  /// so existing users keep the sunrise/sunset behaviour they had before this
+  /// preference was added.
+  String get themePreference => _prefs.getString(_kThemePreference) ?? 'auto';
+  set themePreference(String v) => _prefs.setString(_kThemePreference, v);
 
   @visibleForTesting
   static void resetForTest() => _instance = null;

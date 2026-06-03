@@ -94,12 +94,9 @@ class _RecruitmentManagementScreenState extends State<RecruitmentManagementScree
     }
 
     return Scaffold(
-      backgroundColor: context.pageBackground,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Recruitment', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: context.primaryText,
-        backgroundColor: context.surfaceCard,
         elevation: 0,
       ),
       body: body,
@@ -217,7 +214,7 @@ class _RecruitmentManagementScreenState extends State<RecruitmentManagementScree
               hintText: 'Search position...',
               prefixIcon: const Icon(Icons.search_rounded, color: AppColors.muted),
               filled: true,
-              fillColor: AppColors.bg,
+              fillColor: context.subtleFill,
               isDense: true,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
             ),

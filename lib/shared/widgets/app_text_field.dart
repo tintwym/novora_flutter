@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_colors.dart';
 
 /// Shared dense text field (shell screens). Prefer [AuthTextField] for auth copy.
 class AppTextField extends StatelessWidget {
@@ -24,11 +25,12 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return TextField(
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
-      style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.navy),
+      style: GoogleFonts.dmSans(fontSize: 14, color: tc.primaryText),
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: GoogleFonts.dmSans(fontSize: 14, color: AppColors.muted),
@@ -37,14 +39,14 @@ class AppTextField extends StatelessWidget {
             : null,
         suffixIcon: suffix,
         filled: true,
-        fillColor: const Color(0xFFFAFAFA),
+        fillColor: tc.subtleFill,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 4,
           vertical: 14,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.border, width: 1.5),
+          borderSide: BorderSide(color: tc.borderColor, width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -52,7 +54,7 @@ class AppTextField extends StatelessWidget {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.border, width: 1.5),
+          borderSide: BorderSide(color: tc.borderColor, width: 1.5),
         ),
       ),
     );

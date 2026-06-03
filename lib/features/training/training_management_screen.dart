@@ -3,6 +3,7 @@ import '../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_colors.dart';
 import '../../shared/widgets/hr_full_width_data_table.dart';
 import '../../shared/widgets/hr_module_header.dart';
 
@@ -93,12 +94,9 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Training Management', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,
@@ -147,9 +145,9 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
                   hintText: 'Search type...',
                   prefixIcon: const Icon(Icons.search, color: AppColors.muted),
                   filled: true,
-                  fillColor: AppColors.bg,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+                  fillColor: context.subtleFill,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
                 ),
               ),
             ),
@@ -161,7 +159,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
           const SizedBox(height: 16),
           _tableCard(
             child: HrFullWidthDataTable(
-              headingRowColor: const Color(0xFFF5F0E8),
+              headingRowColor: context.tableHeaderBg,
               columnSpecs: const [
                 ('No.', 0.5),
                 ('Training type name', 1.5),
@@ -215,9 +213,9 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
                       hintText: 'Search category...',
                       prefixIcon: const Icon(Icons.search, color: AppColors.muted),
                       filled: true,
-                      fillColor: AppColors.bg,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+                      fillColor: context.subtleFill,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
                     ),
                   ),
                 ),
@@ -228,7 +226,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
           const SizedBox(height: 16),
           _tableCard(
             child: HrFullWidthDataTable(
-              headingRowColor: const Color(0xFFF5F0E8),
+              headingRowColor: context.tableHeaderBg,
               columnSpecs: const [
                 ('No.', 0.5),
                 ('Category name', 1.4),
@@ -283,9 +281,9 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
                       hintText: 'Search course...',
                       prefixIcon: const Icon(Icons.search, color: AppColors.muted),
                       filled: true,
-                      fillColor: AppColors.bg,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+                      fillColor: context.subtleFill,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
                     ),
                   ),
                 ),
@@ -300,7 +298,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
           const SizedBox(height: 16),
           _tableCard(
             child: HrFullWidthDataTable(
-              headingRowColor: const Color(0xFFF5F0E8),
+              headingRowColor: context.tableHeaderBg,
               columnSpecs: const [
                 ('Course title', 1.8),
                 ('Type / Category', 1.2),
@@ -341,7 +339,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
         DataCell(_pill(cat, catBg, catFg)),
         DataCell(Text(delivery)),
         DataCell(Text(freq)),
-        DataCell(_pill(mandatory ? 'Yes' : 'No', mandatory ? const Color(0xFFFEE2E2) : AppColors.bg, mandatory ? AppColors.danger : AppColors.textMuted)),
+        DataCell(Builder(builder: (ctx) => _pill(mandatory ? 'Yes' : 'No', mandatory ? const Color(0xFFFEE2E2) : ctx.mutedPillBg, mandatory ? AppColors.danger : ctx.mutedPillText))),
         DataCell(Text(due)),
         DataCell(_pill('Active', const Color(0xFFD1FAE5), const Color(0xFF065F46))),
         DataCell(TextButton(onPressed: () => _toast('Edit $title'), child: const Text('Edit'))),
@@ -367,9 +365,9 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
                       hintText: 'Search subject...',
                       prefixIcon: const Icon(Icons.search, color: AppColors.muted),
                       filled: true,
-                      fillColor: AppColors.bg,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+                      fillColor: context.subtleFill,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
                     ),
                   ),
                 ),
@@ -384,7 +382,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
           const SizedBox(height: 16),
           _tableCard(
             child: HrFullWidthDataTable(
-              headingRowColor: const Color(0xFFF5F0E8),
+              headingRowColor: context.tableHeaderBg,
               columnSpecs: const [
                 ('Subject title', 1.6),
                 ('Course', 1.4),
@@ -464,7 +462,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
           const SizedBox(height: 16),
           _tableCard(
             child: HrFullWidthDataTable(
-              headingRowColor: const Color(0xFFF5F0E8),
+              headingRowColor: context.tableHeaderBg,
               columnSpecs: const [
                 ('Course title', 1.8),
                 ('Type', 0.8),
@@ -634,7 +632,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
         const DataCell(Text('Public speaking')),
         const DataCell(Text('20 May')),
         const DataCell(Text('Room A')),
-        DataCell(Row(children: [Icon(Icons.circle, size: 8, color: AppColors.navy), const SizedBox(width: 4), const Icon(Icons.close, size: 14), Text(' Kevin Lim', style: GoogleFonts.dmSans(fontSize: 12))])),
+        DataCell(Builder(builder: (ctx) => Row(children: [Icon(Icons.circle, size: 8, color: ctx.primaryText), const SizedBox(width: 4), const Icon(Icons.close, size: 14), Text(' Kevin Lim', style: GoogleFonts.dmSans(fontSize: 12))]))),
         DataCell(_pill('Denied', AppColors.errorSurface, AppColors.danger)),
         const DataCell(Text('Budget cap')),
       ],
@@ -733,7 +731,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
                       isDense: true,
                       prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.muted),
                       filled: true,
-                      fillColor: AppColors.bg,
+                      fillColor: context.subtleFill,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                   ),
@@ -746,7 +744,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
           const SizedBox(height: 16),
           _tableCard(
             child: HrFullWidthDataTable(
-              headingRowColor: const Color(0xFFF5F0E8),
+              headingRowColor: context.tableHeaderBg,
               columnSpecs: const [
                 ('Employee', 1.5),
                 ('Course title', 1.6),
@@ -762,7 +760,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
                 _histRow('RK', Colors.green, 'Raj Kumar', 'Excel advanced', '6-7 May', '2', '200', 'David Ng ✓', false, true, 'Compl...', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
                 _histRow('MT', Colors.purple, 'Maya Tan', 'Public speaking', '20 May', '1', '0', 'Nina Reza ✓', false, true, 'Allocat...', const Color(0xFFD1FAE5), const Color(0xFF166534)),
                 _histRow('NC', Colors.teal, 'Nadia Chen', 'Annual leave work...', '5-6 May', '2', '0', 'Kevin Lim ✘', false, false, 'Denied', AppColors.errorSurface, AppColors.danger),
-                _histRow('ZN', Colors.pink, 'Zara Nor', 'Agile & Scrum', '20 Apr', '5', '3200', 'Malik Said ✓', false, true, 'Cancelled', AppColors.bg, AppColors.textMuted),
+                _histRow('ZN', Colors.pink, 'Zara Nor', 'Agile & Scrum', '20 Apr', '5', '3200', 'Malik Said ✓', false, true, 'Cancelled', context.mutedPillBg, context.mutedPillText),
               ],
             ),
           ),
@@ -797,12 +795,16 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
           Row(
             children: [
               Expanded(
-                child: Text(
-                  appr,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 12,
-                    color: pendingRed ? AppColors.danger : (greenCheck ? AppColors.success : AppColors.navy),
-                    fontWeight: FontWeight.w500,
+                child: Builder(
+                  builder: (ctx) => Text(
+                    appr,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      color: pendingRed
+                          ? AppColors.danger
+                          : (greenCheck ? AppColors.success : ctx.primaryText),
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
@@ -832,7 +834,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Wrap(
         alignment: WrapAlignment.spaceBetween,
@@ -850,7 +852,7 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: child,
     );
@@ -876,9 +878,9 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: safe,
@@ -945,7 +947,7 @@ class _TrainingRequestPaneState extends State<_TrainingRequestPane> {
   Widget _summaryBar() {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: context.borderColor)),
       child: Wrap(
         alignment: WrapAlignment.spaceBetween,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -981,7 +983,7 @@ class _TrainingRequestPaneState extends State<_TrainingRequestPane> {
   Widget _formCard() {
     return Container(
       padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: context.borderColor)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -1012,13 +1014,13 @@ class _TrainingRequestPaneState extends State<_TrainingRequestPane> {
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                 Text('No. of days', style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 6),
-                TextFormField(initialValue: '3', readOnly: true, decoration: _dec(fill: AppColors.bg)),
+                TextFormField(initialValue: '3', readOnly: true, decoration: _dec(fill: context.subtleFill)),
               ])),
               const SizedBox(width: 12),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                 Text('Course fee (MYR)', style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 6),
-                TextFormField(initialValue: '500.00', readOnly: true, decoration: _dec(fill: AppColors.bg)),
+                TextFormField(initialValue: '500.00', readOnly: true, decoration: _dec(fill: context.subtleFill)),
               ])),
             ],
           ),
@@ -1056,8 +1058,8 @@ class _TrainingRequestPaneState extends State<_TrainingRequestPane> {
       filled: fill != null,
       fillColor: fill,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
     );
   }
 
@@ -1074,14 +1076,14 @@ class _TrainingRequestPaneState extends State<_TrainingRequestPane> {
   Widget _trackerCard() {
     return Container(
       padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: context.borderColor)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text('My training (status tracker)', style: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w700)),
           const SizedBox(height: 12),
           DataTable(
-            headingRowColor: WidgetStateProperty.all(AppColors.bg),
+            headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
             columns: const [
               DataColumn(label: Text('Course')),
               DataColumn(label: Text('Date')),
@@ -1157,7 +1159,7 @@ class _RequestOnBehalfPaneState extends State<_RequestOnBehalfPane> {
         children: [
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: const Color(0xFFF5F0E8), borderRadius: BorderRadius.circular(10), border: Border.all(color: AppColors.border)),
+            decoration: BoxDecoration(color: context.tableHeaderBg, borderRadius: BorderRadius.circular(10), border: Border.all(color: context.borderColor)),
             child: Wrap(
               alignment: WrapAlignment.spaceBetween,
               children: [
@@ -1175,7 +1177,7 @@ class _RequestOnBehalfPaneState extends State<_RequestOnBehalfPane> {
             builder: (context, c) {
               final form = Container(
                 padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
+                decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: context.borderColor)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1228,7 +1230,7 @@ class _RequestOnBehalfPaneState extends State<_RequestOnBehalfPane> {
 
               final table = Container(
                 padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.border)),
+                decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: context.borderColor)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1301,8 +1303,8 @@ class _RequestOnBehalfPaneState extends State<_RequestOnBehalfPane> {
   InputDecoration _bd() {
     return InputDecoration(
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
     );
   }
 

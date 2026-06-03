@@ -3,6 +3,7 @@ import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../data/models/employee_profile_detail_model.dart';
 import '../../../shared/widgets/avatar_widget.dart';
 
@@ -103,7 +104,6 @@ class _EmployeeProfileScreenState extends State<EmployeeProfileScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
       body: SafeArea(child: content),
     );
   }
@@ -152,7 +152,7 @@ class _ProfileToolbar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(8, 4, 12, 8),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        border: Border(bottom: BorderSide(color: AppColors.border)),
+        border: Border(bottom: BorderSide(color: context.borderColor)),
       ),
       child: LayoutBuilder(
         builder: (context, c) {
@@ -161,16 +161,16 @@ class _ProfileToolbar extends StatelessWidget {
             children: [
               TextButton.icon(
                 onPressed: onBack,
-                icon: const Icon(Icons.chevron_left_rounded, color: AppColors.navy),
+                icon: Icon(Icons.chevron_left_rounded, color: context.primaryText),
                 label: Text(
                   'Employee Directory',
-                  style: GoogleFonts.dmSans(fontWeight: FontWeight.w600, color: AppColors.navy),
+                  style: GoogleFonts.dmSans(fontWeight: FontWeight.w600, color: context.primaryText),
                 ),
               ),
               const Spacer(),
               if (narrow)
                 PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_horiz, color: AppColors.navy),
+                  icon: Icon(Icons.more_horiz, color: context.primaryText),
                   onSelected: (v) {
                     if (v == 'd') {
                       onDelete();
@@ -233,7 +233,7 @@ class _ProfileHeaderCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: LayoutBuilder(
         builder: (context, c) {
@@ -296,7 +296,7 @@ class _HeaderIdentity extends StatelessWidget {
           children: [
             Text(
               data.fullName,
-              style: GoogleFonts.sora(fontSize: 22, fontWeight: FontWeight.w700, color: AppColors.navy),
+              style: GoogleFonts.sora(fontSize: 22, fontWeight: FontWeight.w700, color: context.primaryText),
             ),
             _Pill(data.statusLabel, bg: const Color(0xFFD1FAE5), fg: const Color(0xFF065F46)),
           ],
@@ -308,7 +308,7 @@ class _HeaderIdentity extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           data.departmentTitle,
-          style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.navyMid),
+          style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: context.primaryText),
         ),
         const SizedBox(height: 4),
         Text(
@@ -348,7 +348,7 @@ class _HeaderMetrics extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           for (var i = 0; i < items.length; i++) ...[
-            if (i > 0) const VerticalDivider(width: 24, color: AppColors.border),
+            if (i > 0) VerticalDivider(width: 24, color: context.borderColor),
             _metricCol(items[i].$1, items[i].$2),
           ],
         ],
@@ -363,9 +363,9 @@ class _HeaderMetrics extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(label, style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.textMuted)),
+          Builder(builder: (ctx) => Text(label, style: GoogleFonts.dmSans(fontSize: 11, color: ctx.secondaryText))),
           const SizedBox(height: 4),
-          Text(value, style: GoogleFonts.sora(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.navy)),
+          Builder(builder: (ctx) => Text(value, style: GoogleFonts.sora(fontSize: 18, fontWeight: FontWeight.w700, color: ctx.primaryText))),
         ],
       ),
     );
@@ -407,7 +407,7 @@ class _ProfileCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -417,7 +417,7 @@ class _ProfileCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: GoogleFonts.sora(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.navy),
+                  style: GoogleFonts.sora(fontSize: 15, fontWeight: FontWeight.w700, color: context.primaryText),
                 ),
               ),
               ?trailing,
@@ -508,7 +508,7 @@ class _SummaryTab extends StatelessWidget {
                     children: [
                       Text(
                         data.hrNotes,
-                        style: GoogleFonts.dmSans(fontSize: 13, height: 1.5, color: AppColors.navyMid),
+                        style: GoogleFonts.dmSans(fontSize: 13, height: 1.5, color: context.primaryText),
                       ),
                       const SizedBox(height: 14),
                       Row(
@@ -797,7 +797,7 @@ class _FamilyTab extends StatelessWidget {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              headingRowColor: WidgetStateProperty.all(AppColors.bg),
+              headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
               columns: const [
                 DataColumn(label: Text('Name')),
                 DataColumn(label: Text('Relationship')),
@@ -812,7 +812,7 @@ class _FamilyTab extends StatelessWidget {
                     (m) => DataRow(
                       cells: [
                         DataCell(Text(m.name, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700))),
-                        DataCell(_Pill(m.relationship, bg: AppColors.bg, fg: AppColors.navyMid)),
+                        DataCell(_Pill(m.relationship, bg: context.mutedPillBg, fg: context.mutedPillText)),
                         DataCell(Text(m.dob)),
                         DataCell(Text(m.nric)),
                         DataCell(
@@ -840,7 +840,7 @@ class _FamilyTab extends StatelessWidget {
             label: const Text('Add'),
           ),
           child: DataTable(
-            headingRowColor: WidgetStateProperty.all(AppColors.bg),
+            headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
             columns: const [
               DataColumn(label: Text('Name')),
               DataColumn(label: Text('Relationship')),
@@ -853,7 +853,7 @@ class _FamilyTab extends StatelessWidget {
                   (m) => DataRow(
                     cells: [
                       DataCell(Text(m.name, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700))),
-                      DataCell(_Pill(m.relationship, bg: AppColors.bg, fg: AppColors.navyMid)),
+                      DataCell(_Pill(m.relationship, bg: context.mutedPillBg, fg: context.mutedPillText)),
                       DataCell(Text(m.phone)),
                       DataCell(Text(m.address)),
                       DataCell(TextButton(onPressed: () {}, child: const Text('Edit'))),
@@ -896,7 +896,7 @@ class _BiometricTab extends StatelessWidget {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              headingRowColor: WidgetStateProperty.all(AppColors.bg),
+              headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
               columns: const [
                 DataColumn(label: Text('TA Number')),
                 DataColumn(label: Text('Terminal name')),
@@ -1020,12 +1020,14 @@ class _PayRateTab extends StatelessWidget {
                             children: [
                               Text(e.label, style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.muted)),
                               const SizedBox(height: 4),
-                              Text(
-                                e.value,
-                                style: GoogleFonts.dmSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: e.highlight ? AppColors.primary : AppColors.navy,
+                              Builder(
+                                builder: (ctx) => Text(
+                                  e.value,
+                                  style: GoogleFonts.dmSans(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: e.highlight ? AppColors.primary : ctx.primaryText,
+                                  ),
                                 ),
                               ),
                             ],
@@ -1056,34 +1058,36 @@ class _PayRateTab extends StatelessWidget {
         icon: const Icon(Icons.add, size: 18),
         label: Text(addLabel),
       ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          headingRowColor: WidgetStateProperty.all(AppColors.bg),
-          columns: [
-            const DataColumn(label: Text('Type')),
-            const DataColumn(label: Text('Amount (MYR)')),
-            const DataColumn(label: Text('Frequency')),
-            if (showTaxable) const DataColumn(label: Text('Taxable')),
-            if (!showTaxable) const DataColumn(label: Text('Reference')),
-            const DataColumn(label: Text('Status')),
-          ],
-          rows: rows
-              .map(
-                (r) => DataRow(
-                  cells: [
-                    DataCell(Text(r.label, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700))),
-                    DataCell(Text(r.amount)),
-                    DataCell(Text(r.frequency)),
-                    if (showTaxable)
-                      DataCell(Text(r.taxable == true ? 'Yes' : 'No'))
-                    else
-                      DataCell(Text(r.ref ?? '—')),
-                    DataCell(_Pill('Active', bg: const Color(0xFFD1FAE5), fg: const Color(0xFF065F46))),
-                  ],
-                ),
-              )
-              .toList(),
+      child: Builder(
+        builder: (ctx) => SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            headingRowColor: WidgetStateProperty.all(ctx.tableHeaderBg),
+            columns: [
+              const DataColumn(label: Text('Type')),
+              const DataColumn(label: Text('Amount (MYR)')),
+              const DataColumn(label: Text('Frequency')),
+              if (showTaxable) const DataColumn(label: Text('Taxable')),
+              if (!showTaxable) const DataColumn(label: Text('Reference')),
+              const DataColumn(label: Text('Status')),
+            ],
+            rows: rows
+                .map(
+                  (r) => DataRow(
+                    cells: [
+                      DataCell(Text(r.label, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700))),
+                      DataCell(Text(r.amount)),
+                      DataCell(Text(r.frequency)),
+                      if (showTaxable)
+                        DataCell(Text(r.taxable == true ? 'Yes' : 'No'))
+                      else
+                        DataCell(Text(r.ref ?? '—')),
+                      DataCell(_Pill('Active', bg: const Color(0xFFD1FAE5), fg: const Color(0xFF065F46))),
+                    ],
+                  ),
+                )
+                .toList(),
+          ),
         ),
       ),
     );
@@ -1113,11 +1117,11 @@ class _NetPayBar extends StatelessWidget {
                     children: [
                       Text(
                         'Estimated net pay (monthly)',
-                        style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: AppColors.navy),
+                        style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: context.primaryText),
                       ),
                       Text(
                         'Basic + Allowances − Deductions',
-                        style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.textMuted),
+                        style: GoogleFonts.dmSans(fontSize: 12, color: context.secondaryText),
                       ),
                     ],
                   ),
@@ -1160,7 +1164,7 @@ class _CareerTab extends StatelessWidget {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              headingRowColor: WidgetStateProperty.all(AppColors.bg),
+              headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
               columns: const [
                 DataColumn(label: Text('Company')),
                 DataColumn(label: Text('Position')),
@@ -1207,7 +1211,7 @@ class _EducationTab extends StatelessWidget {
             label: const Text('Add'),
           ),
           child: DataTable(
-            headingRowColor: WidgetStateProperty.all(AppColors.bg),
+            headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
             columns: const [
               DataColumn(label: Text('Institution')),
               DataColumn(label: Text('Qualification')),
@@ -1253,7 +1257,7 @@ class _DocumentsTab extends StatelessWidget {
             label: const Text('Upload'),
           ),
           child: DataTable(
-            headingRowColor: WidgetStateProperty.all(AppColors.bg),
+            headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
             columns: const [
               DataColumn(label: Text('Document name')),
               DataColumn(label: Text('Type')),
@@ -1266,7 +1270,7 @@ class _DocumentsTab extends StatelessWidget {
                   (r) => DataRow(
                     cells: [
                       DataCell(Text(r.name, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700))),
-                      DataCell(_Pill(r.type, bg: AppColors.bg, fg: AppColors.navyMid)),
+                      DataCell(_Pill(r.type, bg: context.mutedPillBg, fg: context.mutedPillText)),
                       DataCell(Text(r.uploaded)),
                       DataCell(Text(r.expiry)),
                       DataCell(OutlinedButton(onPressed: () {}, child: const Text('View'))),

@@ -3,6 +3,7 @@ import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 
@@ -77,12 +78,9 @@ class _PayrollManagementScreenState extends State<PayrollManagementScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Payroll Management', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,
@@ -106,7 +104,7 @@ Widget _whiteCard(BuildContext context, {required Widget child}) {
     decoration: BoxDecoration(
       color: Theme.of(context).colorScheme.surface,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: AppColors.border),
+      border: Border.all(color: context.borderColor),
     ),
     child: child,
   );
@@ -159,25 +157,27 @@ Widget _subPills({
                 )
               : TextButton(
                   onPressed: () => onSelect(i),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(labels[i], style: GoogleFonts.dmSans(color: AppColors.navy)),
-                      if (showBadge) ...[
-                        const SizedBox(width: 4),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFEDD5),
-                            borderRadius: BorderRadius.circular(10),
+                  child: Builder(
+                    builder: (ctx) => Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(labels[i], style: GoogleFonts.dmSans(color: ctx.primaryText)),
+                        if (showBadge) ...[
+                          const SizedBox(width: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFEDD5),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              '$badgeCount',
+                              style: GoogleFonts.dmSans(fontSize: 10, fontWeight: FontWeight.w800, color: const Color(0xFFC2410C)),
+                            ),
                           ),
-                          child: Text(
-                            '$badgeCount',
-                            style: GoogleFonts.dmSans(fontSize: 10, fontWeight: FontWeight.w800, color: const Color(0xFFC2410C)),
-                          ),
-                        ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
         );
@@ -225,9 +225,9 @@ class _MemoFilterDdState extends State<_MemoFilterDd> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: safe,
@@ -299,9 +299,9 @@ class _AllowanceBodyState extends State<_AllowanceBody> {
                           hintText: 'Search allowance...',
                           prefixIcon: const Icon(Icons.search, color: AppColors.muted, size: 20),
                           filled: true,
-                          fillColor: AppColors.bg,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+                          fillColor: context.subtleFill,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
                         ),
                       ),
                     ),
@@ -391,9 +391,9 @@ class _AllowanceBodyState extends State<_AllowanceBody> {
         DataCell(_pill(pol, polBg, polFg)),
         DataCell(Text(amt)),
         DataCell(Text(ded)),
-        DataCell(_pill(taxable ? 'Yes' : 'No', taxable ? const Color(0xFFD1FAE5) : AppColors.bg, taxable ? const Color(0xFF065F46) : AppColors.textMuted)),
+        DataCell(_pill(taxable ? 'Yes' : 'No', taxable ? const Color(0xFFD1FAE5) : context.mutedPillBg, taxable ? const Color(0xFF065F46) : context.mutedPillText)),
         DataCell(_pill('Yes', const Color(0xFFD1FAE5), const Color(0xFF065F46))),
-        DataCell(_pill(attach ? 'Yes' : 'No', attach ? const Color(0xFFD1FAE5) : AppColors.bg, attach ? const Color(0xFF065F46) : AppColors.textMuted)),
+        DataCell(_pill(attach ? 'Yes' : 'No', attach ? const Color(0xFFD1FAE5) : context.mutedPillBg, attach ? const Color(0xFF065F46) : context.mutedPillText)),
         DataCell(_pill('Active', const Color(0xFFD1FAE5), const Color(0xFF065F46))),
         DataCell(TextButton(onPressed: () => _payToast(context, 'Edit $name'), child: const Text('Edit'))),
       ],
@@ -596,7 +596,7 @@ class _OvertimeBodyState extends State<_OvertimeBody> {
                     ),
                     const Divider(height: 16),
                     DataTable(
-                      headingRowColor: WidgetStateProperty.all(AppColors.bg),
+                      headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
                       columns: const [
                         DataColumn(label: Text('Employee')),
                         DataColumn(label: Text('Department')),
@@ -832,7 +832,7 @@ class _DeductionBodyState extends State<_DeductionBody> {
                 _dedRow('Income tax (PCB)', 'Tax', const Color(0xFFEDE9FE), const Color(0xFF5B21B6), 'PCB schedule', 'Varied'),
                 _dedRow('Late deduction', 'Rota rule', const Color(0xFFFFEDD5), const Color(0xFFC2410C), 'Per minute late', 'MYR 0.50/min'),
                 _dedRow('Missing swipe', 'Attendance', const Color(0xFFFCE7F3), const Color(0xFF9D174D), 'Per occurrence', 'MYR 20.00'),
-                _dedRow('Unpaid leave', 'Leave', AppColors.bg, AppColors.textMuted, 'Normal rate/day', 'Salary ÷ work days'),
+                _dedRow('Unpaid leave', 'Leave', context.mutedPillBg, context.mutedPillText, 'Normal rate/day', 'Salary ÷ work days'),
               ],
             ),
           ),
@@ -923,7 +923,7 @@ class _TaxBodyState extends State<_TaxBody> {
                   const DataCell(Text('Social security (SOCSO)', overflow: TextOverflow.ellipsis)),
                   const DataCell(Text('SSB')),
                   const DataCell(Text('Basic salary')),
-                  DataCell(_pill('No', AppColors.bg, AppColors.textMuted)),
+                  DataCell(_pill('No', context.mutedPillBg, context.mutedPillText)),
                   DataCell(_pill('Active', const Color(0xFFD1FAE5), const Color(0xFF065F46))),
                   DataCell(TextButton(onPressed: () => _payToast(context, 'Edit SSB'), child: const Text('Edit'))),
                 ]),
@@ -1022,7 +1022,7 @@ class _PayManagementBodyState extends State<_PayManagementBody> {
                     Text('Past payment durations', style: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w700)),
                     const SizedBox(height: 12),
                     DataTable(
-                      headingRowColor: WidgetStateProperty.all(AppColors.bg),
+                      headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
                       columns: const [
                         DataColumn(label: Text('Duration name')),
                         DataColumn(label: Text('Start')),

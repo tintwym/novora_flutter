@@ -55,18 +55,41 @@ class AppSidebar extends StatelessWidget {
       color: tc.surfaceCard,
       child: Column(
         children: [
-          // Logo header — Novora wordmark above the nav items. The PNG is bundled at
-          // assets/images/novora-logo.png and was previously only shown on the login screen.
+          // Logo header — Novora wordmark above the nav items. The shipped PNG has a baked-in
+          // white background, so in dark mode we wrap it in a small white chip; otherwise the
+          // logo would render as a glaring white rectangle on the dark sidebar surface.
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 20, 18, 8),
-            child: SizedBox(
-              height: 36,
-              child: NovoraLogo(
-                height: 36,
-                fit: BoxFit.contain,
-                alignment: Alignment.centerLeft,
-              ),
-            ),
+            padding: const EdgeInsets.fromLTRB(18, 20, 18, 12),
+            child: tc.isDarkMode
+                ? Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: SizedBox(
+                        height: 24,
+                        child: NovoraLogo(
+                          height: 24,
+                          fit: BoxFit.contain,
+                          alignment: Alignment.centerLeft,
+                        ),
+                      ),
+                    ),
+                  )
+                : SizedBox(
+                    height: 36,
+                    child: NovoraLogo(
+                      height: 36,
+                      fit: BoxFit.contain,
+                      alignment: Alignment.centerLeft,
+                    ),
+                  ),
           ),
           Divider(height: 1, thickness: 1, color: tc.borderColor),
           Expanded(

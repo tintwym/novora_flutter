@@ -35,6 +35,8 @@ Future<void> main() async {
   await LocalStorage.init();
   await ThemeNotifier.instance.load();
   await ApiClient.initPersistence();
+  // Kick the Render free-tier backend awake before the user clicks anything.
+  ApiClient.warmUp();
   var initialRoute = AppRoutes.login;
   // Only restore session when the user opted in via "Remember me".
   if (LocalStorage.instance.rememberMe) {

@@ -33,7 +33,7 @@ class ReportModulePill extends StatelessWidget {
         const Color(0xFF5B21B6),
         'Performance',
       ),
-      ReportModule.employee => (AppColors.bg, AppColors.textMuted, 'Employee'),
+      ReportModule.employee => (context.mutedPillBg, context.mutedPillText, 'Employee'),
       ReportModule.claims => (
         const Color(0xFFFCE7F3),
         const Color(0xFF9D174D),
@@ -86,8 +86,8 @@ class ReportStatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = active ? const Color(0xFFD1FAE5) : AppColors.bg;
-    final fg = active ? const Color(0xFF065F46) : AppColors.textMuted;
+    final bg = active ? const Color(0xFFD1FAE5) : context.mutedPillBg;
+    final fg = active ? const Color(0xFF065F46) : context.mutedPillText;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(

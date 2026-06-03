@@ -19,7 +19,7 @@ class RecruitPill extends StatelessWidget {
       RecruitPillTone.danger => (const Color(0xFFFEE2E2), const Color(0xFF991B1B)),
       RecruitPillTone.purple => (const Color(0xFFEDE9FE), const Color(0xFF5B21B6)),
       RecruitPillTone.pink => (const Color(0xFFFCE7F3), const Color(0xFF9D174D)),
-      RecruitPillTone.neutral => (AppColors.bg, AppColors.textMuted),
+      RecruitPillTone.neutral => (context.mutedPillBg, context.mutedPillText),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),

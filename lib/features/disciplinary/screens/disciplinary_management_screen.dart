@@ -3,6 +3,7 @@ import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 
@@ -76,12 +77,9 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Disciplinary Management', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,
@@ -122,9 +120,9 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
                       hintText: 'Search reason...',
                       prefixIcon: const Icon(Icons.search, color: AppColors.muted),
                       filled: true,
-                      fillColor: AppColors.bg,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+                      fillColor: context.subtleFill,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
                     ),
                   ),
                 ),
@@ -192,12 +190,12 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
                 _reasonRow(
                   'Dress code violation',
                   'Minor',
-                  AppColors.bg,
-                  AppColors.textMuted,
+                  context.mutedPillBg,
+                  context.mutedPillText,
                   'Non-compliance with company dress and presentation standards.',
                   'Inactive',
-                  AppColors.bg,
-                  AppColors.textMuted,
+                  context.mutedPillBg,
+                  context.mutedPillText,
                 ),
               ],
             ),
@@ -249,9 +247,9 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
                       hintText: 'Search action...',
                       prefixIcon: const Icon(Icons.search, color: AppColors.muted),
                       filled: true,
-                      fillColor: AppColors.bg,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+                      fillColor: context.subtleFill,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
                     ),
                   ),
                 ),
@@ -267,7 +265,7 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
           const SizedBox(height: 16),
           _card(
             child: HrFullWidthDataTable(
-              headingRowColor: const Color(0xFFF5F0E8),
+              headingRowColor: context.tableHeaderBg,
               dataRowMinHeight: 52,
               dataRowMaxHeight: 72,
               columnSpecs: const [
@@ -279,7 +277,7 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
                 ('', 0.8),
               ],
               rows: [
-                _actionRow('L1', 'Verbal warning', 'Verbal', AppColors.bg, 'Informal verbal caution, not recorded on file.', 'No deduction', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
+                _actionRow('L1', 'Verbal warning', 'Verbal', context.mutedPillBg, 'Informal verbal caution, not recorded on file.', 'No deduction', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
                 _actionRow('L2', 'First written warning', 'Written', const Color(0xFFFFEDD5), 'Formal first written warning, filed with HR.', 'No deduction', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
                 _actionRow('L3', 'Second written warning', 'Written', const Color(0xFFFFEDD5), 'Final written warning before escalation.', 'Partial deduction', const Color(0xFFFFEDD5), const Color(0xFFC2410C)),
                 _actionRow('L4', 'Suspension without pay', 'Suspension', AppColors.errorSurface, 'Temporary suspension pending investigation.', 'Full deduction', AppColors.errorSurface, AppColors.danger),
@@ -307,7 +305,15 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
       cells: [
         DataCell(Text(level, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700))),
         DataCell(Text(name, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700))),
-        DataCell(_pill(typeLabel, typeBg, AppColors.navy)),
+        DataCell(
+          Builder(
+            builder: (ctx) => _pill(
+              typeLabel,
+              typeBg,
+              typeBg == ctx.mutedPillBg ? ctx.mutedPillText : AppColors.navy,
+            ),
+          ),
+        ),
         DataCell(Text(desc, maxLines: 2, overflow: TextOverflow.ellipsis, style: GoogleFonts.dmSans(fontSize: 12))),
         DataCell(_pill(pay, payBg, payFg)),
         DataCell(OutlinedButton(onPressed: () => _toast('Edit $name'), child: const Text('Edit'))),
@@ -341,7 +347,7 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
                           hintText: 'Search employee...',
                           isDense: true,
                           filled: true,
-                          fillColor: AppColors.bg,
+                          fillColor: context.subtleFill,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                         ),
                       ),
@@ -374,10 +380,10 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
                 ('', 0.7),
               ],
               rows: [
-                _histRow('AL', Colors.orange, 'Ahmad L', 'Unauthorised absence', '6 May 2026', '7 May 2026', 'L1 - Verbal warning', AppColors.bg, AppColors.textMuted, 'Nina Reza', 'Pending', const Color(0xFFFFEDD5), const Color(0xFFC2410C)),
+                _histRow('AL', Colors.orange, 'Ahmad L', 'Unauthorised absence', '6 May 2026', '7 May 2026', 'L1 - Verbal warning', context.mutedPillBg, context.mutedPillText, 'Nina Reza', 'Pending', const Color(0xFFFFEDD5), const Color(0xFFC2410C)),
                 _histRow('ZN', Colors.purple, 'Zara Nor', 'Persistent lateness', '25 Apr 2026', '28 Apr 2026', 'L2 - First written warning', const Color(0xFFFFEDD5), const Color(0xFFC2410C), 'Malik Said', 'Acknowledged', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
-                _histRow('RK', Colors.blue, 'Raj Kumar', 'Dress code violation', '8 Mar 2026', '10 Mar 2026', 'L1 - Verbal warning', AppColors.bg, AppColors.textMuted, 'David Ng', 'Closed', const Color(0xFFCCFBF1), const Color(0xFF0F766E)),
-                _histRow('ZN', Colors.purple, 'Zara Nor', 'Persistent lateness', '10 Jan 2026', '12 Jan 2026', 'L1 - Verbal warning', AppColors.bg, AppColors.textMuted, 'Malik Said', 'Closed', const Color(0xFFCCFBF1), const Color(0xFF0F766E)),
+                _histRow('RK', Colors.blue, 'Raj Kumar', 'Dress code violation', '8 Mar 2026', '10 Mar 2026', 'L1 - Verbal warning', context.mutedPillBg, context.mutedPillText, 'David Ng', 'Closed', const Color(0xFFCCFBF1), const Color(0xFF0F766E)),
+                _histRow('ZN', Colors.purple, 'Zara Nor', 'Persistent lateness', '10 Jan 2026', '12 Jan 2026', 'L1 - Verbal warning', context.mutedPillBg, context.mutedPillText, 'Malik Said', 'Closed', const Color(0xFFCCFBF1), const Color(0xFF0F766E)),
                 _histRow('NC', Colors.teal, 'Nadia Chen', 'Insubordination', '5 Nov 2025', '7 Nov 2025', 'L2 - First written warning', const Color(0xFFFFEDD5), const Color(0xFFC2410C), 'Kevin Lim', 'Closed', const Color(0xFFCCFBF1), const Color(0xFF0F766E)),
               ],
             ),
@@ -430,7 +436,7 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: child,
     );
@@ -456,9 +462,9 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: safe,
@@ -500,9 +506,9 @@ class _DisciplinarySetupTabState extends State<_DisciplinarySetupTab> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F0E8),
+              color: context.tableHeaderBg,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.borderColor),
             ),
             child: Wrap(
               alignment: WrapAlignment.spaceBetween,
@@ -554,7 +560,7 @@ class _DisciplinarySetupTabState extends State<_DisciplinarySetupTab> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -571,7 +577,7 @@ class _DisciplinarySetupTabState extends State<_DisciplinarySetupTab> {
           TextFormField(
             initialValue: 'Operations',
             readOnly: true,
-            decoration: _outlineDec(fill: AppColors.bg),
+            decoration: _outlineDec(fill: context.subtleFill),
           ),
           const SizedBox(height: 20),
           _secPill('Incident details'),
@@ -656,7 +662,7 @@ class _DisciplinarySetupTabState extends State<_DisciplinarySetupTab> {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: context.borderColor),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -713,8 +719,8 @@ class _DisciplinarySetupTabState extends State<_DisciplinarySetupTab> {
       filled: fill != null,
       fillColor: fill,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
     );
   }
 
@@ -739,14 +745,14 @@ class _DisciplinarySetupTabState extends State<_DisciplinarySetupTab> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text('Warning level guide', style: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w700)),
           const SizedBox(height: 12),
-          _guideRow('L1', AppColors.bg, 'Verbal warning', 'Informal, not on file — minor first offence.'),
+          _guideRow('L1', context.mutedPillBg, 'Verbal warning', 'Informal, not on file — minor first offence.'),
           _guideRow('L2', const Color(0xFFFFEDD5), 'First written warning', 'Formal, recorded — repeated minor or first major.'),
           _guideRow('L3', const Color(0xFFFEF3C7), 'Second written warning', 'Final warning — partial pay deduction may apply.'),
           _guideRow('L4', const Color(0xFFFCE7F3), 'Suspension without pay', 'Pending investigation — full salary deduction.'),
@@ -765,7 +771,7 @@ class _DisciplinarySetupTabState extends State<_DisciplinarySetupTab> {
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(color: chipBg, borderRadius: BorderRadius.circular(6), border: Border.all(color: AppColors.border)),
+            decoration: BoxDecoration(color: chipBg, borderRadius: BorderRadius.circular(6), border: Border.all(color: context.borderColor)),
             child: Text(level, style: GoogleFonts.dmSans(fontSize: 11, fontWeight: FontWeight.w800)),
           ),
           const SizedBox(width: 10),
@@ -789,7 +795,7 @@ class _DisciplinarySetupTabState extends State<_DisciplinarySetupTab> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

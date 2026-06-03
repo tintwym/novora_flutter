@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/daylight_schedule.dart';
+import '../../../core/theme/theme_colors.dart';
+import '../../../core/theme/theme_notifier.dart';
 import '../widgets/settings_widgets.dart';
 
 typedef SettingsPanelBuilder = Widget Function(BuildContext context);
@@ -19,11 +22,197 @@ Widget buildSettingsPanel(String id, BuildContext context) {
     'integrations' => const _IntegrationsPanel(),
     'security' => const _SecurityPanel(),
     'audit_log' => const _AuditLogPanel(),
+    'appearance' => const _AppearancePanel(),
     'language' => const _LanguagePanel(),
     'email_templates' => const _EmailTemplatesPanel(),
     'backup_data' => const _BackupDataPanel(),
     _ => const _CompanyProfilePanel(),
   };
+}
+
+/// Light / Dark / Auto switcher backed by [ThemeNotifier].
+///
+/// The previous auto-only behaviour was a usability gap: there was no way to
+/// preview dark mode mid-day, and users in long-daylight regions had no escape
+/// hatch. The radio defaults to whatever the user previously persisted (or
+/// `auto` on first run).
+class _AppearancePanel extends StatelessWidget {
+  const _AppearancePanel();
+
+  @override
+  Widget build(BuildContext context) {
+    return _PanelScroll(
+      child: ListenableBuilder(
+        listenable: ThemeNotifier.instance,
+        builder: (context, _) {
+          final notifier = ThemeNotifier.instance;
+          final tc = context;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SettingsPageHeader(
+                title: 'Appearance',
+                subtitle:
+                    'Choose how Novora looks. Auto follows local sunrise and sunset.',
+              ),
+              const SizedBox(height: 24),
+              SettingsCard(
+                title: 'Theme',
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                child: Column(
+                  children: [
+                    _ThemeOption(
+                      icon: Icons.brightness_auto_rounded,
+                      title: 'Automatic',
+                      subtitle:
+                          'Light during the day, dark after sunset (currently ${notifier.mode == ThemeMode.dark ? 'dark' : 'light'}).',
+                      selected: notifier.preference == ThemePreference.auto,
+                      onTap: () => notifier.setPreference(ThemePreference.auto),
+                    ),
+                    _ThemeOption(
+                      icon: Icons.light_mode_rounded,
+                      title: 'Light',
+                      subtitle: 'Always use the light theme.',
+                      selected: notifier.preference == ThemePreference.light,
+                      onTap: () =>
+                          notifier.setPreference(ThemePreference.light),
+                    ),
+                    _ThemeOption(
+                      icon: Icons.dark_mode_rounded,
+                      title: 'Dark',
+                      subtitle: 'Always use the dark theme.',
+                      selected: notifier.preference == ThemePreference.dark,
+                      onTap: () => notifier.setPreference(ThemePreference.dark),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Currently active: ${notifier.mode == ThemeMode.dark ? 'Dark' : 'Light'} '
+                '(${notifier.scheduleLabel.toLowerCase()})',
+                style: GoogleFonts.dmSans(
+                  fontSize: 12,
+                  color: tc.secondaryText,
+                ),
+              ),
+              if (notifier.preference == ThemePreference.auto) ...[
+                const SizedBox(height: 4),
+                Builder(
+                  builder: (_) {
+                    final now = DateTime.now();
+                    final today = DaylightSchedule.forDate(now);
+                    String fmt(DateTime t) =>
+                        '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+                    final offset = now.timeZoneOffset;
+                    final sign = offset.isNegative ? '-' : '+';
+                    final oh = offset.inHours.abs().toString().padLeft(2, '0');
+                    final om = (offset.inMinutes.abs() % 60).toString().padLeft(2, '0');
+                    return Text(
+                      'Today (UTC$sign$oh:$om) — sunrise ${fmt(today.sunrise)}, '
+                      'sunset ${fmt(today.sunset)}.',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 12,
+                        color: tc.secondaryText,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ThemeOption extends StatelessWidget {
+  const _ThemeOption({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final tc = context;
+    final accent = AppColors.primary;
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Material(
+        color: selected
+            ? (tc.isDarkMode
+                  ? AppColors.brandBlue.withValues(alpha: 0.22)
+                  : const Color(0xFFEFF6FF))
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: selected ? accent : tc.borderColor,
+                width: selected ? 1.5 : 1,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 22,
+                  color: selected ? accent : tc.secondaryText,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: tc.primaryText,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 12,
+                          color: tc.secondaryText,
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  selected
+                      ? Icons.radio_button_checked_rounded
+                      : Icons.radio_button_unchecked_rounded,
+                  size: 22,
+                  color: selected ? accent : tc.secondaryText,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _PanelScroll extends StatelessWidget {
@@ -119,7 +308,7 @@ class _CompanyProfilePanelState extends State<_CompanyProfilePanel> {
                             style: GoogleFonts.dmSans(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.navy,
+                              color: context.primaryText,
                             ),
                           ),
                           Text(
@@ -281,7 +470,7 @@ class _ModulesPanelState extends State<_ModulesPanel> {
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.border),
+                        border: Border.all(color: context.borderColor),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Row(
@@ -292,7 +481,7 @@ class _ModulesPanelState extends State<_ModulesPanel> {
                               style: GoogleFonts.dmSans(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.navy,
+                                color: context.primaryText,
                               ),
                             ),
                           ),
@@ -516,10 +705,12 @@ class _UsersAccountsPanel extends StatelessWidget {
     return [
       Row(
         children: [
-          CircleAvatar(
-            radius: 14,
-            backgroundColor: AppColors.bg,
-            child: Text(initials, style: GoogleFonts.dmSans(fontSize: 10, fontWeight: FontWeight.w700)),
+          Builder(
+            builder: (ctx) => CircleAvatar(
+              radius: 14,
+              backgroundColor: ctx.subtleFill,
+              child: Text(initials, style: GoogleFonts.dmSans(fontSize: 10, fontWeight: FontWeight.w700)),
+            ),
           ),
           const SizedBox(width: 8),
           Text(name),
@@ -616,7 +807,7 @@ class _RolesPermissionsPanelState extends State<_RolesPermissionsPanel> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -627,9 +818,9 @@ class _RolesPermissionsPanelState extends State<_RolesPermissionsPanel> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: GoogleFonts.dmSans(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.navy)),
+                    Text(title, style: GoogleFonts.dmSans(fontSize: 16, fontWeight: FontWeight.w700, color: context.primaryText)),
                     if (subtitle != null)
-                      Text(subtitle, style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.textMuted)),
+                      Text(subtitle, style: GoogleFonts.dmSans(fontSize: 12, color: context.secondaryText)),
                   ],
                 ),
               ),
@@ -880,22 +1071,24 @@ class _IntegrationsPanel extends StatelessWidget {
   }
 
   Widget _integrationRow(String title, String sub, String status, SettingsPillTone tone) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.navy)),
-                Text(sub, style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.textMuted)),
-              ],
+    return Builder(
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: GoogleFonts.dmSans(fontSize: 14, fontWeight: FontWeight.w600, color: ctx.primaryText)),
+                  Text(sub, style: GoogleFonts.dmSans(fontSize: 12, color: ctx.secondaryText)),
+                ],
+              ),
             ),
-          ),
-          SettingsPill(status, tone: tone),
-        ],
+            SettingsPill(status, tone: tone),
+          ],
+        ),
       ),
     );
   }
@@ -1064,9 +1257,9 @@ class _MockDropdown extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.borderColor),
             borderRadius: BorderRadius.circular(8),
-            color: const Color(0xFFFAFAFA),
+            color: context.subtleFill,
           ),
           child: Row(
             children: [
@@ -1206,7 +1399,7 @@ class _LanguagePanelState extends State<_LanguagePanel> {
             value: _autoTranslate,
             onChanged: (v) => setState(() => _autoTranslate = v),
           ),
-          const Divider(height: 24, color: AppColors.border),
+          Divider(height: 24, color: context.borderColor),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1219,7 +1412,7 @@ class _LanguagePanelState extends State<_LanguagePanel> {
                       style: GoogleFonts.dmSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.navy,
+                        color: context.primaryText,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -1257,9 +1450,9 @@ class _LanguagePanelState extends State<_LanguagePanel> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color(0xFFFAFAFA),
+              color: context.subtleFill,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.borderColor),
             ),
             child: _twoCol(const [
               _MockDropdown(value: 'Asia/Kuala_Lumpur (UTC+8)', label: 'TIMEZONE'),
@@ -1364,7 +1557,7 @@ class _LanguageOptionTile extends StatelessWidget {
                     style: GoogleFonts.dmSans(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.navy,
+                      color: context.primaryText,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -1372,7 +1565,7 @@ class _LanguageOptionTile extends StatelessWidget {
                     subtitle,
                     style: GoogleFonts.dmSans(
                       fontSize: 12,
-                      color: AppColors.textMuted,
+                      color: context.secondaryText,
                     ),
                   ),
                 ],

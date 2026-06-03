@@ -106,8 +106,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
           'Reports',
           style: GoogleFonts.sora(fontWeight: FontWeight.w700),
         ),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,

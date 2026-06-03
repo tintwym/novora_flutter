@@ -134,8 +134,12 @@ abstract final class ApiClient {
     final client = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 20),
-        receiveTimeout: const Duration(seconds: 30),
+        // Render free tier cold-start is ~30 s; the original 20/30 s budget timed
+        // out on the very first request of the day even though the backend was
+        // healthy. Headroom keeps the first login from surfacing a false "API
+        // unreachable" banner.
+        connectTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(seconds: 75),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -152,6 +156,26 @@ abstract final class ApiClient {
     }
     client.interceptors.add(_csrf);
     return client;
+  }
+
+  /// Fire-and-forget ping to the backend so the first user-facing request does
+  /// not pay Render's ~30 s free-tier cold-start. Failures are intentionally
+  /// swallowed — this is a warm-up, not a health check.
+  static void warmUp() {
+    final base = baseUrl;
+    if (base.isEmpty) return;
+    final Uri uri;
+    try {
+      uri = Uri.parse('$base/actuator/health/liveness');
+    } catch (_) {
+      return;
+    }
+    Dio(BaseOptions(
+      connectTimeout: const Duration(seconds: 60),
+      receiveTimeout: const Duration(seconds: 75),
+      // Don't send cookies — warm-up should never mutate session state.
+      extra: _isBrowserTarget() ? const <String, dynamic>{'withCredentials': false} : const {},
+    )).getUri<dynamic>(uri).then((_) {}, onError: (_) {});
   }
 
   /// Clears HTTP state (cookies, CSRF token, Dio instance). Call on logout.

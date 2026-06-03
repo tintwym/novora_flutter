@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_colors.dart';
 
 class StatusBadge extends StatelessWidget {
   const StatusBadge({super.key, required this.label});
@@ -25,7 +25,7 @@ class StatusBadge extends StatelessWidget {
       },
     };
     final style =
-        styles[label] ?? {'bg': AppColors.bg, 'text': AppColors.textMuted};
+        styles[label] ?? {'bg': context.mutedPillBg, 'text': context.mutedPillText};
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(

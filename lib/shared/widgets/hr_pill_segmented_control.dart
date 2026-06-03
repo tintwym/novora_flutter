@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_colors.dart';
 
 /// One segment: [value] is emitted on tap; [label] is shown.
 class HrPillSegment {
@@ -29,12 +30,11 @@ class HrPillSegmentedControl extends StatelessWidget {
   final double height;
 
   static const Color _selectedFill = Color(0xFFE8E4F8);
-  /// Outer capsule + dividers — slate-600 so the pill reads clearly on white.
-  static const Color _border = Color(0xFF475569);
 
   @override
   Widget build(BuildContext context) {
     assert(segments.isNotEmpty);
+    final border = context.borderColor;
     return SizedBox(
       width: width,
       height: height,
@@ -42,7 +42,7 @@ class HrPillSegmentedControl extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: _border, width: 1.25),
+          border: Border.all(color: border, width: 1.25),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(999),
@@ -54,6 +54,7 @@ class HrPillSegmentedControl extends StatelessWidget {
                     segment: segments[i],
                     selected: segments[i].value == selected,
                     showRightDivider: i < segments.length - 1,
+                    dividerColor: border,
                     onTap: () => onChanged(segments[i].value),
                   ),
                 ),
@@ -70,19 +71,23 @@ class _SegmentTile extends StatelessWidget {
     required this.segment,
     required this.selected,
     required this.showRightDivider,
+    required this.dividerColor,
     required this.onTap,
   });
 
   final HrPillSegment segment;
   final bool selected;
   final bool showRightDivider;
+  final Color dividerColor;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final fg = selected ? AppColors.navy : const Color(0xFF475569);
+    final fg = selected ? AppColors.navy : context.secondaryText;
     return Material(
-      color: selected ? HrPillSegmentedControl._selectedFill : Colors.white,
+      color: selected
+          ? HrPillSegmentedControl._selectedFill
+          : Theme.of(context).colorScheme.surface,
       child: InkWell(
         onTap: onTap,
         hoverColor: AppColors.primary.withValues(alpha: 0.04),
@@ -91,7 +96,7 @@ class _SegmentTile extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border(
               right: showRightDivider
-                  ? const BorderSide(color: HrPillSegmentedControl._border, width: 1.25)
+                  ? BorderSide(color: dividerColor, width: 1.25)
                   : BorderSide.none,
             ),
           ),

@@ -3,6 +3,7 @@ import '../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_colors.dart';
 import '../../core/constants/app_routes.dart';
 import '../../shared/widgets/hr_data_table_card.dart';
 import '../../shared/widgets/hr_module_header.dart';
@@ -71,12 +72,9 @@ class _EmploymentManagementScreenState extends State<EmploymentManagementScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Employment', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,
@@ -244,14 +242,16 @@ class _EmploymentManagementScreenState extends State<EmploymentManagementScreen>
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 15, color: AppColors.navy),
+          Builder(
+            builder: (ctx) => Text(
+              title,
+              style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 15, color: ctx.primaryText),
+            ),
           ),
           const SizedBox(height: 12),
           child,

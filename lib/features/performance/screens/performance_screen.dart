@@ -3,6 +3,7 @@ import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 
@@ -108,12 +109,9 @@ class _PerformanceScreenState extends State<PerformanceScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Performance', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,
@@ -154,7 +152,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
 
   Widget _scrollBody(List<Widget> children) {
     return ColoredBox(
-      color: AppColors.bg,
+      color: context.subtleFill,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -184,7 +182,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: child,
     );
@@ -199,14 +197,14 @@ class _PerformanceScreenState extends State<PerformanceScreen>
           hintText: hint,
           isDense: true,
           filled: true,
-          fillColor: AppColors.bg,
+          fillColor: context.subtleFill,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppColors.border),
+            borderSide: BorderSide(color: context.borderColor),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppColors.border),
+            borderSide: BorderSide(color: context.borderColor),
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         ),
@@ -220,9 +218,9 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: v,
@@ -252,10 +250,12 @@ class _PerformanceScreenState extends State<PerformanceScreen>
   }
 
   Widget _yesNoPill(bool yes) {
-    return _statusPill(
-      yes ? 'Yes' : 'No',
-      yes ? const Color(0xFFD1FAE5) : AppColors.bg,
-      yes ? const Color(0xFF065F46) : AppColors.textMuted,
+    return Builder(
+      builder: (ctx) => _statusPill(
+        yes ? 'Yes' : 'No',
+        yes ? const Color(0xFFD1FAE5) : ctx.mutedPillBg,
+        yes ? const Color(0xFF065F46) : ctx.mutedPillText,
+      ),
     );
   }
 
@@ -298,7 +298,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Text(letter, style: GoogleFonts.dmSans(fontWeight: FontWeight.w800, fontSize: 13)),
     );
@@ -337,7 +337,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('No.', 0.45),
             ('Level name', 1.2),
@@ -396,7 +396,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Grade', 0.55),
             ('Grade name', 1.2),
@@ -457,7 +457,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
           _kpiSectionTitle(title, badge, bBg, bFg),
           const SizedBox(height: 12),
           HrFullWidthDataTable(
-            headingRowColor: AppColors.bg,
+            headingRowColor: context.tableHeaderBg,
             columnSpecs: const [
               ('From %', 0.7),
               ('To %', 0.7),
@@ -619,7 +619,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Type name', 1.4),
             ('Every month', 0.85),
@@ -688,7 +688,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Category name', 1.1),
             ('KPI type', 0.95),
@@ -705,7 +705,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
               const DataCell(Text('25%')),
               const DataCell(Text('1–5 rating scale')),
               const DataCell(Text('Measurement index')),
-              DataCell(_statusPill('4 levels', AppColors.bg, AppColors.textMuted)),
+              DataCell(_statusPill('4 levels', context.mutedPillBg, context.mutedPillText)),
               DataCell(_linkBtn('Edit', () {})),
             ]),
             DataRow(cells: [
@@ -714,7 +714,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
               const DataCell(Text('15%')),
               const DataCell(Text('1–5 rating scale')),
               const DataCell(Text('Measurement index')),
-              DataCell(_statusPill('4 levels', AppColors.bg, AppColors.textMuted)),
+              DataCell(_statusPill('4 levels', context.mutedPillBg, context.mutedPillText)),
               DataCell(_linkBtn('Edit', () {})),
             ]),
             DataRow(cells: [
@@ -723,7 +723,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
               const DataCell(Text('20%')),
               const DataCell(Text('1–5 rating scale')),
               const DataCell(Text('Measurement index')),
-              DataCell(_statusPill('4 levels', AppColors.bg, AppColors.textMuted)),
+              DataCell(_statusPill('4 levels', context.mutedPillBg, context.mutedPillText)),
               DataCell(_linkBtn('Edit', () {})),
             ]),
             DataRow(cells: [
@@ -732,7 +732,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
               const DataCell(Text('30%')),
               const DataCell(Text('% achievement')),
               const DataCell(Text('Target %')),
-              DataCell(_statusPill('Auto-calc', AppColors.bg, AppColors.textMuted)),
+              DataCell(_statusPill('Auto-calc', context.mutedPillBg, context.mutedPillText)),
               DataCell(_linkBtn('Edit', () {})),
             ]),
             DataRow(cells: [
@@ -741,7 +741,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
               const DataCell(Text('10%')),
               const DataCell(Text('% attendance')),
               const DataCell(Text('Attendance %')),
-              DataCell(_statusPill('Auto-calc', AppColors.bg, AppColors.textMuted)),
+              DataCell(_statusPill('Auto-calc', context.mutedPillBg, context.mutedPillText)),
               DataCell(_linkBtn('Edit', () {})),
             ]),
           ],
@@ -892,7 +892,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Evaluator', 1.35),
             ('Evaluation type', 1.1),
@@ -951,7 +951,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
               const DataCell(Text('1 Jun 2025')),
               const DataCell(Text('30 Jun 2025')),
               DataCell(Text('0 pending', style: GoogleFonts.dmSans(color: AppColors.textMuted))),
-              DataCell(_statusPill('Expired', AppColors.bg, AppColors.textMuted)),
+              DataCell(_statusPill('Expired', context.mutedPillBg, context.mutedPillText)),
               DataCell(
                 Wrap(
                   spacing: 8,
@@ -987,7 +987,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Employee', 1.35),
             ('Review type', 1.0),
@@ -1037,7 +1037,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
 
   Widget _evaluationEntryForm() {
     return ColoredBox(
-      color: AppColors.bg,
+      color: context.subtleFill,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -1229,7 +1229,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
             alignment: Alignment.centerRight,
             child: Text(
               'Category score: 86.7 / 100',
-              style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: AppColors.navy),
+              style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: context.primaryText),
             ),
           ),
         ],
@@ -1256,7 +1256,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
                 final on = v == selected;
                 return CircleAvatar(
                   radius: 16,
-                  backgroundColor: on ? AppColors.primary : AppColors.bg,
+                  backgroundColor: on ? AppColors.primary : context.subtleFill,
                   child: Text(
                     '$v',
                     style: GoogleFonts.dmSans(
@@ -1307,7 +1307,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
             width: 64,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.borderColor),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(val, textAlign: TextAlign.center, style: GoogleFonts.dmSans(fontWeight: FontWeight.w600)),
@@ -1354,7 +1354,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Employee', 1.4),
             ('Attr. score', 0.75),
@@ -1416,7 +1416,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Competency name', 1.5),
             ('Type', 0.85),
@@ -1484,7 +1484,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Employee', 1.35),
             ('Review type', 1.0),
@@ -1575,7 +1575,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
                 const Divider(height: 28),
                 Text('Score breakdown', style: GoogleFonts.dmSans(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 12),
-                _barRow('Technical skills (attr.)', 0.87, AppColors.navy),
+                _barRow('Technical skills (attr.)', 0.87, context.primaryText),
                 _barRow('Project delivery (KPI)', 0.9, AppColors.secondaryAccent),
                 _barRow('Leadership (comp.)', 0.82, const Color(0xFF7C3AED)),
                 _barRow('Communication (attr.)', 0.88, AppColors.warning),
@@ -1595,7 +1595,7 @@ class _PerformanceScreenState extends State<PerformanceScreen>
                 Text('Review history', style: GoogleFonts.dmSans(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 12),
                 HrFullWidthDataTable(
-                  headingRowColor: AppColors.bg,
+                  headingRowColor: context.tableHeaderBg,
                   columnSpecs: const [
                     ('Review type', 1.2),
                     ('Period', 0.75),
@@ -1738,10 +1738,12 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       child: Row(
         children: [
           Expanded(child: Text(title)),
-          _statusPill(
-            mandatory ? 'Mandatory' : 'Optional',
-            mandatory ? AppColors.errorSurface : AppColors.bg,
-            mandatory ? AppColors.danger : AppColors.textMuted,
+          Builder(
+            builder: (ctx) => _statusPill(
+              mandatory ? 'Mandatory' : 'Optional',
+              mandatory ? AppColors.errorSurface : ctx.mutedPillBg,
+              mandatory ? AppColors.danger : ctx.mutedPillText,
+            ),
           ),
         ],
       ),

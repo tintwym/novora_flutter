@@ -144,26 +144,27 @@ class SettingsLabeledField extends StatelessWidget {
           TextField(
             controller: controller,
             readOnly: readOnly,
-            style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.navy),
-            decoration: _fieldDecoration(),
+            style: GoogleFonts.dmSans(fontSize: 14, color: context.primaryText),
+            decoration: _fieldDecoration(context),
           ),
       ],
     );
   }
 
-  InputDecoration _fieldDecoration() {
+  InputDecoration _fieldDecoration(BuildContext context) {
+    final tc = context;
     return InputDecoration(
       filled: true,
-      fillColor: const Color(0xFFFAFAFA),
+      fillColor: tc.subtleFill,
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.border),
+        borderSide: BorderSide(color: tc.borderColor),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.border),
+        borderSide: BorderSide(color: tc.borderColor),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
@@ -186,6 +187,7 @@ class _SettingsDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tc = context;
     return DropdownButtonFormField<String>(
       initialValue: items.contains(value) ? value : items.first,
       items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
@@ -194,19 +196,19 @@ class _SettingsDropdown extends StatelessWidget {
       },
       decoration: InputDecoration(
         filled: true,
-        fillColor: const Color(0xFFFAFAFA),
+        fillColor: tc.subtleFill,
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide(color: tc.borderColor),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide(color: tc.borderColor),
         ),
       ),
-      style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.navy),
+      style: GoogleFonts.dmSans(fontSize: 14, color: tc.primaryText),
     );
   }
 }
@@ -241,7 +243,7 @@ class SettingsToggleRow extends StatelessWidget {
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.navy,
+                    color: context.primaryText,
                   ),
                 ),
                 if (subtitle != null) ...[
@@ -250,7 +252,7 @@ class SettingsToggleRow extends StatelessWidget {
                     subtitle!,
                     style: GoogleFonts.dmSans(
                       fontSize: 12,
-                      color: AppColors.textMuted,
+                      color: context.secondaryText,
                       height: 1.35,
                     ),
                   ),
@@ -284,7 +286,7 @@ class SettingsPill extends StatelessWidget {
       SettingsPillTone.warning => (const Color(0xFFFFEDD5), const Color(0xFFC2410C)),
       SettingsPillTone.purple => (const Color(0xFFEDE9FE), const Color(0xFF5B21B6)),
       SettingsPillTone.orange => (const Color(0xFFFFEDD5), const Color(0xFF9A3412)),
-      SettingsPillTone.neutral => (AppColors.bg, AppColors.textMuted),
+      SettingsPillTone.neutral => (context.mutedPillBg, context.mutedPillText),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -327,7 +329,7 @@ class SettingsKvRow extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.navy),
+              style: GoogleFonts.dmSans(fontSize: 14, color: context.primaryText),
             ),
           ),
           valueWidget ??
@@ -336,7 +338,7 @@ class SettingsKvRow extends StatelessWidget {
                 style: GoogleFonts.dmSans(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.textMuted,
+                  color: context.secondaryText,
                 ),
               ),
         ],
@@ -360,7 +362,7 @@ class SettingsSimpleTable extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
-        headingRowColor: WidgetStateProperty.all(AppColors.bg),
+        headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
         dataRowMinHeight: 44,
         headingRowHeight: 40,
         columns: columns

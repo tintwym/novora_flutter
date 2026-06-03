@@ -5,6 +5,7 @@ import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 import '../../../shared/widgets/hr_pill_segmented_control.dart';
@@ -123,12 +124,9 @@ class _AttendanceScreenState extends State<AttendanceScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Attendance', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,
@@ -157,7 +155,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
                     children: [
                       Text(
                         'Week: 5 – 11 May 2026',
-                        style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: AppColors.navy),
+                        style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: context.primaryText),
                       ),
                       OutlinedButton(onPressed: () => _toast('Previous week'), child: const Text('< Prev')),
                       OutlinedButton(onPressed: () => _toast('Next week'), child: const Text('Next >')),
@@ -252,7 +250,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
             child: LayoutBuilder(
               builder: (context, c) {
                 final table = DataTable(
-                  headingRowColor: WidgetStateProperty.all(AppColors.bg),
+                  headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
                   dataRowMinHeight: 52,
                   dataRowMaxHeight: 72,
                   horizontalMargin: 12,
@@ -509,7 +507,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -537,12 +535,14 @@ class _AttendanceScreenState extends State<AttendanceScreen>
                     child: Text(r.$1, style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.muted)),
                   ),
                   Expanded(
-                    child: Text(
-                      r.$2,
-                      style: GoogleFonts.dmSans(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: isNightRow ? AppColors.success : AppColors.navy,
+                    child: Builder(
+                      builder: (ctx) => Text(
+                        r.$2,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isNightRow ? AppColors.success : ctx.primaryText,
+                        ),
                       ),
                     ),
                   ),
@@ -601,7 +601,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
             child: LayoutBuilder(
               builder: (context, c) {
                 final table = DataTable(
-                  headingRowColor: WidgetStateProperty.all(AppColors.bg),
+                  headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
                   dataRowMinHeight: 52,
                   dataRowMaxHeight: 72,
                   horizontalMargin: 12,
@@ -658,15 +658,17 @@ class _AttendanceScreenState extends State<AttendanceScreen>
     if (office == '—') {
       officeCell = Text('—', style: GoogleFonts.dmSans(color: AppColors.muted));
     } else {
-      officeCell = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: officeYes ? const Color(0xFFD1FAE5) : AppColors.bg,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(
-          office,
-          style: GoogleFonts.dmSans(fontSize: 11, fontWeight: FontWeight.w700, color: officeYes ? const Color(0xFF065F46) : AppColors.textMuted),
+      officeCell = Builder(
+        builder: (ctx) => Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: officeYes ? const Color(0xFFD1FAE5) : ctx.mutedPillBg,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            office,
+            style: GoogleFonts.dmSans(fontSize: 11, fontWeight: FontWeight.w700, color: officeYes ? const Color(0xFF065F46) : ctx.mutedPillText),
+          ),
         ),
       );
     }
@@ -737,7 +739,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
             child: LayoutBuilder(
               builder: (context, c) {
                 final table = DataTable(
-                  headingRowColor: WidgetStateProperty.all(AppColors.bg),
+                  headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
                   dataRowMinHeight: 52,
                   dataRowMaxHeight: 72,
                   horizontalMargin: 8,
@@ -827,7 +829,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
                   children: [
                     CircleAvatar(
                       radius: 14,
-                      backgroundColor: AppColors.bg,
+                      backgroundColor: context.subtleFill,
                       child: Text(initials, style: GoogleFonts.dmSans(fontSize: 9, fontWeight: FontWeight.w800)),
                     ),
                     const SizedBox(width: 8),
@@ -931,7 +933,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: DataTable(
-                        headingRowColor: WidgetStateProperty.all(AppColors.bg),
+                        headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
                         dataRowMinHeight: 48,
                         dataRowMaxHeight: 64,
                         columns: const [
@@ -1085,7 +1087,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
           const SizedBox(height: 16),
           _whiteCard(
             child: HrFullWidthDataTable(
-              headingRowColor: AppColors.bg,
+              headingRowColor: context.tableHeaderBg,
               columnSpecs: const [
                 ('Employee', 2.2),
                 ('Date', 1.0),
@@ -1173,7 +1175,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: child,
     );
@@ -1191,9 +1193,9 @@ class _AttendanceScreenState extends State<AttendanceScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: safe,
@@ -1247,7 +1249,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
       children: [
         item('Completed', const Color(0xFFD1FAE5)),
         item('Clock in', const Color(0xFFDBEAFE)),
-        item('Planned', AppColors.bg, border: AppColors.border),
+        item('Planned', context.subtleFill, border: context.borderColor),
         item('Off', const Color(0xFFE2E8F0)),
         item('On leave', const Color(0xFFFEF3C7)),
         item('Overtime', const Color(0xFFFCE7F3)),
@@ -1340,7 +1342,7 @@ class _ManualPunchTabState extends State<_ManualPunchTab> {
                   TextFormField(
                     initialValue: '09:00 AM',
                     enabled: false,
-                    decoration: _inputDec().copyWith(fillColor: const Color(0xFFF5F0E8), filled: true),
+                    decoration: _inputDec().copyWith(fillColor: context.subtleFill, filled: true),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -1395,7 +1397,7 @@ class _ManualPunchTabState extends State<_ManualPunchTab> {
                     Expanded(child: Text("Today's manual punches", style: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w700))),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(color: AppColors.bg, borderRadius: BorderRadius.circular(20)),
+                      decoration: BoxDecoration(color: context.subtleFill, borderRadius: BorderRadius.circular(20)),
                       child: Text('4 records', style: GoogleFonts.dmSans(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.textMuted)),
                     ),
                   ],
@@ -1404,7 +1406,7 @@ class _ManualPunchTabState extends State<_ManualPunchTab> {
                 _punchListItem('08:55', 'Sarah Lim · EMP-0021 · Clock In · Device offline', 'In', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
                 _punchListItem('09:10', 'Ahmad Luqman · EMP-0187 · Clock In · Forgot to swipe', 'In', const Color(0xFFD1FAE5), const Color(0xFF065F46)),
                 _punchListItem('17:30', 'Nadia Chen · EMP-0092 · Clock Out · Remote work', 'Out', const Color(0xFFFBCFE8), const Color(0xFF9D174D)),
-                _punchListItem('18:05', 'Raj Kumar · EMP-0048 · Clock Out · Biometric', 'Auto', AppColors.bg, AppColors.textMuted),
+                _punchListItem('18:05', 'Raj Kumar · EMP-0048 · Clock Out · Biometric', 'Auto', context.mutedPillBg, context.mutedPillText),
               ],
             ),
           );
@@ -1438,7 +1440,7 @@ class _ManualPunchTabState extends State<_ManualPunchTab> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: child,
     );
@@ -1447,10 +1449,10 @@ class _ManualPunchTabState extends State<_ManualPunchTab> {
   InputDecoration _inputDec() {
     return InputDecoration(
       filled: true,
-      fillColor: Colors.white,
+      fillColor: context.surfaceCard,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
     );
   }
 
@@ -1481,7 +1483,7 @@ class _ManualPunchTabState extends State<_ManualPunchTab> {
         children: [
           SizedBox(
             width: 48,
-            child: Text(time, style: GoogleFonts.dmSans(fontWeight: FontWeight.w800, color: AppColors.navy)),
+            child: Builder(builder: (ctx) => Text(time, style: GoogleFonts.dmSans(fontWeight: FontWeight.w800, color: ctx.primaryText))),
           ),
           Expanded(child: Text(line, style: GoogleFonts.dmSans(fontSize: 13, height: 1.35))),
           const SizedBox(width: 8),
@@ -1559,7 +1561,7 @@ class _RosterTable extends StatelessWidget {
     ];
 
     return Table(
-      border: TableBorder.all(color: AppColors.border),
+      border: TableBorder.all(color: context.borderColor),
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       columnWidths: {
         0: const FixedColumnWidth(220),
@@ -1567,7 +1569,7 @@ class _RosterTable extends StatelessWidget {
       },
       children: [
         TableRow(
-          decoration: const BoxDecoration(color: Color(0xFFF8FAFC)),
+          decoration: BoxDecoration(color: context.tableHeaderBg),
           children: [
             _th('Employee'),
             ...List.generate(7, (i) {
@@ -1622,28 +1624,32 @@ class _RosterTable extends StatelessWidget {
   }
 
   Widget _th(String s) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Text(
-        s,
-        style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.navy),
+    return Builder(
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(10),
+        child: Text(
+          s,
+          style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 11, color: ctx.primaryText),
+        ),
       ),
     );
   }
 
   Widget _thDay(String s, {bool showHalfTag = false}) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(s, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 11, color: AppColors.navy)),
-          if (showHalfTag)
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Text('half', style: GoogleFonts.dmSans(fontSize: 9, fontWeight: FontWeight.w700, color: const Color(0xFFEA580C))),
-            ),
-        ],
+    return Builder(
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(s, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, fontSize: 11, color: ctx.primaryText)),
+            if (showHalfTag)
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Text('half', style: GoogleFonts.dmSans(fontSize: 9, fontWeight: FontWeight.w700, color: const Color(0xFFEA580C))),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -1669,6 +1675,8 @@ abstract final class _RosterPalette {
     borderRadius: BorderRadius.circular(8),
     border: Border.all(color: AppColors.primary.withValues(alpha: 0.35)),
   );
+  // Static so we can't pull from `context` here; use the light-mode palette as a
+  // fallback. Dark-mode callers can substitute via `_planned(context)` if needed.
   static final BoxDecoration planned = BoxDecoration(
     color: AppColors.bg,
     borderRadius: BorderRadius.circular(8),

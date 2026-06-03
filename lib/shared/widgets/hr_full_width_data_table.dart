@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_colors.dart';
 
 /// Full-width table that stretches to the parent (card) width using flex columns.
 class HrFullWidthDataTable extends StatelessWidget {
@@ -72,13 +73,13 @@ class HrFullWidthDataTable extends StatelessWidget {
           child: Table(
             columnWidths: colWidths,
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            border: const TableBorder(
-              horizontalInside: BorderSide(color: AppColors.border),
+            border: TableBorder(
+              horizontalInside: BorderSide(color: context.borderColor),
             ),
             children: [
               TableRow(
                 decoration: BoxDecoration(
-                  color: headingRowColor ?? AppColors.bg,
+                  color: headingRowColor ?? context.tableHeaderBg,
                 ),
                 children: headers
                     .map(

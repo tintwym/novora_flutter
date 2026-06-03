@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../shared/widgets/hr_pill_segmented_control.dart';
 import '../screens/open_position_profile_screen.dart';
 
@@ -53,7 +54,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: AppColors.bg,
+      color: context.subtleFill,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -94,7 +95,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: LayoutBuilder(
         builder: (context, c) {
@@ -111,12 +112,12 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
                       children: [
                         Text(
                           'Organisation chart',
-                          style: GoogleFonts.sora(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.navy),
+                          style: GoogleFonts.sora(fontSize: 20, fontWeight: FontWeight.w700, color: context.primaryText),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           '$_company  ›  All departments',
-                          style: GoogleFonts.dmSans(fontSize: 13, color: AppColors.textMuted),
+                          style: GoogleFonts.dmSans(fontSize: 13, color: context.secondaryText),
                         ),
                       ],
                     ),
@@ -140,8 +141,8 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
                   hintText: 'Find person...',
                   prefixIcon: const Icon(Icons.search, color: AppColors.muted),
                   filled: true,
-                  fillColor: AppColors.bg,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.border)),
+                  fillColor: context.subtleFill,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: context.borderColor)),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 ),
               ),
@@ -170,7 +171,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: LayoutBuilder(
         builder: (context, c) {
@@ -179,7 +180,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              Text('Department:', style: GoogleFonts.dmSans(fontWeight: FontWeight.w600, color: AppColors.navyMid)),
+              Text('Department:', style: GoogleFonts.dmSans(fontWeight: FontWeight.w600, color: context.primaryText)),
               ..._deptFilters.map((d) {
                 final on = _deptFilter == d;
                 return FilterChip(
@@ -210,13 +211,13 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: Column(
         children: [
           Center(child: _nodeCard(root, isCeo: true)),
           const SizedBox(height: 8),
-          Container(width: 2, height: 16, color: AppColors.border),
+          Container(width: 2, height: 16, color: context.borderColor),
           const SizedBox(height: 8),
           LayoutBuilder(
             builder: (context, c) {
@@ -256,7 +257,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
         Center(child: _nodeCard(head)),
         if (head.children.isNotEmpty) ...[
           const SizedBox(height: 8),
-          Center(child: Container(width: 2, height: 12, color: AppColors.border)),
+          Center(child: Container(width: 2, height: 12, color: context.borderColor)),
           const SizedBox(height: 8),
           ...head.children.where(_nodeMatchesSearch).map((c) {
             return Padding(
@@ -399,12 +400,12 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
-          headingRowColor: WidgetStateProperty.all(AppColors.bg),
+          headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
           columns: const [
             DataColumn(label: Text('Name')),
             DataColumn(label: Text('Title')),
@@ -465,9 +466,9 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.bg,
+        color: context.subtleFill,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -487,7 +488,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
                 ),
               );
             }),
-            Container(width: 1, height: 20, color: AppColors.border),
+            Container(width: 1, height: 20, color: context.borderColor),
             const SizedBox(width: 12),
             Text('Total:', style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.muted)),
             const SizedBox(width: 4),
@@ -542,8 +543,8 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
       color: Theme.of(context).colorScheme.surface,
       child: Container(
         padding: const EdgeInsets.fromLTRB(20, 16, 12, 16),
-        decoration: const BoxDecoration(
-          border: Border(top: BorderSide(color: AppColors.border)),
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: context.borderColor)),
         ),
         child: SafeArea(
           top: false,
@@ -552,7 +553,7 @@ class _OrganisationChartTabState extends State<OrganisationChartTab> {
             children: [
               CircleAvatar(
                 radius: 28,
-                backgroundColor: n.isOpenPosition ? AppColors.bg : _DeptPalette.forKey(n.deptKey).avatarBg,
+                backgroundColor: n.isOpenPosition ? context.subtleFill : _DeptPalette.forKey(n.deptKey).avatarBg,
                 child: n.isOpenPosition ? Icon(Icons.add, color: AppColors.primary) : Text(n.initials, style: GoogleFonts.dmSans(fontWeight: FontWeight.w800)),
               ),
               const SizedBox(width: 16),

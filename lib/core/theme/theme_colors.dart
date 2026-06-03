@@ -26,6 +26,20 @@ extension NovoraTheme on BuildContext {
   Color get subtleFill =>
       isDarkMode ? const Color(0xFF0B1220) : AppColors.bg;
 
+  /// Heading row background of [DataTable] and tabular charts.
+  /// Light: pale gray strip on a white card; Dark: slightly raised surface tone.
+  Color get tableHeaderBg =>
+      isDarkMode ? const Color(0xFF273548) : AppColors.bg;
+
+  /// Background for an inactive / "No" status pill.
+  /// In light mode this is the same light gray as the page; in dark mode we use a
+  /// slightly raised tone so the pill remains visible against the card.
+  Color get mutedPillBg => tableHeaderBg;
+
+  /// Foreground (text + icon) for an inactive / "No" pill — paired with [mutedPillBg].
+  Color get mutedPillText =>
+      isDarkMode ? const Color(0xFFCBD5E1) : AppColors.textMuted;
+
   /// Period / filter chips on charts.
   Color get filterChipBg => isDarkMode
       ? AppColors.brandBlue.withValues(alpha: 0.22)

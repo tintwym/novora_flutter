@@ -3,6 +3,7 @@ import '../../../shared/widgets/module_shell_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../shared/widgets/hr_full_width_data_table.dart';
 import '../../../shared/widgets/hr_module_header.dart';
 
@@ -109,12 +110,9 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Claims', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,
@@ -153,7 +151,7 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
 
   Widget _scrollBody(List<Widget> children) {
     return ColoredBox(
-      color: AppColors.bg,
+      color: context.subtleFill,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -170,7 +168,7 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.borderColor),
       ),
       child: child,
     );
@@ -195,9 +193,9 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.borderColor),
           borderRadius: BorderRadius.circular(8),
-          color: AppColors.bg,
+          color: context.subtleFill,
         ),
         child: DropdownButton<String>(
           value: v,
@@ -319,9 +317,9 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppColors.bg,
+            color: context.subtleFill,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.borderColor),
           ),
           child: Column(
             children: [
@@ -339,7 +337,7 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
         Text('My recent claims', style: GoogleFonts.dmSans(fontWeight: FontWeight.w800)),
         const SizedBox(height: 8),
         HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Date', 0.7),
             ('Category', 1.0),
@@ -395,7 +393,7 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
           decoration: InputDecoration(
             hintText: 'dd/mm/yyyy',
             filled: true,
-            fillColor: AppColors.bg,
+            fillColor: context.subtleFill,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           ),
         ),
@@ -611,7 +609,7 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Employee', 1.25),
             ('Category', 0.85),
@@ -719,7 +717,7 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
                 ),
                 const SizedBox(height: 12),
                 HrFullWidthDataTable(
-                  headingRowColor: AppColors.bg,
+                  headingRowColor: context.tableHeaderBg,
                   columnSpecs: const [
                     ('Category', 1.1),
                     ('Daily limit', 0.9),
@@ -902,7 +900,7 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
                 Text('Currency conversion log', style: GoogleFonts.dmSans(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 8),
                 HrFullWidthDataTable(
-                  headingRowColor: AppColors.bg,
+                  headingRowColor: context.tableHeaderBg,
                   columnSpecs: const [
                     ('Employee', 1.2),
                     ('Orig.', 0.5),
@@ -937,7 +935,7 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
                 ),
                 const SizedBox(height: 12),
                 HrFullWidthDataTable(
-                  headingRowColor: AppColors.bg,
+                  headingRowColor: context.tableHeaderBg,
                   columnSpecs: const [
                     ('Employee', 1.2),
                     ('Category', 0.85),
@@ -1001,13 +999,15 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
   }
 
   Widget _kv(String k, String v, {Color? valueColor}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        children: [
-          Expanded(child: Text(k, style: GoogleFonts.dmSans(color: AppColors.textMuted))),
-          Text(v, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: valueColor ?? AppColors.navy)),
-        ],
+    return Builder(
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Row(
+          children: [
+            Expanded(child: Text(k, style: GoogleFonts.dmSans(color: AppColors.textMuted))),
+            Text(v, style: GoogleFonts.dmSans(fontWeight: FontWeight.w700, color: valueColor ?? ctx.primaryText)),
+          ],
+        ),
       ),
     );
   }
@@ -1090,7 +1090,7 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
                 Text('Top claimants — May 2026', style: GoogleFonts.dmSans(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 8),
                 HrFullWidthDataTable(
-                  headingRowColor: AppColors.bg,
+                  headingRowColor: context.tableHeaderBg,
                   columnSpecs: const [
                     ('Employee', 1.4),
                     ('No. claims', 0.65),
@@ -1157,10 +1157,10 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: GoogleFonts.dmSans(fontSize: 12, color: AppColors.textMuted)),
+          Builder(builder: (ctx) => Text(title, style: GoogleFonts.dmSans(fontSize: 12, color: ctx.secondaryText))),
           const SizedBox(height: 6),
-          Text(value, style: GoogleFonts.sora(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.navy)),
-          Text(sub, style: GoogleFonts.dmSans(fontSize: 11, color: AppColors.textMuted)),
+          Builder(builder: (ctx) => Text(value, style: GoogleFonts.sora(fontSize: 22, fontWeight: FontWeight.w800, color: ctx.primaryText))),
+          Builder(builder: (ctx) => Text(sub, style: GoogleFonts.dmSans(fontSize: 11, color: ctx.secondaryText))),
         ],
       ),
     );
@@ -1241,7 +1241,7 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
       const SizedBox(height: 16),
       _whiteCard(
         child: HrFullWidthDataTable(
-          headingRowColor: AppColors.bg,
+          headingRowColor: context.tableHeaderBg,
           columnSpecs: const [
             ('Employee', 1.25),
             ('Category', 0.85),

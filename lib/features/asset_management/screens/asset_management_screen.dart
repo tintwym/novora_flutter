@@ -107,12 +107,9 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
     }
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
       appBar: AppBar(
         leading: const BackButton(),
         title: Text('Assets', style: GoogleFonts.sora(fontWeight: FontWeight.w700)),
-        foregroundColor: AppColors.navy,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: body,
@@ -541,11 +538,11 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
                     hintText: 'Search category...',
                     prefixIcon: const Icon(Icons.search_rounded, color: AppColors.muted),
                     filled: true,
-                    fillColor: AppColors.bg,
+                    fillColor: context.subtleFill,
                     isDense: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppColors.border),
+                      borderSide: BorderSide(color: context.borderColor),
                     ),
                   ),
                 ),
@@ -560,7 +557,7 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
               children: [
                 Text(
                   'New asset category',
-                  style: GoogleFonts.dmSans(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.navy),
+                  style: GoogleFonts.dmSans(fontSize: 16, fontWeight: FontWeight.w700, color: context.primaryText),
                 ),
                 const SizedBox(height: 16),
                 _labeledField('Category name', hint: 'e.g. Laboratory equipment', required: true),
@@ -611,7 +608,7 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
-        headingRowColor: WidgetStateProperty.all(AppColors.bg),
+        headingRowColor: WidgetStateProperty.all(context.tableHeaderBg),
         columns: [_col('Category name'), _col('Assets'), _col('Depreciation'), _col('Status'), _col('')],
         rows: data.map((d) {
           return DataRow(cells: [
@@ -830,9 +827,9 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.borderColor),
             borderRadius: BorderRadius.circular(8),
-            color: AppColors.bg,
+            color: context.subtleFill,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -1014,9 +1011,9 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-            color: AppColors.bg,
+            color: context.subtleFill,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.borderColor),
           ),
           child: Text('23 disposed YTD', style: GoogleFonts.dmSans(fontSize: 12, fontWeight: FontWeight.w600)),
         ),

@@ -97,6 +97,11 @@ abstract final class SettingsNav {
       title: 'PREFERENCES',
       items: [
         SettingsNavItem(
+          id: 'appearance',
+          label: 'Appearance',
+          icon: Icons.contrast_rounded,
+        ),
+        SettingsNavItem(
           id: 'language',
           label: 'Language',
           icon: Icons.language_outlined,
