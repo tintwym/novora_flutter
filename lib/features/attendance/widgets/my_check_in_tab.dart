@@ -300,7 +300,7 @@ class _MyCheckInTabState extends State<MyCheckInTab> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surfaceCard,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: context.borderColor),
       ),

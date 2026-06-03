@@ -805,7 +805,7 @@ class _RolesPermissionsPanelState extends State<_RolesPermissionsPanel> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surfaceCard,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: context.borderColor),
       ),
@@ -1539,10 +1539,10 @@ class _LanguageOptionTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.surfaceCard,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: selected ? AppColors.primary : AppColors.border,
+            color: selected ? AppColors.primary : context.borderColor,
             width: selected ? 1.5 : 1,
           ),
         ),
@@ -1577,10 +1577,10 @@ class _LanguageOptionTile extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: selected ? AppColors.primary : AppColors.border,
+                  color: selected ? AppColors.primary : context.borderColor,
                   width: selected ? 6 : 1.5,
                 ),
-                color: Colors.white,
+                color: context.surfaceCard,
               ),
             ),
           ],
