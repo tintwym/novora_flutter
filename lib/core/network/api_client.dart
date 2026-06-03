@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../constants/app_endpoints.dart';
+import 'cold_start_retry_interceptor.dart';
 import 'csrf_interceptor.dart';
 import 'dio_adapter_hook.dart' as dio_hook;
 
@@ -155,6 +156,9 @@ abstract final class ApiClient {
       client.interceptors.add(CookieManager(_cookieJar));
     }
     client.interceptors.add(_csrf);
+    // Retry order matters: cold-start retry is the *outermost* interceptor so the
+    // replayed request re-runs CSRF + cookies on its way out.
+    client.interceptors.add(ColdStartRetryInterceptor(dioRef: () => dio));
     return client;
   }
 
