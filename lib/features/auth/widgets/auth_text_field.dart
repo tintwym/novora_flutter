@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../core/constants/app_colors.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../shared/widgets/app_text_field.dart';
 
 class AuthTextField extends StatelessWidget {
@@ -34,7 +34,7 @@ class AuthTextField extends StatelessWidget {
           style: GoogleFonts.dmSans(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: AppColors.navy,
+            color: context.primaryText,
           ),
         ),
         const SizedBox(height: 6),

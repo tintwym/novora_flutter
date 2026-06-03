@@ -8,6 +8,7 @@ import '../../../core/ui/app_snackbar.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/error/exceptions.dart';
 import '../../../core/storage/local_storage.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
 import '../../../shared/widgets/auth_form_header.dart';
@@ -110,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: GoogleFonts.sora(
                 fontSize: 32,
                 fontWeight: FontWeight.w800,
-                color: AppColors.navy,
+                color: context.primaryText,
                 height: 1.15,
                 letterSpacing: -0.5,
               ),
@@ -120,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
               'Welcome back! Please sign in to your account.',
               style: GoogleFonts.dmSans(
                 fontSize: 15,
-                color: AppColors.textMuted,
+                color: context.secondaryText,
                 height: 1.45,
               ),
             ),
@@ -160,12 +161,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     value: _rememberMe,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: VisualDensity.compact,
-                    side: const BorderSide(color: AppColors.border, width: 1.5),
+                    side: BorderSide(color: context.borderColor, width: 1.5),
                     fillColor: WidgetStateProperty.resolveWith((states) {
                       if (states.contains(WidgetState.selected)) {
                         return AppColors.primary;
                       }
-                      return Colors.white;
+                      return context.surfaceCard;
                     }),
                     checkColor: Colors.white,
                     onChanged: (v) => setState(() => _rememberMe = v ?? false),
@@ -177,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Remember me',
                     style: GoogleFonts.dmSans(
                       fontSize: 14,
-                      color: AppColors.textMuted,
+                      color: context.secondaryText,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -215,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextSpan(
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
-                    color: AppColors.textMuted,
+                    color: context.secondaryText,
                   ),
                   children: [
                     const TextSpan(text: "Don't have an account? "),
@@ -245,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     textAlign: TextAlign.center,
                     style: GoogleFonts.dmSans(
                       fontSize: 13,
-                      color: AppColors.muted,
+                      color: context.secondaryText,
                     ),
                   ),
                 ),
@@ -261,7 +262,9 @@ class _LoginScreenState extends State<LoginScreen> {
 class _OrDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final line = Expanded(child: Container(height: 1, color: AppColors.border));
+    final line = Expanded(
+      child: Container(height: 1, color: context.borderColor),
+    );
     return Row(
       children: [
         line,
@@ -272,7 +275,7 @@ class _OrDivider extends StatelessWidget {
             style: GoogleFonts.dmSans(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.muted,
+              color: context.secondaryText,
             ),
           ),
         ),

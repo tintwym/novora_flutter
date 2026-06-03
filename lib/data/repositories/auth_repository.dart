@@ -33,9 +33,13 @@ class AuthRepository {
   Future<void> forgotPassword(String email) =>
       _service.requestPasswordReset(email);
 
+  /// Re-hydrate a session from the server. The browser's `JSESSIONID` cookie is the
+  /// source of truth — if it is still valid, `/me` returns the user even when this
+  /// device has nothing cached (e.g. user refreshed without ticking "Remember me",
+  /// which previously wiped the cache and forced them back to the login screen).
+  /// Returns `null` when the server has no session for us (cold first visit, expired
+  /// cookie, logged out elsewhere).
   Future<UserModel?> tryRestoreSession() async {
-    final cached = LocalStorage.instance.userJson;
-    if (cached == null || cached.isEmpty) return null;
     final user = await _service.me();
     if (user != null) {
       SessionNotifier.instance.update(user);

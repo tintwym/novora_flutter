@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/theme_colors.dart';
 import 'responsive_layout.dart';
 
 /// Split-screen layout for login / register / forgot-password flows.
 ///
-/// Wide: form (left, white) + brand hero (right, navy). Logo lives on the form side
-/// because the wordmark PNG has a white background.
+/// Wide: form (left, theme surface) + brand hero (right, always navy gradient).
+/// The brand panel is intentionally pinned to navy in both themes because the
+/// hero copy and decorative rings only work on that gradient; the form panel
+/// follows the active light/dark theme so users on Auto see a dark login at
+/// night and a white login during the day.
 class AuthLayout extends StatelessWidget {
   const AuthLayout({super.key, required this.form});
 
@@ -17,7 +21,7 @@ class AuthLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final wide = ResponsiveLayout.isWide(context);
     return Scaffold(
-      backgroundColor: AppColors.cardBg,
+      backgroundColor: context.surfaceCard,
       body: wide
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -6,6 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/ui/app_snackbar.dart';
 import '../../../core/error/exceptions.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
@@ -119,7 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               style: GoogleFonts.sora(
                 fontSize: 32,
                 fontWeight: FontWeight.w800,
-                color: AppColors.navy,
+                color: context.primaryText,
                 height: 1.15,
                 letterSpacing: -0.5,
               ),
@@ -129,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               'Fill in your details to get started.',
               style: GoogleFonts.dmSans(
                 fontSize: 15,
-                color: AppColors.textMuted,
+                color: context.secondaryText,
                 height: 1.45,
               ),
             ),
@@ -197,7 +198,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextSpan(
                   style: GoogleFonts.dmSans(
                     fontSize: 14,
-                    color: AppColors.textMuted,
+                    color: context.secondaryText,
                   ),
                   children: [
                     const TextSpan(text: 'Already have an account? '),

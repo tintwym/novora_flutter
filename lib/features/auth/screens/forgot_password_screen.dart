@@ -5,6 +5,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/ui/app_snackbar.dart';
 import '../../../core/error/exceptions.dart';
+import '../../../core/theme/theme_colors.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
 import '../../../shared/widgets/auth_form_header.dart';
@@ -71,7 +72,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               style: GoogleFonts.sora(
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
-                color: AppColors.navy,
+                color: context.primaryText,
               ),
             ),
             const SizedBox(height: 8),
@@ -79,7 +80,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               'Enter your work email and we will send reset instructions.',
               style: GoogleFonts.dmSans(
                 fontSize: 15,
-                color: AppColors.textMuted,
+                color: context.secondaryText,
                 height: 1.45,
               ),
             ),

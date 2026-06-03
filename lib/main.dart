@@ -37,17 +37,29 @@ Future<void> main() async {
   await ApiClient.initPersistence();
   // Kick the Render free-tier backend awake before the user clicks anything.
   ApiClient.warmUp();
+  // Always try to re-hydrate the session from the server cookie. The previous
+  // implementation only attempted this when "Remember me" was on, which kicked the
+  // user back to /login on every refresh — even when the JSESSIONID cookie (which
+  // survives refresh and lives until the browser closes) was still valid. Now the
+  // cookie alone is enough to keep the user signed in; "Remember me" only governs
+  // whether the cached user JSON is kept across full browser restarts.
+  //
+  // Cap the boot wait at a few seconds so a Render cold-start doesn't stall the
+  // splash. If `/me` is still in-flight when the timeout fires we fall through to
+  // /login; the cold-start retry interceptor keeps the request alive in the
+  // background so a subsequent action still benefits from the warmed backend.
   var initialRoute = AppRoutes.login;
-  // Only restore session when the user opted in via "Remember me".
-  if (LocalStorage.instance.rememberMe) {
-    try {
-      final user = await AuthRepository().tryRestoreSession();
-      if (user != null) initialRoute = AppRoutes.dashboard;
-    } catch (_) {
-      // Stay on login if `/me` fails (no session, server down, etc.).
-    }
-  } else {
-    // Drop any stale persisted user from a previous transient session.
+  try {
+    final user = await AuthRepository()
+        .tryRestoreSession()
+        .timeout(const Duration(seconds: 6));
+    if (user != null) initialRoute = AppRoutes.dashboard;
+  } catch (_) {
+    // Stay on login on timeout or any network/server failure.
+  }
+  if (!LocalStorage.instance.rememberMe && initialRoute == AppRoutes.login) {
+    // No active session and the user never opted in to persistence — drop any
+    // stale cache so the next visit doesn't flash the previous user.
     LocalStorage.instance.userJson = null;
     LocalStorage.instance.authToken = null;
   }
