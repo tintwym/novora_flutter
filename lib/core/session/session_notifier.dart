@@ -40,12 +40,21 @@ class SessionNotifier extends ChangeNotifier {
     if (wasSignedIn) notifyListeners();
   }
 
-  /// Loads latest role from `/api/v1/me` and refreshes the server session (backend).
-  /// On null (session expired / soft-deleted / network failure), drop the in-memory
-  /// session as well — otherwise the UI keeps rendering the previous role's screens
-  /// with mock data because all API calls now 401.
+  /// Loads latest role from `/api/v1/me` and refreshes the server session.
+  ///
+  /// * server returned a user → update the in-memory session.
+  /// * server returned 401/403 → drop the in-memory session (so the UI stops
+  ///   rendering the previous role's screens with stale data).
+  /// * transport / cold-start / timeout → keep the current session so a
+  ///   transient Render hiccup doesn't sign the user out mid-task.
   Future<UserModel?> refreshFromServer() async {
-    final fresh = await AuthService().me();
+    UserModel? fresh;
+    try {
+      fresh = await AuthService().me();
+    } catch (_) {
+      // Inconclusive (network/timeout) — keep what we have.
+      return _user;
+    }
     if (fresh != null) {
       _user = fresh;
       _hydratedFromStorage = true;

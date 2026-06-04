@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -37,32 +39,52 @@ Future<void> main() async {
   await ApiClient.initPersistence();
   // Kick the Render free-tier backend awake before the user clicks anything.
   ApiClient.warmUp();
-  // Always try to re-hydrate the session from the server cookie. The previous
-  // implementation only attempted this when "Remember me" was on, which kicked the
-  // user back to /login on every refresh — even when the JSESSIONID cookie (which
-  // survives refresh and lives until the browser closes) was still valid. Now the
-  // cookie alone is enough to keep the user signed in; "Remember me" only governs
-  // whether the cached user JSON is kept across full browser restarts.
+
+  // ── Session restore on boot ────────────────────────────────────────────────
+  // Two competing goals:
+  //   1. Refresh should NEVER feel like a logout.
+  //   2. A genuinely invalid cookie / soft-deleted account should still bounce
+  //      the user back to /login.
   //
-  // Cap the boot wait at a few seconds so a Render cold-start doesn't stall the
-  // splash. If `/me` is still in-flight when the timeout fires we fall through to
-  // /login; the cold-start retry interceptor keeps the request alive in the
-  // background so a subsequent action still benefits from the warmed backend.
-  var initialRoute = AppRoutes.login;
-  try {
-    final user = await AuthRepository()
-        .tryRestoreSession()
-        .timeout(const Duration(seconds: 6));
-    if (user != null) initialRoute = AppRoutes.dashboard;
-  } catch (_) {
-    // Stay on login on timeout or any network/server failure.
+  // The previous implementation awaited `/me` with a 6s timeout. Render's free
+  // tier routinely takes 30–90s to wake — long enough to blow past the timeout
+  // even with the cold-start retry interceptor — so every refresh during the
+  // first idle window of the day landed on /login despite a perfectly valid
+  // JSESSIONID cookie.
+  //
+  // Strategy now:
+  //   * If we have a cached user, trust it and land on /dashboard immediately.
+  //   * Fire `/me` in the background. It will either confirm the session
+  //     (silent refresh of the cached profile) or definitively reject it
+  //     (cleared cache + notifier → next navigation bounces to /login). Network
+  //     errors are swallowed, so a cold-start no longer signs the user out.
+  //   * No cache → wait briefly on `/me` in case the cookie alone is enough
+  //     (e.g. fresh device, cleared localStorage). Default to /login on
+  //     timeout; the user can sign in normally.
+  final cachedUser = SessionNotifier.instance.user;
+  var initialRoute =
+      cachedUser != null ? AppRoutes.dashboard : AppRoutes.login;
+
+  final mePending = AuthRepository().tryRestoreSession().catchError((_) {
+    // Transport/timeout — keep the optimistic cached session in place.
+    return SessionNotifier.instance.user;
+  });
+
+  if (cachedUser == null) {
+    try {
+      final user = await mePending.timeout(const Duration(seconds: 2));
+      if (user != null) initialRoute = AppRoutes.dashboard;
+    } on TimeoutException {
+      // Cold backend on a fresh device — fall through to /login. The pending
+      // `/me` keeps running; if it eventually returns a user the notifier will
+      // be updated and the next manual navigation will pick it up.
+    }
+  } else {
+    // Don't await — the user is already heading to /dashboard. Just make sure
+    // the future doesn't become an unhandled error.
+    unawaited(mePending);
   }
-  if (!LocalStorage.instance.rememberMe && initialRoute == AppRoutes.login) {
-    // No active session and the user never opted in to persistence — drop any
-    // stale cache so the next visit doesn't flash the previous user.
-    LocalStorage.instance.userJson = null;
-    LocalStorage.instance.authToken = null;
-  }
+
   runApp(NovoraApp(initialRoute: initialRoute));
 }
 

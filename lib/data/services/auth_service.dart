@@ -67,6 +67,20 @@ class AuthService {
     }
   }
 
+  /// Returns the current session's user.
+  ///
+  /// Contract:
+  ///   * `UserModel`            — server confirmed a valid session.
+  ///   * `null`                 — server *definitively* says we are unauthenticated
+  ///                              (HTTP 401 or 403, including soft-deleted accounts).
+  ///   * throws `DioException`  — transport / timeout / 5xx (anything inconclusive).
+  ///
+  /// Callers MUST distinguish "no session" (clear local cache) from "couldn't
+  /// reach the server" (keep cache so a refresh during a Render cold start
+  /// doesn't bounce the user back to /login). The previous implementation
+  /// collapsed both into `null`, which caused the boot-time `tryRestoreSession`
+  /// to log the user out every time the backend slept long enough to beat its
+  /// timeout — see `AuthRepository.tryRestoreSession`.
   Future<UserModel?> me() async {
     try {
       final res = await ApiClient.dio.get<Map<String, dynamic>>(AppEndpoints.me);
@@ -79,8 +93,10 @@ class AuthService {
         // Session may still work for GETs; punch will retry CSRF.
       }
       return user;
-    } on DioException {
-      return null;
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      if (status == 401 || status == 403) return null;
+      rethrow;
     }
   }
 

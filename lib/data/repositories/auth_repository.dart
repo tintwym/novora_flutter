@@ -37,14 +37,26 @@ class AuthRepository {
   /// source of truth — if it is still valid, `/me` returns the user even when this
   /// device has nothing cached (e.g. user refreshed without ticking "Remember me",
   /// which previously wiped the cache and forced them back to the login screen).
-  /// Returns `null` when the server has no session for us (cold first visit, expired
-  /// cookie, logged out elsewhere).
+  ///
+  /// Three outcomes:
+  ///   * `UserModel`  — fresh from server; cache updated.
+  ///   * `null`       — server returned 401/403 (no session). Local cache cleared so
+  ///                    the route guard kicks the user to /login.
+  ///   * throws       — transport / cold-start / timeout. Local cache is **kept**
+  ///                    so the optimistic boot path in `main()` can leave the
+  ///                    user where they were until the server is reachable again.
   Future<UserModel?> tryRestoreSession() async {
     final user = await _service.me();
     if (user != null) {
       SessionNotifier.instance.update(user);
+      return user;
     }
-    return user;
+    // Definitive "no session" from the server — wipe stale local state so the
+    // app doesn't keep pretending the cached user is signed in.
+    SessionNotifier.instance.clear();
+    LocalStorage.instance.userJson = null;
+    LocalStorage.instance.authToken = null;
+    return null;
   }
 
   /// Reload role/profile from `/api/v1/me` after a role change in the database.
