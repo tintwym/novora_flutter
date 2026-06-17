@@ -70,8 +70,9 @@ flutter:
   uses-material-design: true
 
   assets:
-    # Committed template (`.env` is gitignored). Override at build time via
-    # `--dart-define=API_BASE_URL=…` or copy `.env.example` → `.env` locally.
+    # Local secrets (gitignored). Copy from `.env.example` if missing.
+    - .env
+    # Committed template / fallback when `.env` is absent.
     - .env.example
     - assets/images/
     - assets/icons/

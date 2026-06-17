@@ -31,10 +31,15 @@ import 'features/training/screens/training_list_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Prefer a local `.env` (gitignored); fall back to the committed `.env.example` asset.
   try {
-    await dotenv.load(fileName: '.env.example');
+    await dotenv.load(fileName: '.env');
   } catch (_) {
-    // Asset missing in some builds; ApiClient falls back to localhost / dart-define.
+    try {
+      await dotenv.load(fileName: '.env.example');
+    } catch (_) {
+      // ApiClient / Firebase fall back to dart-define or defaults.
+    }
   }
   if (DefaultFirebaseOptions.isConfigured) {
     await Firebase.initializeApp(
