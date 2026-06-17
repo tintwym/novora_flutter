@@ -42,9 +42,18 @@ Future<void> main() async {
     }
   }
   if (DefaultFirebaseOptions.isConfigured) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } catch (e, st) {
+      // Misconfigured or partial FIREBASE_* keys must not white-screen the app —
+      // fall back to Spring session cookies (production Vercel default).
+      assert(() {
+        debugPrint('Firebase.initializeApp failed: $e\n$st');
+        return true;
+      }());
+    }
   } else {
     DefaultFirebaseOptions.logIfDisabled();
   }

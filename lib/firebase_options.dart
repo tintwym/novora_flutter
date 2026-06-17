@@ -33,9 +33,12 @@ class DefaultFirebaseOptions {
   }
 
   static bool get isConfigured {
-    final apiKey = _pick(_apiKeyDefine, 'FIREBASE_API_KEY');
-    final projectId = _pick(_projectIdDefine, 'FIREBASE_PROJECT_ID');
-    return apiKey != null && projectId != null;
+    try {
+      currentPlatform;
+      return true;
+    } on StateError {
+      return false;
+    }
   }
 
   static FirebaseOptions get currentPlatform {
