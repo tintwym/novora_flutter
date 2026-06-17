@@ -10,7 +10,6 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
-import '../../../shared/widgets/auth_form_header.dart';
 import '../auth_controller.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/auth_text_field.dart';
@@ -27,6 +26,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _nameCtrl = TextEditingController();
+  final _companyCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
   bool _showPass = false;
   bool _showConfirmPass = false;
@@ -57,6 +57,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailCtrl.dispose();
     _passCtrl.dispose();
     _nameCtrl.dispose();
+    _companyCtrl.dispose();
     _confirmCtrl.dispose();
     super.dispose();
   }
@@ -71,6 +72,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final name = _nameCtrl.text.trim();
     if (name.isEmpty) {
       AppSnackBar.showError(context, 'Please enter your full name.');
+      return;
+    }
+    final company = _companyCtrl.text.trim();
+    if (company.length < 2) {
+      AppSnackBar.showError(context, 'Please enter your company name.');
       return;
     }
     final emailErr = emailValidator(_emailCtrl.text);
@@ -93,6 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailCtrl.text.trim(),
         password: _passCtrl.text,
         fullName: name,
+        companyName: company,
       );
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
@@ -114,7 +121,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const AuthFormHeader(),
             Text(
               'Create Account',
               style: GoogleFonts.sora(
@@ -140,6 +146,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
               hint: 'John Doe',
               controller: _nameCtrl,
               prefixIcon: Icons.person_outline_rounded,
+            ),
+            const SizedBox(height: 14),
+            AuthTextField(
+              label: 'Company Name',
+              hint: 'Acme Corp',
+              controller: _companyCtrl,
+              prefixIcon: Icons.business_outlined,
             ),
             const SizedBox(height: 14),
             AuthTextField(

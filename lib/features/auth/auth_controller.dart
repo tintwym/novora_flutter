@@ -15,10 +15,12 @@ class AuthController {
     required String email,
     required String password,
     String? fullName,
+    String? companyName,
   }) => _repository.register(
         email: email,
         password: password,
         fullName: fullName,
+        companyName: companyName,
       );
 
   Future<void> forgotPassword(String email) =>

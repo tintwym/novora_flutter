@@ -16,7 +16,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('ASSET MANAGEMENT'), findsOneWidget);
     expect(find.text('MacBook Pro 14"'), findsOneWidget);
     expect(find.text('AST-IT-0021'), findsOneWidget);
 

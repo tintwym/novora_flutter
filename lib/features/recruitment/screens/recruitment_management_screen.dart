@@ -48,7 +48,6 @@ class _RecruitmentManagementScreenState extends State<RecruitmentManagementScree
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const HrModuleHeader(
-          moduleSubtitle: 'RECRUITMENT MANAGEMENT',
           showPeriodFilter: false,
         ),
         Material(

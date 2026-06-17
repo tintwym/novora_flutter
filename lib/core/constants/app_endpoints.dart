@@ -6,6 +6,7 @@ abstract final class AppEndpoints {
   static const authCsrf = '/api/v1/auth/csrf';
   static const authLogin = '/api/v1/auth/login';
   static const authRegister = '/api/v1/auth/register';
+  static const authFirebaseRegister = '/api/v1/auth/firebase/register';
   static const authLogout = '/auth/logout';
   static const me = '/api/v1/me';
 

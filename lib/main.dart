@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'core/constants/app_routes.dart';
+import 'firebase_options.dart';
 import 'core/constants/app_strings.dart';
 import 'core/network/api_client.dart';
 import 'core/session/session_notifier.dart';
@@ -33,6 +35,13 @@ Future<void> main() async {
     await dotenv.load(fileName: '.env.example');
   } catch (_) {
     // Asset missing in some builds; ApiClient falls back to localhost / dart-define.
+  }
+  if (DefaultFirebaseOptions.isConfigured) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else {
+    DefaultFirebaseOptions.logIfDisabled();
   }
   await LocalStorage.init();
   await ThemeNotifier.instance.load();

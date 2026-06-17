@@ -1,19 +1,141 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/constants/app_endpoints.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_errors.dart';
 import '../../core/storage/local_storage.dart';
 import '../../core/error/exceptions.dart';
+import '../../firebase_options.dart';
 import '../models/user_model.dart';
+import 'firebase_auth_gateway.dart';
 
-/// Spring Security session login/register (`JSESSIONID` + CSRF cookies via Dio).
+/// Authentication: Firebase ID tokens (production) or Spring session cookies (local fallback).
 class AuthService {
-  Future<void> _ensureCsrf() => ApiClient.ensureCsrfToken();
+  AuthService({FirebaseAuthGateway? firebase})
+      : _firebase = firebase ?? FirebaseAuthGateway();
+
+  final FirebaseAuthGateway _firebase;
+
+  bool get _useFirebase => DefaultFirebaseOptions.isConfigured;
 
   Future<UserModel> signIn(String email, String password) async {
+    if (_useFirebase) {
+      try {
+        await _firebase.signIn(email, password);
+      } on FirebaseAuthException catch (e) {
+        throw ApiException(_firebaseMessage(e), null);
+      }
+      return _loadProfileFromBackend();
+    }
+    return _legacySignIn(email, password);
+  }
+
+  Future<UserModel> register({
+    required String email,
+    required String password,
+    String? fullName,
+    String? companyName,
+  }) async {
+    if (_useFirebase) {
+      final company = companyName?.trim() ?? '';
+      if (company.length < 2) {
+        throw const ApiException('Company name is required (2–120 characters).', 400);
+      }
+      try {
+        await _firebase.signUp(email, password);
+      } on FirebaseAuthException catch (e) {
+        throw ApiException(_firebaseMessage(e), null);
+      }
+      try {
+        await _ensureCsrf();
+        final body = <String, dynamic>{
+          'companyName': company,
+        };
+        final trimmedName = fullName?.trim();
+        if (trimmedName != null && trimmedName.isNotEmpty) {
+          body['fullName'] = trimmedName;
+        }
+        final res = await ApiClient.dio.post<Map<String, dynamic>>(
+          AppEndpoints.authFirebaseRegister,
+          data: body,
+        );
+        if ((res.statusCode != 201 && res.statusCode != 200) || res.data == null) {
+          throw ApiException('Registration failed', res.statusCode);
+        }
+        final user = UserModel.fromAuthJson(res.data!);
+        await _persist(user);
+        return user;
+      } on DioException catch (e) {
+        // Workspace provisioning failed — tear down the Firebase user so retry is clean.
+        await _firebase.signOut();
+        throw apiExceptionFromDio(e);
+      }
+    }
+    return _legacyRegister(
+      email: email,
+      password: password,
+      fullName: fullName,
+      companyName: companyName,
+    );
+  }
+
+  Future<UserModel?> me() async {
+    try {
+      final res = await ApiClient.dio.get<Map<String, dynamic>>(AppEndpoints.me);
+      if (res.statusCode != 200 || res.data == null) return null;
+      final user = UserModel.fromAuthJson(res.data!);
+      await _persist(user);
+      if (!_useFirebase) {
+        try {
+          await _ensureCsrf();
+        } catch (_) {
+          // Session may still work for GETs.
+        }
+      }
+      return user;
+    } on DioException catch (e) {
+      final status = e.response?.statusCode;
+      if (status == 401 || status == 403) return null;
+      rethrow;
+    }
+  }
+
+  Future<void> requestPasswordReset(String email) async {
+    if (_useFirebase) {
+      try {
+        await _firebase.sendPasswordResetEmail(email);
+      } on FirebaseAuthException catch (e) {
+        throw ApiException(_firebaseMessage(e), null);
+      }
+      return;
+    }
+    throw const ApiException(
+      'Password reset is not available yet. Contact your administrator.',
+      501,
+    );
+  }
+
+  Future<void> signOutFirebase() async {
+    if (_useFirebase) {
+      await _firebase.signOut();
+    }
+  }
+
+  Future<UserModel> _loadProfileFromBackend() async {
+    final user = await me();
+    if (user == null) {
+      throw const ApiException(
+        'Workspace not set up yet. Please complete registration with your company name.',
+        401,
+      );
+    }
+    return user;
+  }
+
+  Future<UserModel> _legacySignIn(String email, String password) async {
     try {
       await _ensureCsrf();
       final res = await ApiClient.dio.post<Map<String, dynamic>>(
@@ -28,7 +150,6 @@ class AuthService {
       }
       final user = UserModel.fromAuthJson(res.data!);
       await _persist(user);
-      // Login creates a new session; CSRF from pre-login is invalid → refresh before any POST.
       await _ensureCsrf();
       return user;
     } on DioException catch (e) {
@@ -36,10 +157,11 @@ class AuthService {
     }
   }
 
-  Future<UserModel> register({
+  Future<UserModel> _legacyRegister({
     required String email,
     required String password,
     String? fullName,
+    String? companyName,
   }) async {
     try {
       await _ensureCsrf();
@@ -47,6 +169,10 @@ class AuthService {
         'email': email.trim(),
         'password': password,
       };
+      final company = companyName?.trim();
+      if (company != null && company.isNotEmpty) {
+        body['companyName'] = company;
+      }
       final trimmedName = fullName?.trim();
       if (trimmedName != null && trimmedName.isNotEmpty) {
         body['fullName'] = trimmedName;
@@ -67,50 +193,27 @@ class AuthService {
     }
   }
 
-  /// Returns the current session's user.
-  ///
-  /// Contract:
-  ///   * `UserModel`            — server confirmed a valid session.
-  ///   * `null`                 — server *definitively* says we are unauthenticated
-  ///                              (HTTP 401 or 403, including soft-deleted accounts).
-  ///   * throws `DioException`  — transport / timeout / 5xx (anything inconclusive).
-  ///
-  /// Callers MUST distinguish "no session" (clear local cache) from "couldn't
-  /// reach the server" (keep cache so a refresh during a Render cold start
-  /// doesn't bounce the user back to /login). The previous implementation
-  /// collapsed both into `null`, which caused the boot-time `tryRestoreSession`
-  /// to log the user out every time the backend slept long enough to beat its
-  /// timeout — see `AuthRepository.tryRestoreSession`.
-  Future<UserModel?> me() async {
-    try {
-      final res = await ApiClient.dio.get<Map<String, dynamic>>(AppEndpoints.me);
-      if (res.statusCode != 200 || res.data == null) return null;
-      final user = UserModel.fromAuthJson(res.data!);
-      await _persist(user);
-      try {
-        await _ensureCsrf();
-      } catch (_) {
-        // Session may still work for GETs; punch will retry CSRF.
-      }
-      return user;
-    } on DioException catch (e) {
-      final status = e.response?.statusCode;
-      if (status == 401 || status == 403) return null;
-      rethrow;
-    }
-  }
-
-  /// Backend does not expose password reset yet — reserved for future endpoint.
-  Future<void> requestPasswordReset(String email) async {
-    throw const ApiException(
-      'Password reset is not available yet. Contact your administrator.',
-      501,
-    );
-  }
+  Future<void> _ensureCsrf() => ApiClient.ensureCsrfToken();
 
   Future<void> _persist(UserModel user) async {
-    final token = user.accessToken;
-    LocalStorage.instance.authToken = token;
+    if (_useFirebase) {
+      final token = await _firebase.idToken();
+      LocalStorage.instance.authToken = token;
+    } else {
+      LocalStorage.instance.authToken = user.accessToken;
+    }
     LocalStorage.instance.userJson = jsonEncode(user.toJson());
+  }
+
+  static String _firebaseMessage(FirebaseAuthException e) {
+    return switch (e.code) {
+      'user-not-found' || 'wrong-password' || 'invalid-credential' =>
+        'Invalid email or password.',
+      'email-already-in-use' => 'Email already registered.',
+      'weak-password' => 'Password is too weak.',
+      'invalid-email' => 'Enter a valid email address.',
+      'too-many-requests' => 'Too many attempts. Try again later.',
+      _ => e.message ?? 'Authentication failed.',
+    };
   }
 }

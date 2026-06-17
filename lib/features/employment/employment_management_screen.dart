@@ -36,9 +36,7 @@ class _EmploymentManagementScreenState extends State<EmploymentManagementScreen>
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const HrModuleHeader(
-          moduleSubtitle: 'EMPLOYMENT MANAGEMENT',
-        ),
+        const HrModuleHeader(),
         Material(
           color: Theme.of(context).colorScheme.surface,
           child: TabBar(

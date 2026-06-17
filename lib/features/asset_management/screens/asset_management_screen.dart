@@ -62,7 +62,6 @@ class _AssetManagementScreenState extends State<AssetManagementScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const HrModuleHeader(
-          moduleSubtitle: 'ASSET MANAGEMENT',
           showPeriodFilter: false,
           showDepartmentFilter: true,
         ),

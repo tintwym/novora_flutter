@@ -10,6 +10,8 @@ import '../constants/app_endpoints.dart';
 import 'cold_start_retry_interceptor.dart';
 import 'csrf_interceptor.dart';
 import 'dio_adapter_hook.dart' as dio_hook;
+import 'firebase_bearer_interceptor.dart';
+import '../../firebase_options.dart';
 
 /// True for browser targets where [path_provider] / disk cookie jars are unavailable.
 ///
@@ -52,6 +54,7 @@ abstract final class ApiClient {
   static CookieJar? _jar;
   static Future<void>? _jarInit;
   static final CsrfInterceptor _csrf = CsrfInterceptor();
+  static final FirebaseBearerInterceptor _firebaseBearer = FirebaseBearerInterceptor();
 
   static Dio? _dio;
 
@@ -150,6 +153,8 @@ abstract final class ApiClient {
       ),
     );
     dio_hook.configureDioForPlatform(client);
+    // Firebase Bearer runs first so every downstream interceptor sees Authorization.
+    client.interceptors.add(_firebaseBearer);
     // dio_cookie_manager is not supported on web (uses dart:io cookies; assert in debug).
     // With [withCredentials], the browser attaches cookies to the API origin automatically.
     if (!webTarget) {
@@ -198,7 +203,9 @@ abstract final class ApiClient {
   }
 
   /// Prime CSRF cookie + header token before the first mutating request.
+  /// Skipped when Firebase Auth is active (stateless Bearer tokens).
   static Future<void> ensureCsrfToken() async {
+    if (DefaultFirebaseOptions.isConfigured) return;
     await dio.get(AppEndpoints.authCsrf);
     if (!_csrf.hasToken) {
       throw DioException(

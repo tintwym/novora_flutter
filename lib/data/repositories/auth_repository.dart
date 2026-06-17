@@ -1,5 +1,6 @@
 import '../../core/constants/app_endpoints.dart';
 import '../../core/network/api_client.dart';
+import '../../firebase_options.dart';
 import '../../core/session/session_notifier.dart';
 import '../../core/storage/local_storage.dart';
 import '../models/user_model.dart';
@@ -20,11 +21,13 @@ class AuthRepository {
     required String email,
     required String password,
     String? fullName,
+    String? companyName,
   }) async {
     final user = await _service.register(
       email: email,
       password: password,
       fullName: fullName,
+      companyName: companyName,
     );
     SessionNotifier.instance.update(user);
     return user;
@@ -64,11 +67,14 @@ class AuthRepository {
 
   Future<void> logout() async {
     try {
-      await ApiClient.ensureCsrfToken();
-      await ApiClient.dio.post(AppEndpoints.authLogout);
+      if (!DefaultFirebaseOptions.isConfigured) {
+        await ApiClient.ensureCsrfToken();
+        await ApiClient.dio.post(AppEndpoints.authLogout);
+      }
     } catch (_) {
       // Ignore network errors during logout.
     }
+    await _service.signOutFirebase();
     await ApiClient.clearSession();
     DashboardService.clearCache();
     final storage = LocalStorage.instance;

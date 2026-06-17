@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_strings.dart';
 import '../../core/theme/theme_colors.dart';
 
-/// Top banner used across Training / Attendance / Employment modules (mock-aligned).
+/// Compact toolbar row that sits above the tabs on every HR module page.
+///
+/// Carries the filters (department / period / year), Export, and any module
+/// primary action. The module's name is **not** repeated here — the
+/// [AppTopBar] in the shell already shows it. The previous version stacked
+/// `Novora` + `RECRUITMENT MANAGEMENT` (or equivalent) on the left, which
+/// duplicated the topbar title and burned ~50 px of vertical space on every
+/// page for no information gain.
 class HrModuleHeader extends StatelessWidget {
   const HrModuleHeader({
     super.key,
-    required this.moduleSubtitle,
     this.showDepartmentFilter = true,
     this.showPeriodFilter = false,
     this.showYearFilter = false,
@@ -22,7 +26,6 @@ class HrModuleHeader extends StatelessWidget {
     this.extraTrailing = const [],
   });
 
-  final String moduleSubtitle;
   final bool showDepartmentFilter;
   /// Month / period dropdown (e.g. Time & Attendance).
   final bool showPeriodFilter;
@@ -41,39 +44,15 @@ class HrModuleHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final tc = context;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
         color: tc.surfaceCard,
         border: Border(bottom: BorderSide(color: tc.borderColor)),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppStrings.brandName,
-                  style: GoogleFonts.sora(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: tc.primaryText,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  moduleSubtitle,
-                  style: GoogleFonts.dmSans(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.1,
-                    color: AppColors.textMuted,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const Spacer(),
           if (showPeriodFilter)
             const Padding(
               padding: EdgeInsets.only(right: 8),

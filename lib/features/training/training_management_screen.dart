@@ -42,7 +42,6 @@ class _TrainingManagementScreenState extends State<TrainingManagementScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const HrModuleHeader(
-          moduleSubtitle: 'TRAINING MANAGEMENT',
           showMoreMenu: true,
         ),
         Material(

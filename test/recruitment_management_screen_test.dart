@@ -16,7 +16,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('RECRUITMENT MANAGEMENT'), findsOneWidget);
     expect(find.text('+ New requisition'), findsWidgets);
     expect(find.text('Job requisition'), findsOneWidget);
     expect(find.text('Candidate pipeline'), findsOneWidget);

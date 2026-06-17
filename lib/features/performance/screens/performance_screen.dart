@@ -48,7 +48,6 @@ class _PerformanceScreenState extends State<PerformanceScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const HrModuleHeader(
-          moduleSubtitle: 'PERFORMANCE MANAGEMENT',
           showYearFilter: true,
         ),
         Material(

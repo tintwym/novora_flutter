@@ -38,9 +38,7 @@ class _DisciplinaryManagementScreenState extends State<DisciplinaryManagementScr
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const HrModuleHeader(
-          moduleSubtitle: 'DISCIPLINARY MANAGEMENT',
-        ),
+        const HrModuleHeader(),
         Material(
           color: Theme.of(context).colorScheme.surface,
           child: TabBar(

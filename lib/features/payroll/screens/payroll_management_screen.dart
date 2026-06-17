@@ -33,7 +33,6 @@ class _PayrollManagementScreenState extends State<PayrollManagementScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const HrModuleHeader(
-          moduleSubtitle: 'PAYROLL MANAGEMENT',
           showPeriodFilter: true,
         ),
         Material(

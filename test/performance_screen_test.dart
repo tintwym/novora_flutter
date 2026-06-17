@@ -16,7 +16,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('PERFORMANCE MANAGEMENT'), findsOneWidget);
     expect(find.text('Perf. level'), findsOneWidget);
     expect(find.text('Basic'), findsOneWidget);
 

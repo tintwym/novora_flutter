@@ -51,7 +51,6 @@ class _AttendanceScreenState extends State<AttendanceScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const HrModuleHeader(
-          moduleSubtitle: 'TIME & ATTENDANCE',
           showPeriodFilter: true,
           showMoreMenu: true,
         ),

@@ -16,7 +16,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('CLAIM MANAGEMENT'), findsOneWidget);
     expect(find.text('Policy & compliance'), findsOneWidget);
 
     await tester.tap(find.text('Approval'));

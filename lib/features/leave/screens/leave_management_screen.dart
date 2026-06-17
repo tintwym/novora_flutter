@@ -61,7 +61,6 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         HrModuleHeader(
-          moduleSubtitle: _employeeView ? 'MY LEAVE' : 'LEAVE MANAGEMENT',
           showYearFilter: !_employeeView,
           showMoreMenu: !_employeeView,
         ),

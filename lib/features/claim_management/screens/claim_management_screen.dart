@@ -56,7 +56,6 @@ class _ClaimManagementScreenState extends State<ClaimManagementScreen>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const HrModuleHeader(
-          moduleSubtitle: 'CLAIM MANAGEMENT',
           showPeriodFilter: true,
         ),
         Material(
