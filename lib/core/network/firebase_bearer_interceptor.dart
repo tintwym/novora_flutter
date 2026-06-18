@@ -16,7 +16,7 @@ class FirebaseBearerInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    if (!DefaultFirebaseOptions.isConfigured) {
+    if (!DefaultFirebaseOptions.isActive) {
       handler.next(options);
       return;
     }

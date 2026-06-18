@@ -11,7 +11,7 @@ class FirebaseAuthGateway {
 
   final FirebaseAuth? _authOverride;
 
-  static bool get isEnabled => DefaultFirebaseOptions.isConfigured;
+  static bool get isEnabled => DefaultFirebaseOptions.isActive;
 
   FirebaseAuth? get _auth {
     if (_authOverride != null) return _authOverride;

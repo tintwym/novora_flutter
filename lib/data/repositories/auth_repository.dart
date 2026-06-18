@@ -67,7 +67,7 @@ class AuthRepository {
 
   Future<void> logout() async {
     try {
-      if (!DefaultFirebaseOptions.isConfigured) {
+      if (!DefaultFirebaseOptions.isActive) {
         await ApiClient.ensureCsrfToken();
         await ApiClient.dio.post(AppEndpoints.authLogout);
       }

@@ -19,7 +19,7 @@ class AuthService {
 
   final FirebaseAuthGateway _firebase;
 
-  bool get _useFirebase => DefaultFirebaseOptions.isConfigured;
+  bool get _useFirebase => DefaultFirebaseOptions.isActive;
 
   Future<UserModel> signIn(String email, String password) async {
     if (_useFirebase) {

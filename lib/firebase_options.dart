@@ -1,11 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 /// Firebase web/mobile config loaded from `.env` / `--dart-define`.
 ///
 /// Run `flutterfire configure` in a real Firebase project, then copy the values
-/// into `.env` (see `.env.example`). When [isConfigured] is false the app falls
+/// into `.env` (see `.env.example`). When [isActive] is false the app falls
 /// back to legacy Spring session cookies (local dev without Firebase).
 class DefaultFirebaseOptions {
   DefaultFirebaseOptions._();
@@ -40,6 +39,9 @@ class DefaultFirebaseOptions {
       return false;
     }
   }
+
+  /// Keys are present **and** [Firebase.initializeApp] succeeded this session.
+  static bool get isActive => isConfigured && Firebase.apps.isNotEmpty;
 
   static FirebaseOptions get currentPlatform {
     final apiKey = _pick(_apiKeyDefine, 'FIREBASE_API_KEY');

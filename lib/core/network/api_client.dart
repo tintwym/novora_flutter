@@ -205,7 +205,7 @@ abstract final class ApiClient {
   /// Prime CSRF cookie + header token before the first mutating request.
   /// Skipped when Firebase Auth is active (stateless Bearer tokens).
   static Future<void> ensureCsrfToken() async {
-    if (DefaultFirebaseOptions.isConfigured) return;
+    if (DefaultFirebaseOptions.isActive) return;
     await dio.get(AppEndpoints.authCsrf);
     if (!_csrf.hasToken) {
       throw DioException(
