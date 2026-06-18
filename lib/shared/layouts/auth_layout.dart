@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_assets.dart';
+import '../../core/constants/app_strings.dart';
 import '../../core/theme/theme_colors.dart';
 import 'responsive_layout.dart';
 
@@ -72,6 +74,17 @@ class _BrandPanel extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      if (!tight) ...[
+                        Image.asset(
+                          AppAssets.appIcon,
+                          width: compact ? 56 : 72,
+                          height: compact ? 56 : 72,
+                          fit: BoxFit.contain,
+                          filterQuality: FilterQuality.high,
+                          semanticLabel: AppStrings.appTitle,
+                        ),
+                        SizedBox(height: compact ? 16 : 28),
+                      ],
                       Text.rich(
                         TextSpan(
                           style: GoogleFonts.sora(

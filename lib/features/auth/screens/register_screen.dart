@@ -10,7 +10,6 @@ import '../../../core/theme/theme_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../../shared/layouts/auth_form_scaffold.dart';
 import '../../../shared/layouts/auth_layout.dart';
-import '../../../shared/widgets/auth_form_header.dart';
 import '../auth_controller.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/auth_text_field.dart';
@@ -122,7 +121,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const AuthFormHeader(),
             Text(
               'Create Account',
               style: GoogleFonts.sora(
@@ -142,21 +140,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 height: 1.45,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             AuthTextField(
               label: 'Full Name',
               hint: 'John Doe',
               controller: _nameCtrl,
               prefixIcon: Icons.person_outline_rounded,
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             AuthTextField(
               label: 'Company Name',
               hint: 'Acme Corp',
               controller: _companyCtrl,
               prefixIcon: Icons.business_outlined,
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             AuthTextField(
               label: 'Work Email',
               hint: 'name@novora.com',
@@ -164,7 +162,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               prefixIcon: Icons.mail_outline_rounded,
               keyboardType: TextInputType.emailAddress,
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             AuthTextField(
               label: 'Password',
               hint: 'Enter your password',
@@ -182,7 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 onPressed: () => setState(() => _showPass = !_showPass),
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             AuthTextField(
               label: 'Confirm Password',
               hint: 'Confirm your password',
@@ -201,7 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     setState(() => _showConfirmPass = !_showConfirmPass),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             AuthPrimaryButton(
               label: 'Create Account',
               isLoading: _loading,
