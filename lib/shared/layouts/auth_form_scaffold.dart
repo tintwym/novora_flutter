@@ -17,13 +17,7 @@ class AuthFormScaffold extends StatelessWidget {
     final wide = ResponsiveLayout.isWide(context);
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
     final horizontal = wide ? 56.0 : 24.0;
-    final vertical = wide ? 24.0 : 24.0;
-    final padding = EdgeInsets.fromLTRB(
-      horizontal,
-      vertical,
-      horizontal,
-      24 + bottomInset,
-    );
+    final keyboardOpen = bottomInset > 0;
 
     final form = ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 400),
@@ -35,22 +29,33 @@ class AuthFormScaffold extends StatelessWidget {
       child: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final fixedWide = wide && bottomInset == 0;
-            if (fixedWide) {
+            // Wide + no keyboard: pin the form dead-centre in the left panel.
+            if (wide && !keyboardOpen) {
               return Padding(
-                padding: padding,
-                child: Center(child: form),
+                padding: EdgeInsets.symmetric(horizontal: horizontal),
+                child: SizedBox(
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                  child: Center(child: form),
+                ),
               );
             }
+
+            final padding = EdgeInsets.fromLTRB(
+              horizontal,
+              24,
+              horizontal,
+              24 + bottomInset,
+            );
             return SingleChildScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: padding,
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - vertical - bottomInset,
+                  minHeight: constraints.maxHeight - padding.vertical,
                 ),
                 child: Align(
-                  alignment: wide ? Alignment.center : Alignment.topCenter,
+                  alignment: Alignment.center,
                   child: form,
                 ),
               ),
