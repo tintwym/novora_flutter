@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/theme_colors.dart';
-import '../widgets/novora_logo.dart';
 import 'responsive_layout.dart';
 
 /// Auth form column (login / register / forgot password).
@@ -28,21 +27,7 @@ class AuthFormScaffold extends StatelessWidget {
 
     final form = ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 400),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(bottom: 28),
-            child: NovoraLogo(
-              height: 42,
-              width: 230,
-              fit: BoxFit.contain,
-            ),
-          ),
-          child,
-        ],
-      ),
+      child: child,
     );
 
     return ColoredBox(
