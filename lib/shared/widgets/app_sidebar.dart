@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/platform/browser_target.dart';
 import '../../core/theme/theme_colors.dart';
 import '../models/sidebar_subnav.dart';
+import 'novora_logo.dart';
 import 'sidebar_subnav_tiles.dart';
 
 class NavMenuItem {
@@ -54,9 +56,23 @@ class AppSidebar extends StatelessWidget {
       color: tc.surfaceCard,
       child: Column(
         children: [
+          if (isBrowserPlatform)
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 20, 16, 4),
+              child: NovoraLogo(
+                height: 36,
+                width: 200,
+                fit: BoxFit.contain,
+              ),
+            ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(10, 20, 10, 16),
+              padding: EdgeInsets.fromLTRB(
+                10,
+                isBrowserPlatform ? 8 : 20,
+                10,
+                16,
+              ),
               children: [
                 for (final item in items) ...[
                   _ParentTile(

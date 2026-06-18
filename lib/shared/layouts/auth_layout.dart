@@ -46,6 +46,29 @@ class AuthLayout extends StatelessWidget {
   }
 }
 
+/// Transparent mark at a size that fills the hero — not the padded launcher tile.
+class _HeroLogo extends StatelessWidget {
+  const _HeroLogo({required this.compact});
+
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = compact ? 72.0 : 96.0;
+    final cacheSize = (size * MediaQuery.devicePixelRatioOf(context)).round();
+    return Image.asset(
+      AppAssets.appIconMark,
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.high,
+      cacheWidth: cacheSize,
+      cacheHeight: cacheSize,
+      semanticLabel: AppStrings.appTitle,
+    );
+  }
+}
+
 class _BrandPanel extends StatelessWidget {
   const _BrandPanel({this.compact = false});
 
@@ -75,14 +98,7 @@ class _BrandPanel extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       if (!tight) ...[
-                        Image.asset(
-                          AppAssets.appIcon,
-                          width: compact ? 56 : 72,
-                          height: compact ? 56 : 72,
-                          fit: BoxFit.contain,
-                          filterQuality: FilterQuality.high,
-                          semanticLabel: AppStrings.appTitle,
-                        ),
+                        _HeroLogo(compact: compact),
                         SizedBox(height: compact ? 16 : 28),
                       ],
                       Text.rich(

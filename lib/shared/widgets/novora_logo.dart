@@ -5,7 +5,7 @@ import '../../core/constants/app_strings.dart';
 import '../../core/platform/browser_target.dart';
 
 /// Novora brand mark — platform-aware:
-/// * **Web** → horizontal wordmark ([AppAssets.webLogo]), white background
+/// * **Web** → horizontal wordmark ([AppAssets.webLogo])
 /// * **Mobile / desktop app** → square launcher mark ([AppAssets.appIcon])
 class NovoraLogo extends StatelessWidget {
   const NovoraLogo({
@@ -18,9 +18,6 @@ class NovoraLogo extends StatelessWidget {
 
   static bool get _useWebWordmark => isBrowserPlatform;
 
-  static String get _assetPath =>
-      _useWebWordmark ? AppAssets.webLogo : AppAssets.appIcon;
-
   /// Natural asset ratio for the active platform asset.
   static double get aspectRatio => _useWebWordmark ? 1024 / 341 : 1;
 
@@ -31,15 +28,24 @@ class NovoraLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final asset = _useWebWordmark ? AppAssets.webLogo : AppAssets.appIcon;
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    final cacheHeight = height != null ? (height! * dpr).round() : null;
+    final cacheWidth = width != null
+        ? (width! * dpr).round()
+        : (height != null ? (height! * aspectRatio * dpr).round() : null);
+
     return Align(
       alignment: alignment,
       child: Image.asset(
-        _assetPath,
+        asset,
         height: height,
         width: width,
         fit: fit,
         alignment: alignment,
         filterQuality: FilterQuality.high,
+        cacheWidth: cacheWidth,
+        cacheHeight: cacheHeight,
         semanticLabel: AppStrings.appTitle,
       ),
     );
