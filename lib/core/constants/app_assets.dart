@@ -1,10 +1,8 @@
 /// Declared asset paths (images, icons, fonts registered in `pubspec.yaml`).
 abstract final class AppAssets {
-  static const logo = 'assets/images/logo.png';
-  static const logoFull = 'assets/images/novora-logo.png';
-  static const logoIcon = 'assets/images/novora-logo-icon.png';
+  /// Square mark — launcher icon source (`flutter_launcher_icons`), favicon, PWA.
   static const appIcon = 'assets/images/app_icon.png';
-  static const logoWhite = 'assets/images/logo_white.png';
-  static const onboardingBg = 'assets/images/onboarding_bg.png';
-  static const appIcon = 'assets/icons/app_icon.png';
+
+  /// Horizontal wordmark (icon + NOVORA + tagline) for in-app web branding.
+  static const webLogo = 'assets/images/novora-logo-web.png';
 }

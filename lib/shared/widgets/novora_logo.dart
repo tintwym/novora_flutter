@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_strings.dart';
+import '../../core/platform/browser_target.dart';
 
-/// Official Novora wordmark (icon + NOVORA + HRMS SOFTWARE).
+/// Novora brand mark — platform-aware:
+/// * **Web** → horizontal wordmark ([AppAssets.webLogo]), white background
+/// * **Mobile / desktop app** → square launcher mark ([AppAssets.appIcon])
 class NovoraLogo extends StatelessWidget {
   const NovoraLogo({
     super.key,
@@ -13,8 +16,13 @@ class NovoraLogo extends StatelessWidget {
     this.alignment = Alignment.centerLeft,
   });
 
-  /// Natural asset ratio (790×356).
-  static const double aspectRatio = 790 / 356;
+  static bool get _useWebWordmark => isBrowserPlatform;
+
+  static String get _assetPath =>
+      _useWebWordmark ? AppAssets.webLogo : AppAssets.appIcon;
+
+  /// Natural asset ratio for the active platform asset.
+  static double get aspectRatio => _useWebWordmark ? 1024 / 341 : 1;
 
   final double? height;
   final double? width;
@@ -26,7 +34,7 @@ class NovoraLogo extends StatelessWidget {
     return Align(
       alignment: alignment,
       child: Image.asset(
-        AppAssets.logoFull,
+        _assetPath,
         height: height,
         width: width,
         fit: fit,
