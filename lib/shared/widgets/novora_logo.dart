@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/platform/browser_target.dart';
+import '../../core/theme/theme_colors.dart';
 
-/// Novora brand mark — platform-aware:
-/// * **Web** → horizontal wordmark ([AppAssets.webLogo])
+/// Novora brand mark — platform- and theme-aware:
+/// * **Web** → horizontal wordmark (blue on light surfaces, light text on dark)
 /// * **Mobile / desktop app** → square launcher mark ([AppAssets.appIcon])
 class NovoraLogo extends StatelessWidget {
   const NovoraLogo({
@@ -14,6 +15,8 @@ class NovoraLogo extends StatelessWidget {
     this.width,
     this.fit = BoxFit.contain,
     this.alignment = Alignment.centerLeft,
+    /// When true, always picks the variant for dark surfaces (e.g. navy hero).
+    this.onDarkSurface = false,
   });
 
   static bool get _useWebWordmark => isBrowserPlatform;
@@ -25,10 +28,16 @@ class NovoraLogo extends StatelessWidget {
   final double? width;
   final BoxFit fit;
   final AlignmentGeometry alignment;
+  final bool onDarkSurface;
+
+  String _assetFor(BuildContext context) {
+    if (!_useWebWordmark) return AppAssets.appIcon;
+    final dark = onDarkSurface || context.isDarkMode;
+    return dark ? AppAssets.webLogoDark : AppAssets.webLogo;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final asset = _useWebWordmark ? AppAssets.webLogo : AppAssets.appIcon;
     final dpr = MediaQuery.devicePixelRatioOf(context);
     final cacheHeight = height != null ? (height! * dpr).round() : null;
     final cacheWidth = width != null
@@ -38,7 +47,7 @@ class NovoraLogo extends StatelessWidget {
     return Align(
       alignment: alignment,
       child: Image.asset(
-        asset,
+        _assetFor(context),
         height: height,
         width: width,
         fit: fit,

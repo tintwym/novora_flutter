@@ -97,7 +97,7 @@ class _BrandPanel extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if (!tight) ...[
+                      if (!tight && !compact) ...[
                         _HeroLogo(compact: compact),
                         SizedBox(height: compact ? 16 : 28),
                       ],

@@ -6,6 +6,9 @@ abstract final class AppAssets {
   /// Icon-only mark (transparent) for dark hero panels and marketing surfaces.
   static const appIconMark = 'assets/images/app_icon_mark.png';
 
-  /// Horizontal wordmark (transparent background) for in-app web branding.
+  /// Horizontal wordmark (transparent) for light surfaces.
   static const webLogo = 'assets/images/novora-logo-web-light.png';
+
+  /// Horizontal wordmark (transparent, light text) for dark surfaces.
+  static const webLogoDark = 'assets/images/novora-logo-web-dark.png';
 }
